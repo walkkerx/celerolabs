@@ -7,7 +7,6 @@ import {
   MapPin,
   Scale,
   Rocket,
-  DollarSign,
   Users,
 } from "lucide-react";
 import { venturesData } from "@/artemis/data/ventures";
@@ -397,15 +396,6 @@ export function VentureDetail() {
                     icon={<Rocket className="w-4 h-4" />}
                     label="Launch Model"
                     value={venture.launchModel}
-                  />
-                  <SidebarItem
-                    icon={<DollarSign className="w-4 h-4" />}
-                    label="Cost to Launch"
-                    value={
-                      venture.costToLaunch
-                        ? `$${venture.costToLaunch.toLocaleString()}`
-                        : "TBD"
-                    }
                   />
                   <SidebarItem
                     icon={<Users className="w-4 h-4" />}

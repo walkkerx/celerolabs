@@ -20,6 +20,8 @@ import {
   Zap,
   TrendingUp,
   Globe2,
+  Play,
+  ChevronRight,
 } from "lucide-react";
 import { ReviewSection } from "@/artemis/components/ReviewSection";
 import { routeLegs, MAP_LOCATIONS } from "@/artemis/data/routes";
@@ -27,27 +29,38 @@ import { venturesData } from "@/artemis/data/ventures";
 
 /* ── Data ── */
 
-const heroImages = [
+/* Hero slideshow (adopted from Home 2 cinematic hero) */
+const heroSlides = [
   {
-    src: "https://images.unsplash.com/photo-1631556760646-50241850eb25?auto=format&fit=crop&w=1200&q=80",
-    alt: "Black woman scientist in laboratory",
-    position: "center 25%",
+    src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80",
+    alt: "Engineer operating advanced machinery",
+    position: "center 35%",
   },
   {
-    src: "https://images.unsplash.com/photo-1611348524140-53c9a25263d6?auto=format&fit=crop&w=1200&q=80",
-    alt: "Nairobi city skyline",
+    src: "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=1920&q=80",
+    alt: "Solar panel field at dawn",
     position: "center 40%",
   },
   {
-    src: "https://images.unsplash.com/photo-1780567497689-025144c19b8c?auto=format&fit=crop&w=1200&q=80",
-    alt: "Black entrepreneur working on laptop",
-    position: "center 20%",
+    src: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80",
+    alt: "Circuit board macro detail",
+    position: "center 45%",
   },
   {
-    src: "https://images.unsplash.com/photo-1573164574511-73c773193279?auto=format&fit=crop&w=1200&q=80",
-    alt: "Black professionals in business meeting",
-    position: "center 25%",
+    src: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80",
+    alt: "Earth from space at night",
+    position: "center 50%",
   },
+];
+
+/* Live ticker metrics */
+const tickerMetrics = [
+  { label: "Companies on the Route", value: "5,000+" },
+  { label: "Projected unicorns", value: "200+" },
+  { label: "Hub locations", value: "190" },
+  { label: "Countries", value: "39" },
+  { label: "Investment vehicles", value: "6" },
+  { label: "Civilizational fields", value: "9" },
 ];
 
 const stats = [
@@ -182,124 +195,197 @@ export function Home() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HERO, Contained image with heading below (NEWLAB style)
+   HERO — Cinematic, dark, kinetic headline, metric ticker
+   Contained within max-w-[1400px] (adopted from Home 2, width-constrained)
    ══════════════════════════════════════════════════════════════════════════ */
 function Hero() {
-  const [currentImage, setCurrentImage] = useState(0);
+  const [current, setCurrent] = useState(0);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(heroRef, { once: true, margin: "-80px" });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
+      setCurrent((p) => (p + 1) % heroSlides.length);
+    }, 5500);
     return () => clearInterval(interval);
   }, []);
 
+  const headlineWords = ["Build", "the", "next", "century."];
+
   return (
     <section className="relative w-full px-6 md:px-12 lg:px-20 pt-4 md:pt-6">
-      {/* Contained image, not full-bleed */}
-      <div className="relative w-full max-w-[1400px] mx-auto h-[50vh] sm:h-[55vh] md:h-[65vh] lg:h-[75vh] overflow-hidden">
-        {heroImages.map((img, i) => (
-          <motion.div
-            key={i}
-            initial={false}
-            animate={{
-              opacity: i === currentImage ? 1 : 0,
-              scale: i === currentImage ? 1 : 1.03,
-            }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-0"
-          >
-            <img
-              src={img.src}
-              alt={img.alt}
-              className="w-full h-full object-cover"
-              style={{ objectPosition: img.position }}
-              loading={i === 0 ? "eager" : "lazy"}
-            />
-          </motion.div>
-        ))}
-        {/* Gradient overlay from bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
-
-        {/* Image indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1 z-10">
-          {heroImages.map((_, i) => (
-            <button
+      {/* Contained cinematic hero — constant width, not full-bleed */}
+      <div
+        ref={heroRef}
+        className="relative w-full max-w-[1400px] mx-auto overflow-hidden bg-[#0A0A0A] rounded-sm"
+      >
+        {/* Slideshow */}
+        <div className="relative h-[60vh] sm:h-[68vh] md:h-[78vh] lg:h-[82vh]">
+          {heroSlides.map((img, i) => (
+            <motion.div
               key={i}
-              suppressHydrationWarning
-              onClick={() => setCurrentImage(i)}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center"
-              aria-label={`Go to slide ${i + 1}`}
+              initial={false}
+              animate={{
+                opacity: i === current ? 1 : 0,
+                scale: i === current ? 1 : 1.06,
+              }}
+              transition={{ duration: 1.1, ease: EASE }}
+              className="absolute inset-0"
             >
-              <span
-                className={`block h-[3px] transition-all duration-500 ${
-                  i === currentImage ? "bg-[#FF4D00] w-12 active:w-14" : "bg-black/30 w-8"
-                }`}
+              <img
+                src={img.src}
+                alt={img.alt}
+                className="w-full h-full object-cover"
+                style={{ objectPosition: img.position }}
+                loading={i === 0 ? "eager" : "lazy"}
               />
-            </button>
+            </motion.div>
           ))}
-        </div>
-      </div>
 
-      {/* Large centered heading below the image (NEWLAB style) */}
-      <div className="w-full max-w-[1400px] mx-auto pt-8 md:pt-12 pb-6 md:pb-10">
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-          className="text-[28px] sm:text-[44px] md:text-[64px] lg:text-[86px] xl:text-[104px] leading-[0.9] font-display font-medium tracking-[-0.03em] text-center uppercase"
-        >
-          Venture platform
-          <br />
-          for critical
-          <br />
-          technology
-        </motion.h1>
+          {/* Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/55 to-[#0A0A0A]/35" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/70 via-transparent to-transparent" />
 
-        {/* Subtitle + CTA buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
-          className="mt-6 md:mt-8 text-center max-w-2xl mx-auto"
-        >
-          <p className="text-[15px] md:text-[17px] leading-[1.6] text-[#111111]/60 font-medium mb-8">
-            Designed to unite 190 hubs across 39 countries — commercializing the technology the next century needs: infrastructure, ventures, capital, and community, all on one platform.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/ventures"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-[#FF4D00] text-white text-[12px] font-bold uppercase tracking-widest hover:bg-[#FF4D00]/90 transition-colors"
-            >
-              Explore Ventures
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              to="/capital"
-              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-[#111111] text-[#111111] text-[12px] font-bold uppercase tracking-widest hover:bg-[#111111] hover:text-white transition-colors bg-transparent"
-            >
-              Invest from $500
-            </Link>
+          {/* Grid overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.07] pointer-events-none"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+              backgroundSize: "80px 80px",
+            }}
+          />
+
+          {/* Corner labels */}
+          <div className="absolute top-6 left-6 md:top-8 md:left-10 flex items-center gap-2 text-white/40 z-10">
+            <span className="w-1.5 h-1.5 bg-[#FF4D00] animate-pulse" />
+            <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase">xCelero Labs</span>
           </div>
-        </motion.div>
+          <div className="absolute top-6 right-6 md:top-8 md:right-10 text-white/40 z-10 text-[10px] font-mono tracking-[0.3em] uppercase hidden sm:block">
+            Critical Technology
+          </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.5 }}
-          className="flex flex-col items-center mt-10 md:mt-14"
-        >
-          <span className="text-[9px] font-mono font-bold tracking-[0.3em] uppercase text-[#111111]/25 mb-3">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ChevronDown className="w-5 h-5 text-[#FF4D00]/50" strokeWidth={1.5} />
-          </motion.div>
-        </motion.div>
+          {/* Content */}
+          <div className="relative z-10 w-full h-full flex flex-col justify-end px-6 md:px-12 lg:px-16 pb-12 md:pb-16">
+            <motion.span
+              initial={{ opacity: 0, y: 12 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="text-[10px] md:text-[11px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] mb-5 md:mb-7"
+            >
+              Venture platform for critical technology
+            </motion.span>
+
+            {/* Kinetic headline */}
+            <h1 className="font-display font-medium tracking-[-0.03em] leading-[0.9] text-white text-[12vw] sm:text-[10vw] md:text-[7vw] lg:text-[6vw] xl:text-[88px] mb-8 md:mb-10">
+              {headlineWords.map((word, i) => (
+                <span key={i} className="inline-block overflow-hidden align-bottom mr-[0.18em]">
+                  <motion.span
+                    initial={{ y: "110%" }}
+                    animate={isInView ? { y: 0 } : {}}
+                    transition={{ duration: 0.8, delay: 0.15 + i * 0.09, ease: EASE }}
+                    className="inline-block"
+                  >
+                    {word}
+                  </motion.span>
+                </span>
+              ))}
+            </h1>
+
+            {/* Sub + CTAs */}
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+              <motion.p
+                initial={{ opacity: 0, y: 14 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, delay: 0.6, ease: EASE }}
+                className="text-white/55 text-[15px] md:text-[17px] font-medium leading-[1.6] max-w-xl"
+              >
+                A network of 190 hubs across 39 countries, built into a single
+                commercialization engine — infrastructure to build, programs to
+                validate, capital to scale, and community to compound.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, delay: 0.75, ease: EASE }}
+                className="flex flex-col sm:flex-row gap-3 flex-shrink-0"
+              >
+                <Link
+                  to="/capital"
+                  className="group inline-flex items-center justify-center gap-2 px-7 py-4 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#FF6A28] transition-colors"
+                >
+                  Invest from $500
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/ventures"
+                  className="group inline-flex items-center justify-center gap-2 px-7 py-4 border border-white/25 text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-white hover:text-[#0A0A0A] transition-colors"
+                >
+                  <Play className="w-3.5 h-3.5" />
+                  Explore ventures
+                </Link>
+              </motion.div>
+            </div>
+
+            {/* Slide indicators + scroll cue */}
+            <div className="mt-10 md:mt-12 flex items-center justify-between">
+              <div className="flex gap-1.5">
+                {heroSlides.map((_, i) => (
+                  <button
+                    key={i}
+                    suppressHydrationWarning
+                    onClick={() => setCurrent(i)}
+                    aria-label={`Go to slide ${i + 1}`}
+                    className="min-h-[32px] min-w-[32px] flex items-center"
+                  >
+                    <span
+                      className={`block h-[2px] transition-all duration-500 ${
+                        i === current ? "bg-[#FF4D00] w-12" : "bg-white/25 w-7"
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ duration: 0.6, delay: 1, ease: EASE }}
+                className="hidden md:flex items-center gap-2 text-white/40 text-[10px] font-mono tracking-[0.2em] uppercase"
+              >
+                Scroll
+                <motion.span
+                  animate={{ y: [0, 5, 0] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  ↓
+                </motion.span>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+
+        {/* Metric ticker */}
+        <MetricTicker />
       </div>
     </section>
+  );
+}
+
+/* ── Metric ticker (marquee) ── */
+function MetricTicker() {
+  const items = [...tickerMetrics, ...tickerMetrics];
+  return (
+    <div className="relative z-10 border-t border-white/10 bg-[#0A0A0A] overflow-hidden">
+      <div className="flex w-max animate-[scroll_38s_linear_infinite] hover:[animation-play-state:paused]">
+        {items.map((m, i) => (
+          <div key={i} className="flex items-center gap-3 px-8 py-4 border-r border-white/8 whitespace-nowrap">
+            <span className="text-[#FF4D00] text-lg md:text-xl font-display font-medium">{m.value}</span>
+            <span className="text-white/40 text-[10px] md:text-[11px] font-mono tracking-[0.15em] uppercase">{m.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -1229,6 +1315,101 @@ function UpcomingEventsSection() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
+   ROUTE JOURNEY — 6 horizontal leg cards (adopted from Home 2, contained)
+   ══════════════════════════════════════════════════════════════════════════ */
+function RouteJourney() {
+  const rjRef = useRef<HTMLDivElement>(null);
+  const rjInView = useInView(rjRef, { once: true, margin: "-80px" });
+  const legs = routeLegs.slice(0, 6);
+
+  return (
+    <div ref={rjRef} className="mb-16 md:mb-24">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-12">
+        <div>
+          <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-4">
+            The Route · 6 legs · 190 hubs
+          </span>
+          <h3 className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[28px] sm:text-[36px] md:text-[48px] lg:text-[56px] text-[#111111]">
+            One corridor.
+            <br />
+            <span className="text-[#111111]/35">Six civilizations deep.</span>
+          </h3>
+        </div>
+        <Link
+          to="/routes"
+          className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/50 hover:text-[#FF4D00] transition-colors flex-shrink-0"
+        >
+          Explore the full Route
+          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+        </Link>
+      </div>
+
+      {/* Horizontal scroll cards */}
+      <div className="overflow-x-auto scrollbar-thin [scrollbar-color:rgba(17,17,17,0.25)_transparent]">
+        <div className="flex gap-4 md:gap-5 pb-6 w-max">
+          {legs.map((leg, i) => (
+            <motion.div
+              key={leg.id}
+              initial={{ opacity: 0, y: 24 }}
+              animate={rjInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: i * 0.08, ease: EASE }}
+            >
+              <Link
+                to="/routes"
+                className="group block w-[280px] md:w-[320px] border border-[#111111]/12 hover:border-[#FF4D00] bg-white hover:bg-[#FF4D00]/5 transition-colors p-6 md:p-7 h-full"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#FF4D00]">
+                    LEG {leg.legNumber}
+                  </span>
+                  <span className="flex items-center gap-1.5 text-[10px] font-mono tracking-[0.1em] text-[#111111]/40">
+                    <MapPin className="w-3 h-3" />
+                    {leg.hubCount} hubs
+                  </span>
+                </div>
+
+                <h4 className="font-display font-medium tracking-tight text-[22px] md:text-[24px] leading-[1.15] mb-2 group-hover:text-[#FF4D00] transition-colors">
+                  {leg.name}
+                </h4>
+                <p className="text-[12px] text-[#111111]/40 italic font-medium leading-[1.5] mb-5 line-clamp-2">
+                  &ldquo;{leg.subtitle}&rdquo;
+                </p>
+
+                <div className="border-t border-[#111111]/10 pt-4">
+                  <p className="text-[9px] font-mono tracking-[0.15em] uppercase text-[#111111]/30 mb-1.5">
+                    Primary flow
+                  </p>
+                  <p className="text-[12px] text-[#111111]/65 font-medium leading-[1.5] line-clamp-2">
+                    {leg.primaryFlow}
+                  </p>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-1.5">
+                  {leg.countries.slice(0, 4).map((c) => (
+                    <span
+                      key={c}
+                      className="text-[9px] font-mono tracking-[0.05em] uppercase text-[#111111]/50 border border-[#111111]/12 px-2 py-1"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/30 group-hover:text-[#FF4D00] transition-colors">
+                  Enter leg
+                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
    LOCATIONS SECTION, Interactive Blueprint Map with leg filters
    ══════════════════════════════════════════════════════════════════════════ */
 function LocationsSection() {
@@ -1331,6 +1512,9 @@ function LocationsSection() {
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
+
+        {/* Route Journey — 6 leg cards (adopted from Home 2, contained) */}
+        <RouteJourney />
 
         {/* Accordion list of route regions */}
         <div className="max-w-4xl mx-auto">

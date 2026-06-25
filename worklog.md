@@ -128,3 +128,30 @@ Stage Summary:
   3. "The portfolio · 40+ ventures" — filterable venture gallery with 9 cards (new addition, no equivalent existed)
 - All original Home sections preserved (Hero, BentoGrid, NumbersSection, LocationsSection, UpcomingEventsSection, ReviewSection, NewsletterSection)
 - Lint clean, browser-verified, mobile responsive, zero runtime errors
+
+---
+Task ID: hero-route-costlaunch
+Agent: main
+Task: Three changes: (1) adopt Home 2's header section but keep width constant/contained not full-page, (2) place Home 2's Route Journey cards below the View Map button on current home, (3) remove Cost to Launch from all venture pages
+
+Work Log:
+- Read Home 2's CinematicHero (full-bleed dark, slideshow, kinetic headline "Build the next century", metric ticker) and current Home's Hero (contained image + centered heading below)
+- Adapted CinematicHero into current Home with CONSTRAINED width: wrapped the dark hero container in max-w-[1400px] mx-auto with px-6 md:px-12 lg:px-20 padding and rounded-sm, so it matches the site's contained layout (not full-bleed). Added heroSlides data (4 tech images), tickerMetrics data (6 metrics), Play + ChevronRight icon imports, EASE constant, MetricTicker component (marquee), and kinetic headline animation
+- Removed unused heroImages data array (old hero images no longer referenced)
+- Added RouteJourney component (adapted from Home 2): horizontal-scrolling 6 leg cards with leg number, hub count, name, subtitle, primary flow, country tags, and "Enter leg" CTA. Placed it right after the "View Full Route Map" button inside LocationsSection (before the accordion list)
+- Removed "Cost to Launch" from VentureDetail.tsx: deleted the SidebarItem block (DollarSign icon + label + value) and removed DollarSign from lucide-react imports
+- Removed costToLaunch from ventures.ts data: deleted the type field from Venture interface + all 200 data entries via sed (201 total references removed)
+- Ran `bun run lint` → clean (no errors/warnings)
+- Agent Browser verification:
+  - Hero: contained cinematic hero renders correctly — h1 "Build the next century." with kinetic word animation, "INVEST FROM $500" + "EXPLORE VENTURES" CTAs, MetricTicker marquee (5,000+ Companies / 200+ Unicorns / 190 Hubs / 39 Countries / 6 Vehicles / 9 Fields). Width confirmed contained: 80px margins at 1280px viewport (heroLeft:80, heroRight:1200), 24px margins at 390px mobile viewport. Not full-bleed ✓
+  - RouteJourney: renders below "VIEW FULL ROUTE MAP" button — "THE ROUTE · 6 LEGS · 190 HUBS" label, "One corridor. Six civilizations deep." heading, 6 horizontal leg cards (LEG 1 Gulf of Guinea Arc through LEG 6 North Africa & Global Gateways) with hub counts, subtitles, primary flows, country tags, "ENTER LEG" links ✓
+  - Cost to Launch removed: verified on two venture detail pages (/ventures/helios and /ventures/ampere) — "Cost to Launch" NOT present, while Pilot Locations, Legal Jurisdiction, Launch Model, and Anchor Partners all still present ✓
+  - Mobile (iPhone 14): hero renders contained at 390px width, thesis section + BentoGrid pillars render correctly
+  - dev.log: all recent requests return 200, no errors (the "ThesisSection is not defined" and "Failed to find Server Action" in the log are stale from the previous task's intermediate edit state)
+  - Zero browser errors
+
+Stage Summary:
+- Hero replaced with Home 2's cinematic design (dark, slideshow, kinetic headline, metric ticker) but width-CONSTRAINED to max-w-[1400px] container with site padding — not full-bleed
+- RouteJourney (6 horizontal leg cards) added below the "View Full Route Map" button in the LocationsSection
+- "Cost to Launch" removed from all venture pages: deleted from VentureDetail.tsx sidebar display + DollarSign import + Venture interface type field + all 200 data entries in ventures.ts
+- Lint clean, browser-verified, mobile responsive, zero runtime errors

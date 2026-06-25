@@ -10,7 +10,6 @@ export interface Venture {
   jurisdiction: string;
   launchModel: string;
   anchorPartners: string;
-  costToLaunch: number | null;
 }
 
 export const venturesData: Venture[] = [
@@ -26,7 +25,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Ghana OpCo",
     launchModel: "Light",
     anchorPartners: "AfDB, Enel Green Power",
-    costToLaunch: 50000,
   },
   {
     id: "ampere",
@@ -40,7 +38,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / UAE Free Zone",
     launchModel: "Heavy",
     anchorPartners: "CATL, BYD, Stellantis",
-    costToLaunch: 200000,
   },
   {
     id: "ember",
@@ -54,7 +51,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Rwanda OpCo",
     launchModel: "Light",
     anchorPartners: "BBOXX, AfDB, Shell Foundation",
-    costToLaunch: 75000,
   },
   {
     id: "ignis",
@@ -68,7 +64,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC",
     launchModel: "Heavy",
     anchorPartners: "Commonwealth Fusion, Anglo American",
-    costToLaunch: 30000,
   },
   {
     id: "nimbus",
@@ -82,7 +77,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Niger OpCo",
     launchModel: "Light",
     anchorPartners: "AfDB, UNICEF, GIZ",
-    costToLaunch: 60000,
   },
   {
     id: "ceres",
@@ -96,7 +90,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Light",
     anchorPartners: "Corteva Agriscience, IFC, LandX",
-    costToLaunch: 25000,
   },
   {
     id: "bounty",
@@ -110,7 +103,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Kenya Limited / Nigeria BN",
     launchModel: "Light",
     anchorPartners: "Twiga Foods, Jumia Food, Bolt",
-    costToLaunch: 15000,
   },
   {
     id: "meridian",
@@ -124,7 +116,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Rwanda OpCo",
     launchModel: "Light",
     anchorPartners: "Olam, Nestl\u00e9, Cargill",
-    costToLaunch: 40000,
   },
   {
     id: "manna",
@@ -138,7 +129,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd / Uganda BN",
     launchModel: "Heavy",
     anchorPartners: "Unilever Africa, Nestl\u00e9, FrieslandCampina",
-    costToLaunch: 120000,
   },
   {
     id: "chorus",
@@ -152,7 +142,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Kenya Limited",
     launchModel: "Light",
     anchorPartners: "Metro Cash & Carry, WFP, Twiga",
-    costToLaunch: 8000,
   },
   {
     id: "smelter",
@@ -166,7 +155,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / DRC SpV",
     launchModel: "Heavy",
     anchorPartners: "Glencore, CATL, Volkswagen Group",
-    costToLaunch: 300000,
   },
   {
     id: "atomica",
@@ -180,7 +168,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "UAE Free Zone",
     launchModel: "Heavy",
     anchorPartners: "Foxconn, Shein, Uniqlo",
-    costToLaunch: 180000,
   },
   {
     id: "nerea",
@@ -194,7 +181,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd",
     launchModel: "Light",
     anchorPartners: "Corteva, H&M Conscious, Zalando",
-    costToLaunch: 35000,
   },
   {
     id: "verdant",
@@ -208,7 +194,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Namibia SpV",
     launchModel: "Heavy",
     anchorPartners: "ArcelorMittal, Salzgitter, AfDB",
-    costToLaunch: 80000,
   },
   {
     id: "joule",
@@ -222,7 +207,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Kenya Limited / Uganda BN",
     launchModel: "Heavy",
     anchorPartners: "BYD, Ampersand, AfDB",
-    costToLaunch: 150000,
   },
   {
     id: "transit",
@@ -236,7 +220,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Light",
     anchorPartners: "Safaricom M-Pesa, Uber, Google Maps",
-    costToLaunch: 20000,
   },
   {
     id: "vectis",
@@ -250,7 +233,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Light",
     anchorPartners: "Maersk, DP World, Kenya Ports Authority",
-    costToLaunch: 35000,
   },
   {
     id: "aether",
@@ -264,7 +246,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius AOC / Rwanda Operating",
     launchModel: "Heavy",
     anchorPartners: "Ethiopian Airlines, IATA, AfDB",
-    costToLaunch: 500000,
   },
   {
     id: "tecton",
@@ -278,7 +259,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Light",
     anchorPartners: "World Bank, Google Earth Engine, Safaricom",
-    costToLaunch: 30000,
   },
   {
     id: "convoy",
@@ -292,7 +272,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo",
     launchModel: "Light",
     anchorPartners: "AfCFTA Secretariat, DHL Africa, Mpesa",
-    costToLaunch: 18000,
   },
   {
     id: "noma",
@@ -306,7 +285,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo",
     launchModel: "Light",
     anchorPartners: "Hugging Face, AfDB, Mozilla Foundation",
-    costToLaunch: 40000,
   },
   {
     id: "clarity",
@@ -320,7 +298,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Rwanda OpCo",
     launchModel: "Light",
     anchorPartners: "Esri, World Bank, Google Earth Engine",
-    costToLaunch: 25000,
   },
   {
     id: "aegis",
@@ -334,7 +311,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "UAE Free Zone / Delaware",
     launchModel: "Light",
     anchorPartners: "Palantir, Microsoft, IBM",
-    costToLaunch: 60000,
   },
   {
     id: "vantage",
@@ -348,7 +324,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / UK LLP",
     launchModel: "Light",
     anchorPartners: "Two Sigma, Renaissance, Bloomberg",
-    costToLaunch: 50000,
   },
   {
     id: "mancala",
@@ -362,7 +337,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo",
     launchModel: "Light",
     anchorPartners: "DeepMind, Hugging Face, African Union AI Lab",
-    costToLaunch: 15000,
   },
   {
     id: "vulcan",
@@ -376,7 +350,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Zimbabwe SpV",
     launchModel: "Heavy",
     anchorPartners: "Angola MINCONS, UN-Habitat, IFC",
-    costToLaunch: 250000,
   },
   {
     id: "hearth",
@@ -390,7 +363,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / UAE Free Zone",
     launchModel: "Heavy",
     anchorPartners: "Shelter Afrique, CDC Group, Actis",
-    costToLaunch: 150000,
   },
   {
     id: "kinship",
@@ -404,7 +376,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Kenya SPV",
     launchModel: "Light",
     anchorPartners: "Actis, Centum, Habitat for Humanity",
-    costToLaunch: 80000,
   },
   {
     id: "civitas",
@@ -418,7 +389,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / UAE Free Zone",
     launchModel: "Heavy",
     anchorPartners: "World Bank IFC, Emaar, Aldar Properties",
-    costToLaunch: 100000,
   },
   {
     id: "architekton",
@@ -432,7 +402,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / UAE Free Zone",
     launchModel: "Heavy",
     anchorPartners: "Arup, AECOM, LafargeHolcim",
-    costToLaunch: 120000,
   },
   {
     id: "refract",
@@ -446,7 +415,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Rwanda OpCo",
     launchModel: "Heavy",
     anchorPartners: "Gates Foundation, Roche Diagnostics, UNITAID",
-    costToLaunch: 150000,
   },
   {
     id: "allele",
@@ -460,7 +428,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Rwanda Biobank",
     launchModel: "Light",
     anchorPartners: "Moderna, Gates Foundation, Wellcome Trust",
-    costToLaunch: 60000,
   },
   {
     id: "apopto",
@@ -474,7 +441,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research Entity",
     launchModel: "Heavy",
     anchorPartners: "Roche, Pfizer, Gates MRI, Wellcome Trust",
-    costToLaunch: 200000,
   },
   {
     id: "phylaxis",
@@ -488,7 +454,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Local Research MOU",
     launchModel: "Heavy",
     anchorPartners: "GARDP, Wellcome Trust, Pfizer",
-    costToLaunch: 100000,
   },
   {
     id: "somni",
@@ -502,7 +467,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Kenya Ltd",
     launchModel: "Heavy",
     anchorPartners: "ICRC, MSF, \u00d6ssur",
-    costToLaunch: 80000,
   },
   {
     id: "lucina",
@@ -516,7 +480,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Uganda OpCo",
     launchModel: "Light",
     anchorPartners: "WHO, UNFPA, mHealth Alliance",
-    costToLaunch: 20000,
   },
   {
     id: "textor",
@@ -530,7 +493,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research",
     launchModel: "Heavy",
     anchorPartners: "Gates Foundation, UNITAID, Becton Dickinson",
-    costToLaunch: 120000,
   },
   {
     id: "anvil",
@@ -544,7 +506,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Nigeria Ltd",
     launchModel: "Heavy",
     anchorPartners: "GE Healthcare, Philips, PATH, WHO",
-    costToLaunch: 180000,
   },
   {
     id: "denari",
@@ -558,7 +519,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius EMI License / Kenya Co",
     launchModel: "Light",
     anchorPartners: "AfDB, Stripe, Visa, M-Pesa",
-    costToLaunch: 35000,
   },
   {
     id: "eventide",
@@ -572,7 +532,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya EMI",
     launchModel: "Light",
     anchorPartners: "IFC, Old Mutual, Bolt, Vanguard",
-    costToLaunch: 30000,
   },
   {
     id: "stake",
@@ -586,7 +545,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius Capital Markets License",
     launchModel: "Light",
     anchorPartners: "AngelList, Agora Exchange, SEC Nigeria",
-    costToLaunch: 40000,
   },
   {
     id: "bourse",
@@ -600,7 +558,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius Stock Exchange / SEC Nigeria sandbox",
     launchModel: "Light",
     anchorPartners: "NSE Nigeria, Mauritius FSC, Helios Investment",
-    costToLaunch: 50000,
   },
   {
     id: "covenant",
@@ -614,7 +571,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya CMA sandbox",
     launchModel: "Light",
     anchorPartners: "Seedrs, AngelList, Jumo",
-    costToLaunch: 15000,
   },
   {
     id: "oracular",
@@ -628,7 +584,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius Global Business License",
     launchModel: "Light",
     anchorPartners: "Tiger Global, Endeavor, Y Combinator",
-    costToLaunch: 25000,
   },
   {
     id: "sankofa",
@@ -642,7 +597,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Kenya Ltd",
     launchModel: "Light",
     anchorPartners: "UNESCO, Andela, Khan Academy",
-    costToLaunch: 25000,
   },
   {
     id: "waymark",
@@ -656,7 +610,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd / Kenya Ltd",
     launchModel: "Light",
     anchorPartners: "Google.org, MasterCard Foundation, Andela",
-    costToLaunch: 20000,
   },
   {
     id: "noema",
@@ -670,7 +623,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo",
     launchModel: "Light",
     anchorPartners: "Coursera, 2U, Multichoice DStv",
-    costToLaunch: 10000,
   },
   {
     id: "cipher",
@@ -684,7 +636,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC",
     launchModel: "Light",
     anchorPartners: "Google Developer Groups, Andela, Flutterwave",
-    costToLaunch: 12000,
   },
   {
     id: "kinexis",
@@ -698,7 +649,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd",
     launchModel: "Heavy",
     anchorPartners: "LEGO Education, African Union EdTech, USAID",
-    costToLaunch: 60000,
   },
   {
     id: "mandelbrot",
@@ -712,7 +662,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / University Partnerships",
     launchModel: "Light",
     anchorPartners: "Gates Foundation, Wellcome Trust, NIH Fogarty",
-    costToLaunch: 15000,
   },
   {
     id: "lyceum",
@@ -726,7 +675,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius Company",
     launchModel: "Light",
     anchorPartners: "Mastercard Foundation, Y Combinator, Minerva",
-    costToLaunch: 15000,
   },
   {
     id: "azimuth",
@@ -740,7 +688,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Kenya Government MOU",
     launchModel: "Heavy",
     anchorPartners: "SpaceX rideshare, JAXA, UAE Space Agency",
-    costToLaunch: 120000,
   },
   {
     id: "nyx",
@@ -754,7 +701,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / UAE Free Zone",
     launchModel: "Light",
     anchorPartners: "Planet Labs, Maxar, NatureFinance",
-    costToLaunch: 35000,
   },
   {
     id: "hecate",
@@ -768,7 +714,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC",
     launchModel: "Heavy",
     anchorPartners: "NASA, ESA, Blue Origin, Skycorp",
-    costToLaunch: 80000,
   },
   {
     id: "pulsar",
@@ -782,7 +727,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Kenya Research MOU",
     launchModel: "Light",
     anchorPartners: "NASA JPL, ESA, Liquid Telecom",
-    costToLaunch: 20000,
   },
   {
     id: "scriptorium",
@@ -796,7 +740,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / SA Research Entity",
     launchModel: "Heavy",
     anchorPartners: "Moderna, CEPI, AfDB, Gates Foundation",
-    costToLaunch: 200000,
   },
   {
     id: "icaria",
@@ -810,7 +753,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research",
     launchModel: "Heavy",
     anchorPartners: "AstraZeneca, Novartis, NIA, Wellcome Trust",
-    costToLaunch: 150000,
   },
   {
     id: "proteus",
@@ -824,7 +766,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research",
     launchModel: "Heavy",
     anchorPartners: "Merck, Roche, BARDA, NRF",
-    costToLaunch: 180000,
   },
   {
     id: "lingua",
@@ -838,7 +779,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Rwanda OpCo",
     launchModel: "Light",
     anchorPartners: "UN DESA, WHO, Google Translate, Microsoft",
-    costToLaunch: 30000,
   },
   {
     id: "kino",
@@ -852,7 +792,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Nigeria Ltd",
     launchModel: "Light",
     anchorPartners: "Canal+, Netflix Africa, Audiomack",
-    costToLaunch: 15000,
   },
   {
     id: "parable",
@@ -866,7 +805,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC",
     launchModel: "Light",
     anchorPartners: "StoryCorps, Ancestry, Audible",
-    costToLaunch: 10000,
   },
   {
     id: "weave",
@@ -880,7 +818,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya Co",
     launchModel: "Light",
     anchorPartners: "Helium Network, Meta Connectivity, GSMA",
-    costToLaunch: 25000,
   },
   {
     id: "sylvan",
@@ -894,7 +831,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius Company",
     launchModel: "Light",
     anchorPartners: "Safaricom, Jumia, Planet",
-    costToLaunch: 12000,
   },
   {
     id: "revive",
@@ -908,7 +844,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd / Mauritius",
     launchModel: "Light",
     anchorPartners: "Jumia Fashion, H&M, Rent the Runway",
-    costToLaunch: 18000,
   },
   {
     id: "quest",
@@ -922,7 +857,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo",
     launchModel: "Light",
     anchorPartners: "Airbnb Experiences, Context Travel, TripAdvisor",
-    costToLaunch: 12000,
   },
   {
     id: "convoke",
@@ -936,7 +870,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Kenya Ltd",
     launchModel: "Light",
     anchorPartners: "Eventbrite, Meetup, Meta",
-    costToLaunch: 8000,
   },
   {
     id: "novum",
@@ -950,7 +883,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / UAE Free Zone",
     launchModel: "Heavy",
     anchorPartners: "World Bank, Emaar, ADB, Pr\u00f3spera",
-    costToLaunch: 100000,
   },
   {
     id: "portico",
@@ -964,7 +896,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius Category 1 Global Business",
     launchModel: "Light",
     anchorPartners: "Standard Bank, Helios Investment, AfDB",
-    costToLaunch: 40000,
   },
   {
     id: "copernicus",
@@ -978,7 +909,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Mauritius DAO foundation",
     launchModel: "Light",
     anchorPartners: "Wellcome Trust, Frontiers, Protocol Labs",
-    costToLaunch: 20000,
   },
   {
     id: "automata",
@@ -992,7 +922,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "UAE Free Zone / Mauritius HoldCo",
     launchModel: "Heavy",
     anchorPartners: "Softbank Robotics, PhilHuman, Gates Foundation",
-    costToLaunch: 300000,
   },
   {
     id: "bristlecone",
@@ -1006,7 +935,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Kenya CarbonDAO",
     launchModel: "Light",
     anchorPartners: "Verra, Gold Standard, Microsoft Carbon",
-    costToLaunch: 20000,
   },
   {
     id: "kraken",
@@ -1020,7 +948,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Light",
     anchorPartners: "EU DFID, FAO, Planet Labs",
-    costToLaunch: 25000,
   },
   {
     id: "mantle",
@@ -1034,7 +961,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Tanzania OpCo",
     launchModel: "Light",
     anchorPartners: "Corteva, Yara, AGRA",
-    costToLaunch: 30000,
   },
   {
     id: "falcon",
@@ -1048,7 +974,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Light",
     anchorPartners: "SUEZ, Veolia, USAID WASH",
-    costToLaunch: 20000,
   },
   {
     id: "solum",
@@ -1062,7 +987,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd / South Africa Pty",
     launchModel: "Light",
     anchorPartners: "Unilever Africa, Tiger Brands, AFEX",
-    costToLaunch: 40000,
   },
   {
     id: "tabula",
@@ -1076,7 +1000,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius EMI / Kenya Ltd",
     launchModel: "Light",
     anchorPartners: "Safaricom M-Pesa, Wave, MTN MoMo",
-    costToLaunch: 25000,
   },
   {
     id: "asclepius",
@@ -1090,7 +1013,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Uganda OpCo",
     launchModel: "Light",
     anchorPartners: "WHO, Last Mile Health, Dimagi",
-    costToLaunch: 20000,
   },
   {
     id: "prime",
@@ -1104,7 +1026,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Namibia Green H2 Co",
     launchModel: "Heavy",
     anchorPartners: "Siemens Energy, DENA, EU Global Gateway",
-    costToLaunch: 60000,
   },
   {
     id: "silo",
@@ -1118,7 +1039,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya Ltd",
     launchModel: "Light",
     anchorPartners: "Acre Africa, OKO, IFC, Swiss Re",
-    costToLaunch: 30000,
   },
   {
     id: "lux",
@@ -1132,7 +1052,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Nigeria Ltd",
     launchModel: "Light",
     anchorPartners: "SpaceX Starlink, Airtel Africa, GSMA",
-    costToLaunch: 40000,
   },
   {
     id: "cadence",
@@ -1146,7 +1065,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Tanzania OpCo",
     launchModel: "Light",
     anchorPartners: "BBOXX, M-KOPA, Shell Foundation",
-    costToLaunch: 45000,
   },
   {
     id: "veracity",
@@ -1160,7 +1078,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius Digital Identity Sandbox",
     launchModel: "Light",
     anchorPartners: "ID4D World Bank, Mosip, Mastercard Foundation",
-    costToLaunch: 35000,
   },
   {
     id: "boreal",
@@ -1174,7 +1091,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Ethiopia OpCo",
     launchModel: "Light",
     anchorPartners: "DHL, Unilever, UNICEF Supply Division",
-    costToLaunch: 50000,
   },
   {
     id: "gild",
@@ -1188,7 +1104,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd / Kenya Ltd",
     launchModel: "Light",
     anchorPartners: "Veolia, SUEZ, Unilever Africa",
-    costToLaunch: 12000,
   },
   {
     id: "vocatio",
@@ -1202,7 +1117,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya Ltd",
     launchModel: "Light",
     anchorPartners: "MasterCard Foundation, Andela, Lendable",
-    costToLaunch: 15000,
   },
   {
     id: "acta",
@@ -1216,7 +1130,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Ghana PropCo",
     launchModel: "Light",
     anchorPartners: "Shelter Afrique, WorldBank IFC, Centum",
-    costToLaunch: 30000,
   },
   {
     id: "custos",
@@ -1230,7 +1143,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / South Africa Pty",
     launchModel: "Light",
     anchorPartners: "Old Mutual, GEPF, Philips Health",
-    costToLaunch: 20000,
   },
   {
     id: "prism",
@@ -1244,7 +1156,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya Ltd",
     launchModel: "Light",
     anchorPartners: "Planet Labs, AGRA, Yara, Corteva",
-    costToLaunch: 20000,
   },
   {
     id: "lantern",
@@ -1258,7 +1169,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Nigeria Ltd",
     launchModel: "Light",
     anchorPartners: "WHO IMPACT, Sproxil, GS1, Roche Africa",
-    costToLaunch: 25000,
   },
   {
     id: "moneta",
@@ -1272,7 +1182,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius EMI License",
     launchModel: "Light",
     anchorPartners: "Wise, Flutterwave, JUMO, AfDB",
-    costToLaunch: 55000,
   },
   {
     id: "eon",
@@ -1286,7 +1195,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Rwanda OpCo",
     launchModel: "Heavy",
     anchorPartners: "African Union Commission, CERN, Qatar Foundation",
-    costToLaunch: 250000,
   },
   {
     id: "nexus",
@@ -1300,7 +1208,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Rwanda Government MOU",
     launchModel: "Heavy",
     anchorPartners: "African Union, ESA, ITU",
-    costToLaunch: 300000,
   },
   {
     id: "qubit",
@@ -1314,7 +1221,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / UK LLP",
     launchModel: "Light",
     anchorPartners: "IBM Quantum, Google Quantum AI, Strangeworks",
-    costToLaunch: 35000,
   },
   {
     id: "merlin",
@@ -1328,7 +1234,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research",
     launchModel: "Heavy",
     anchorPartners: "Gates Foundation, Element Six, NIH",
-    costToLaunch: 180000,
   },
   {
     id: "legion",
@@ -1342,7 +1247,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "Corteva, FAO, IITA",
-    costToLaunch: 120000,
   },
   {
     id: "erebus",
@@ -1356,7 +1260,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / DRC SpV",
     launchModel: "Heavy",
     anchorPartners: "Glencore, Anglo American, Barrick Gold",
-    costToLaunch: 200000,
   },
   {
     id: "nereis",
@@ -1370,7 +1273,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "UNEP, WWF, Kenya Marine Authority",
-    costToLaunch: 150000,
   },
   {
     id: "daedalus",
@@ -1384,7 +1286,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / UAE Free Zone",
     launchModel: "Heavy",
     anchorPartners: "UN-Habitat, LafargeHolcim, Arup",
-    costToLaunch: 250000,
   },
   {
     id: "notus",
@@ -1398,7 +1299,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Rwanda Ltd / Mauritius OpCo",
     launchModel: "Light",
     anchorPartners: "WHO, Gates Foundation, Rwanda MoH",
-    costToLaunch: 60000,
   },
   {
     id: "nectar",
@@ -1412,7 +1312,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research",
     launchModel: "Heavy",
     anchorPartners: "Buck Institute, Altos Labs, NIH",
-    costToLaunch: 300000,
   },
   {
     id: "pulse",
@@ -1426,7 +1325,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Switzerland Research",
     launchModel: "Heavy",
     anchorPartners: "Wyss Center, NIH, Gates Foundation",
-    costToLaunch: 200000,
   },
   {
     id: "chronicle",
@@ -1440,7 +1338,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Nigeria OpCo",
     launchModel: "Light",
     anchorPartners: "WHO, African Academy of Sciences, NHS",
-    costToLaunch: 40000,
   },
   {
     id: "krios",
@@ -1454,7 +1351,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Rwanda OpCo",
     launchModel: "Heavy",
     anchorPartners: "WHO, HelpAge International, AARP",
-    costToLaunch: 150000,
   },
   {
     id: "thalassa",
@@ -1468,7 +1364,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Seychelles OpCo",
     launchModel: "Heavy",
     anchorPartners: "FAO, World Bank, Seychelles Coast Guard",
-    costToLaunch: 200000,
   },
   {
     id: "coralline",
@@ -1482,7 +1377,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Tanzania OpCo",
     launchModel: "Light",
     anchorPartners: "UNEP, WWF, Nature Conservancy",
-    costToLaunch: 45000,
   },
   {
     id: "tidal",
@@ -1496,7 +1390,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius EMI / Mozambique Concession",
     launchModel: "Heavy",
     anchorPartners: "AfDB, SIDS DOCK, IRENA",
-    costToLaunch: 180000,
   },
   {
     id: "pelagios",
@@ -1510,7 +1403,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya Bioprospecting MOU",
     launchModel: "Heavy",
     anchorPartners: "WIPO, UNDP, African Academy of Sciences",
-    costToLaunch: 100000,
   },
   {
     id: "outrider",
@@ -1524,7 +1416,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Local Government MOU / Mauritius SpV",
     launchModel: "Heavy",
     anchorPartners: "African Union, NATO DIANA, UN DPPA",
-    costToLaunch: 200000,
   },
   {
     id: "testudo",
@@ -1538,7 +1429,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Government MOU / Mauritius SpV",
     launchModel: "Heavy",
     anchorPartners: "African Union, ICAO, national militaries",
-    costToLaunch: 150000,
   },
   {
     id: "redoubt",
@@ -1552,7 +1442,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Local Government Partnership",
     launchModel: "Heavy",
     anchorPartners: "African Union, Smart Africa, national governments",
-    costToLaunch: 500000,
   },
   {
     id: "cortex",
@@ -1566,7 +1455,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research",
     launchModel: "Heavy",
     anchorPartners: "Samsung Advanced Institute, CSIR, CHIPS Act",
-    costToLaunch: 250000,
   },
   {
     id: "lumen",
@@ -1580,7 +1468,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Netherlands BV",
     launchModel: "Heavy",
     anchorPartners: "TSMC, ASML, IMEC",
-    costToLaunch: 300000,
   },
   {
     id: "helix",
@@ -1594,7 +1481,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Switzerland Research",
     launchModel: "Heavy",
     anchorPartners: "ETH Zurich, Broad Institute, CERN",
-    costToLaunch: 150000,
   },
   {
     id: "aurora",
@@ -1608,7 +1494,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "IEA, IFC, First Solar",
-    costToLaunch: 120000,
   },
   {
     id: "kindle",
@@ -1622,7 +1507,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Kenya Geothermal License",
     launchModel: "Heavy",
     anchorPartners: "KenGen, Reykjavik Geothermal, IRENA",
-    costToLaunch: 200000,
   },
   {
     id: "athenor",
@@ -1636,7 +1520,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Rwanda OpCo",
     launchModel: "Heavy",
     anchorPartners: "AfDB, SEforALL, Kenya Power",
-    costToLaunch: 80000,
   },
   {
     id: "arc",
@@ -1650,7 +1533,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Government MOU",
     launchModel: "Heavy",
     anchorPartners: "IAEA, African Union, IFC",
-    costToLaunch: 250000,
   },
   {
     id: "ingress",
@@ -1664,7 +1546,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Saudi Arabia Partnership",
     launchModel: "Heavy",
     anchorPartners: "KAUST, Water.org, AfDB",
-    costToLaunch: 150000,
   },
   {
     id: "maelstrom",
@@ -1678,7 +1559,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "World Bank, Water.org, city utilities",
-    costToLaunch: 100000,
   },
   {
     id: "alchemy",
@@ -1692,7 +1572,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "GFI, IFC, Nestl\u00e9",
-    costToLaunch: 180000,
   },
   {
     id: "tellus",
@@ -1706,7 +1585,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Rwanda OpCo",
     launchModel: "Heavy",
     anchorPartners: "FAO, Planet Labs, ITC",
-    costToLaunch: 200000,
   },
   {
     id: "hopper",
@@ -1720,7 +1598,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd / Mauritius OpCo",
     launchModel: "Light",
     anchorPartners: "WFP, AFEX, CGC",
-    costToLaunch: 30000,
   },
   {
     id: "morphic",
@@ -1734,7 +1611,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Light",
     anchorPartners: "Verra, Indigo Ag, FAO",
-    costToLaunch: 25000,
   },
   {
     id: "memoria",
@@ -1748,7 +1624,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research",
     launchModel: "Heavy",
     anchorPartners: "DARPA, Fraunhofer, Samsung",
-    costToLaunch: 200000,
   },
   {
     id: "mosaic",
@@ -1762,7 +1637,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / UAE Free Zone",
     launchModel: "Heavy",
     anchorPartners: "Boeing, UAE Carbon, Fraunhofer",
-    costToLaunch: 250000,
   },
   {
     id: "impetus",
@@ -1776,7 +1650,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / Government MOU",
     launchModel: "Heavy",
     anchorPartners: "AfDB, AfCFTA Secretariat, National Railways",
-    costToLaunch: 500000,
   },
   {
     id: "ballistic",
@@ -1790,7 +1663,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya Spaceport License",
     launchModel: "Heavy",
     anchorPartners: "African Space Agency, ICAO, DHL",
-    costToLaunch: 500000,
   },
   {
     id: "prophecy",
@@ -1804,7 +1676,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Rwanda OpCo",
     launchModel: "Light",
     anchorPartners: "Africa CDC, African Union, WHO AFRO",
-    costToLaunch: 50000,
   },
   {
     id: "threshold",
@@ -1818,7 +1689,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Light",
     anchorPartners: "Google Africa, Microsoft ADC, Safaricom",
-    costToLaunch: 30000,
   },
   {
     id: "donjon",
@@ -1832,7 +1702,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Central Bank Partnership / Mauritius",
     launchModel: "Heavy",
     anchorPartners: "African Union, BIS, Afreximbank",
-    costToLaunch: 100000,
   },
   {
     id: "amass",
@@ -1846,7 +1715,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius FSC / Nigeria SEC Sandbox",
     launchModel: "Light",
     anchorPartners: "Afreximbank, NSE, FSCA",
-    costToLaunch: 40000,
   },
   {
     id: "paideia",
@@ -1860,7 +1728,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya Ltd",
     launchModel: "Light",
     anchorPartners: "UNESCO, MasterCard Foundation, UNICEF",
-    costToLaunch: 25000,
   },
   {
     id: "ferrum",
@@ -1874,7 +1741,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd / Mauritius OpCo",
     launchModel: "Light",
     anchorPartners: "ILO, MasterCard Foundation, Andela",
-    costToLaunch: 15000,
   },
   {
     id: "astral",
@@ -1888,7 +1754,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / NASA Space Act Agreement",
     launchModel: "Heavy",
     anchorPartners: "NASA, ESA, JAXA",
-    costToLaunch: 300000,
   },
   {
     id: "forge",
@@ -1902,7 +1767,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / NASA Space Act",
     launchModel: "Heavy",
     anchorPartners: "NASA, ESA, Luxembourg Space Agency",
-    costToLaunch: 200000,
   },
   {
     id: "perigee",
@@ -1916,7 +1780,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / African Union ITU Filing",
     launchModel: "Heavy",
     anchorPartners: "African Union, ITU, SpaceX rideshare",
-    costToLaunch: 200000,
   },
   {
     id: "carbide",
@@ -1930,7 +1793,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Namibia Concession",
     launchModel: "Heavy",
     anchorPartners: "IEA, Mission Innovation, Deep Sky",
-    costToLaunch: 200000,
   },
   {
     id: "bower",
@@ -1944,7 +1806,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / DRC Forest Concession",
     launchModel: "Light",
     anchorPartners: "Rainforest Alliance, Verra, DRC MoE",
-    costToLaunch: 35000,
   },
   {
     id: "rampart",
@@ -1958,7 +1819,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / International Treaty Framework",
     launchModel: "Heavy",
     anchorPartners: "UNEP, UNESCO, Swiss Federal Institute",
-    costToLaunch: 150000,
   },
   {
     id: "hunter",
@@ -1972,7 +1832,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Georgia Research",
     launchModel: "Heavy",
     anchorPartners: "GARDP, Eliava Institute, BARDA",
-    costToLaunch: 120000,
   },
   {
     id: "crucible",
@@ -1986,7 +1845,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "South Africa Research Entity / Mauritius",
     launchModel: "Heavy",
     anchorPartners: "CSIR, SAHPRA, NIH",
-    costToLaunch: 300000,
   },
   {
     id: "echo",
@@ -2000,7 +1858,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Africa CDC Partnership",
     launchModel: "Light",
     anchorPartners: "Africa CDC, WHO, Gates Foundation",
-    costToLaunch: 40000,
   },
   {
     id: "apiary",
@@ -2014,7 +1871,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Light",
     anchorPartners: "UN-Habitat, Slum Dwellers International, Safaricom",
-    costToLaunch: 25000,
   },
   {
     id: "mycelia",
@@ -2028,7 +1884,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Rwanda OpCo",
     launchModel: "Heavy",
     anchorPartners: "UN-Habitat, Arup, IFC",
-    costToLaunch: 80000,
   },
   {
     id: "forum",
@@ -2042,7 +1897,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Government Partnership",
     launchModel: "Light",
     anchorPartners: "Open Government Partnership, UNDP, Smart Africa",
-    costToLaunch: 20000,
   },
   {
     id: "nomad",
@@ -2056,7 +1910,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "African Union / Mauritius",
     launchModel: "Light",
     anchorPartners: "African Union, ICAO, Smart Africa",
-    costToLaunch: 40000,
   },
   {
     id: "vox",
@@ -2070,7 +1923,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Nigeria Ltd",
     launchModel: "Light",
     anchorPartners: "Mozilla, UNESCO, African Academy of Languages",
-    costToLaunch: 30000,
   },
   {
     id: "tessera",
@@ -2084,7 +1936,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Local Partnership",
     launchModel: "Light",
     anchorPartners: "Access Now, Internet Society, Mozilla",
-    costToLaunch: 20000,
   },
   {
     id: "saffron",
@@ -2098,7 +1949,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Nigeria Ltd / Mauritius OpCo",
     launchModel: "Light",
     anchorPartners: "AfDB, African Fashion Fund, DHL",
-    costToLaunch: 35000,
   },
   {
     id: "gusto",
@@ -2112,7 +1962,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Nigeria Ltd",
     launchModel: "Light",
     anchorPartners: "Afreximbank, DHL, FAO",
-    costToLaunch: 25000,
   },
   {
     id: "verdana",
@@ -2126,7 +1975,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Nigeria Ltd",
     launchModel: "Heavy",
     anchorPartners: "IFC, GIZ, BASF",
-    costToLaunch: 120000,
   },
   {
     id: "obsidian",
@@ -2140,7 +1988,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "LafargeHolcim, Arup, IFC",
-    costToLaunch: 100000,
   },
   {
     id: "vector",
@@ -2154,7 +2001,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Target Malaria Partnership / WHO Framework",
     launchModel: "Heavy",
     anchorPartners: "WHO, Target Malaria, Gates Foundation",
-    costToLaunch: 150000,
   },
   {
     id: "organon",
@@ -2168,7 +2014,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa SAHPRA",
     launchModel: "Heavy",
     anchorPartners: "CAR-T Africa, SAHPRA, NIH",
-    costToLaunch: 250000,
   },
   {
     id: "palisade",
@@ -2182,7 +2027,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / African Union Partnership",
     launchModel: "Light",
     anchorPartners: "African Union, Partnership on AI, DeepMind",
-    costToLaunch: 30000,
   },
   {
     id: "aureus",
@@ -2196,7 +2040,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius HoldCo / DRC Mining License",
     launchModel: "Heavy",
     anchorPartners: "AfDB, African Minerals Development Centre, CATL",
-    costToLaunch: 300000,
   },
   {
     id: "orbit",
@@ -2210,7 +2053,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / South Africa EPA License",
     launchModel: "Heavy",
     anchorPartners: "AfDB, UNEP, battery OEMs",
-    costToLaunch: 150000,
   },
   {
     id: "arachne",
@@ -2224,7 +2066,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research",
     launchModel: "Heavy",
     anchorPartners: "DARPA, Boeing, CSIR",
-    costToLaunch: 150000,
   },
   {
     id: "radicle",
@@ -2238,7 +2079,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "Gates Foundation, CGIAR, IITA",
-    costToLaunch: 100000,
   },
   {
     id: "elixir",
@@ -2252,7 +2092,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Ghana EPA License",
     launchModel: "Heavy",
     anchorPartners: "UNEP, GIZ, Basel Convention",
-    costToLaunch: 100000,
   },
   {
     id: "ouroboros",
@@ -2266,7 +2105,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "UNEP, IFC, Nestl\u00e9",
-    costToLaunch: 80000,
   },
   {
     id: "viridis",
@@ -2280,7 +2118,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Namibia Concession",
     launchModel: "Heavy",
     anchorPartners: "IATA, Boeing, Airbus",
-    costToLaunch: 200000,
   },
   {
     id: "artesian",
@@ -2294,7 +2131,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Namibia Concession",
     launchModel: "Heavy",
     anchorPartners: "HyDeal, IRENA, AfDB",
-    costToLaunch: 150000,
   },
   {
     id: "verity",
@@ -2308,7 +2144,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Nigeria Ltd",
     launchModel: "Light",
     anchorPartners: "UNESCO, Google News Initiative, BBC",
-    costToLaunch: 20000,
   },
   {
     id: "haven",
@@ -2322,7 +2157,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya IRA License",
     launchModel: "Light",
     anchorPartners: "World Bank, IFC, INSURESILIENCE",
-    costToLaunch: 25000,
   },
   {
     id: "revenant",
@@ -2336,7 +2170,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / ESA Partnership",
     launchModel: "Heavy",
     anchorPartners: "ESA, UNOOSA, OneWeb",
-    costToLaunch: 200000,
   },
   {
     id: "carrack",
@@ -2350,7 +2183,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya Ltd",
     launchModel: "Heavy",
     anchorPartners: "UNESCO, LEGO Foundation, USAID",
-    costToLaunch: 80000,
   },
   {
     id: "sanctum",
@@ -2364,7 +2196,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / WHO Partnership",
     launchModel: "Light",
     anchorPartners: "WHO, END Fund, Gates Foundation",
-    costToLaunch: 15000,
   },
   {
     id: "codex",
@@ -2378,7 +2209,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Government Partnership / Mauritius",
     launchModel: "Light",
     anchorPartners: "World Bank, Landesa, national land ministries",
-    costToLaunch: 30000,
   },
   {
     id: "delta",
@@ -2392,7 +2222,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Senegal MoU",
     launchModel: "Light",
     anchorPartners: "Verra, Blue Carbon Coalition, IUCN",
-    costToLaunch: 30000,
   },
   {
     id: "paradox",
@@ -2406,7 +2235,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / South Africa Research",
     launchModel: "Heavy",
     anchorPartners: "MMV, Novartis, Quantum Motion",
-    costToLaunch: 150000,
   },
   {
     id: "dextera",
@@ -2420,7 +2248,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "Coffee Board of Kenya, ITC, IFC",
-    costToLaunch: 100000,
   },
   {
     id: "provenance",
@@ -2434,7 +2261,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / National Health Authority",
     launchModel: "Heavy",
     anchorPartners: "WHO, African Academy of Sciences, national MoH",
-    costToLaunch: 80000,
   },
   {
     id: "maris",
@@ -2448,7 +2274,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Namibia Marine License",
     launchModel: "Heavy",
     anchorPartners: "IRENA, WWF, Ocean Rainforest",
-    costToLaunch: 120000,
   },
   {
     id: "garrison",
@@ -2462,7 +2287,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Government Partnership / Mauritius",
     launchModel: "Light",
     anchorPartners: "ITU, African Union, Smart Africa",
-    costToLaunch: 40000,
   },
   {
     id: "synapse",
@@ -2476,7 +2300,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Rwanda SEZ",
     launchModel: "Heavy",
     anchorPartners: "GF, TSMC, CHIPS Act Africa",
-    costToLaunch: 200000,
   },
   {
     id: "apex",
@@ -2490,7 +2313,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "FAO, ICIPE, IFC",
-    costToLaunch: 80000,
   },
   {
     id: "dune",
@@ -2504,7 +2326,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Namibia Building Standards",
     launchModel: "Heavy",
     anchorPartners: "Arup, AfDB, national housing agencies",
-    costToLaunch: 80000,
   },
   {
     id: "torrent",
@@ -2518,7 +2339,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / DRC Transport License",
     launchModel: "Heavy",
     anchorPartners: "AfDB, AfCFTA, national transport ministries",
-    costToLaunch: 200000,
   },
   {
     id: "relic",
@@ -2532,7 +2352,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / UNESCO Partnership",
     launchModel: "Light",
     anchorPartners: "UNESCO, WIPO, African Academy of Languages",
-    costToLaunch: 15000,
   },
   {
     id: "kelvin",
@@ -2546,7 +2365,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "Cool Up, GIZ, FAO",
-    costToLaunch: 60000,
   },
   {
     id: "zephyr",
@@ -2560,7 +2378,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Namibia OpCo",
     launchModel: "Light",
     anchorPartners: "UNICEF, GIZ, Water.org",
-    costToLaunch: 20000,
   },
   {
     id: "fathom",
@@ -2574,7 +2391,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / ISA Exploration License",
     launchModel: "Heavy",
     anchorPartners: "ISA, African Union, IMO",
-    costToLaunch: 300000,
   },
   {
     id: "arbiter",
@@ -2588,7 +2404,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / African Union Partnership",
     launchModel: "Light",
     anchorPartners: "African Union, IEEE, NIST",
-    costToLaunch: 20000,
   },
   {
     id: "epoch",
@@ -2602,7 +2417,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / South Africa Mining License",
     launchModel: "Heavy",
     anchorPartners: "Eskom, AfDB, mining companies",
-    costToLaunch: 120000,
   },
   {
     id: "traverse",
@@ -2616,7 +2430,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius FSC / AfCFTA Partnership",
     launchModel: "Light",
     anchorPartners: "Afreximbank, AfCFTA Secretariat, BADEA",
-    costToLaunch: 35000,
   },
   {
     id: "vitrum",
@@ -2630,7 +2443,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / UAE Free Zone",
     launchModel: "Heavy",
     anchorPartners: "Masdar, IFC, Saint-Gobain",
-    costToLaunch: 120000,
   },
   {
     id: "buckler",
@@ -2644,7 +2456,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / South Africa SAHPRA",
     launchModel: "Light",
     anchorPartners: "Alzheimer's Association, WHO, NIH",
-    costToLaunch: 25000,
   },
   {
     id: "solstice",
@@ -2658,7 +2469,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / AU Great Green Wall Partnership",
     launchModel: "Light",
     anchorPartners: "UNCCD, AU Great Green Wall, CILSS",
-    costToLaunch: 25000,
   },
   {
     id: "vault",
@@ -2672,7 +2482,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Nigeria SEC Sandbox",
     launchModel: "Light",
     anchorPartners: "Afreximbank, AFEX, Commodity Exchanges",
-    costToLaunch: 35000,
   },
   {
     id: "ocellus",
@@ -2686,7 +2495,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / South Africa OpCo",
     launchModel: "Heavy",
     anchorPartners: "IEA, First Solar, CSIR",
-    costToLaunch: 80000,
   },
   {
     id: "genesis",
@@ -2700,7 +2508,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / AU Partnership",
     launchModel: "Heavy",
     anchorPartners: "Crop Trust, CGIAR, African Union",
-    costToLaunch: 100000,
   },
   {
     id: "serum",
@@ -2714,7 +2521,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / WHO PQ Pathway",
     launchModel: "Heavy",
     anchorPartners: "WHO, Gavi, UNICEF",
-    costToLaunch: 150000,
   },
   {
     id: "asteria",
@@ -2728,7 +2534,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / Luxembourg Space Mining License",
     launchModel: "Heavy",
     anchorPartners: "Luxembourg Space Agency, NASA, JAXA",
-    costToLaunch: 500000,
   },
   {
     id: "trekker",
@@ -2742,7 +2547,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "Gokada, WHO, Safaricom",
-    costToLaunch: 80000,
   },
   {
     id: "sentinel",
@@ -2756,7 +2560,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / AU Data Policy Framework",
     launchModel: "Light",
     anchorPartners: "African Union, Mozilla, Omidyar Network",
-    costToLaunch: 15000,
   },
   {
     id: "veloce",
@@ -2770,7 +2573,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Delaware LLC / ITU Filing",
     launchModel: "Heavy",
     anchorPartners: "NASA, ESA, African Space Agency",
-    costToLaunch: 300000,
   },
   {
     id: "loam",
@@ -2784,7 +2586,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Kenya OpCo",
     launchModel: "Heavy",
     anchorPartners: "Stripe Climate, Verra, ICRAF",
-    costToLaunch: 60000,
   },
   {
     id: "civic",
@@ -2798,7 +2599,6 @@ export const venturesData: Venture[] = [
     jurisdiction: "Government Partnership / Mauritius",
     launchModel: "Light",
     anchorPartners: "AU Electoral Institute, UNDP, IDEA",
-    costToLaunch: 25000,
   },
   {
     id: "caliber",
@@ -2812,6 +2612,5 @@ export const venturesData: Venture[] = [
     jurisdiction: "Mauritius / Nigeria Ltd",
     launchModel: "Light",
     anchorPartners: "ILO, MasterCard Foundation, Andela",
-    costToLaunch: 12000,
   },
 ];
