@@ -155,3 +155,30 @@ Stage Summary:
 - RouteJourney (6 horizontal leg cards) added below the "View Full Route Map" button in the LocationsSection
 - "Cost to Launch" removed from all venture pages: deleted from VentureDetail.tsx sidebar display + DollarSign import + Venture interface type field + all 200 data entries in ventures.ts
 - Lint clean, browser-verified, mobile responsive, zero runtime errors
+
+---
+Task ID: hero-route-cards-bento
+Agent: main
+Task: Four fixes: (1) fix hero buttons that don't fit constrained width, (2) remove RouteJourney header keeping only cards + don't change map, (3) match VentureGallery cards to Ventures page layout, (4) remove the BentoGrid "The Platform / Four pillars, one thesis" section
+
+Work Log:
+- (1) Hero buttons fix: the paragraph and CTAs were side-by-side (flex-row md:justify-between) which overflowed the constrained max-w-[1400px] container. Changed to stacked vertical layout: paragraph on top (max-w-lg, mb-6), then CTAs below (flex-col sm:flex-row gap-3). Reduced button padding from px-7 py-4 to px-6 py-3.5, and paragraph from text-[15px] md:text-[17px] max-w-xl to text-[14px] md:text-[16px] max-w-lg. Verified both buttons fit: desktop 1280px (investRight:350, exploreRight:573), mobile 390px (both at 342, stacked)
+- (2) RouteJourney header removed: deleted the entire header block ("The Route · 6 legs · 190 hubs" label, "One corridor. Six civilizations deep." heading, and "Explore the full Route" link). Kept only the horizontal-scrolling 6 leg cards. The blueprint map and leg filters in LocationsSection were NOT touched. Verified: no "6 LEGS · 190 HUBS" / "One corridor" / "Six civilizations deep" text, but all 6 leg cards still render below "VIEW FULL ROUTE MAP" button
+- (3) VentureGallery cards matched to Ventures page layout: replaced the old light cards (border + white bg + large text + MapPin + launchModel badge) with the Ventures page compact dark card design: bg-[#111111] text-white, name+code at top, vertical badge (bg-white/10), solution excerpt (line-clamp-2), Anchor Partners label+value, and bottom-right orange square (bg-[#FF4D00]) with first letter of venture name. Grid changed from lg:grid-cols-3 to lg:grid-cols-5 gap-4 to match Ventures page. Verified: dark cards with "ANCHOR PARTNERS" text and orange first-letter squares render correctly
+- (4) BentoGrid section removed: removed <BentoGrid /> from Home() component, then deleted the entire BentoGrid function + useCountdown hook + pad2 helper + THE PLATFORM comment block. Verified: no "Four pillars, one thesis" / "The Platform" text anywhere on the page. Also removed the now-unused heroImages data array from a previous task
+- Ran `bun run lint` → clean (no errors/warnings)
+- Agent Browser verification:
+  - Hero buttons: both fit within viewport (desktop: investRight 350, exploreRight 573 at 1280px; mobile: both 342 at 390px stacked)
+  - BentoGrid: confirmed removed ("Four pillars, one thesis" NOT present)
+  - RouteJourney: header removed, 6 leg cards still present below "VIEW FULL ROUTE MAP" button
+  - VentureGallery: dark cards matching Ventures page layout (Helios, Ampere, Ember, etc. with code, vertical badge, solution, Anchor Partners, orange first-letter square)
+  - Mobile (iPhone 14): hero buttons fit, BentoGrid gone, all sections render
+  - dev.log: all recent requests return 200, no errors
+  - Zero browser errors
+
+Stage Summary:
+- Hero buttons fixed: stacked vertically with compact padding, fit within constrained width on both desktop and mobile
+- RouteJourney: header removed (only cards remain), blueprint map untouched
+- VentureGallery: cards now match Ventures page dark compact layout (5-col grid, name+code+vertical+solution+anchor partners+orange first-letter square)
+- BentoGrid ("The Platform / Four pillars, one thesis") section completely removed from page and code
+- Lint clean, browser-verified, mobile responsive, zero runtime errors

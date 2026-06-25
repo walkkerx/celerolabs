@@ -182,7 +182,6 @@ export function Home() {
     <div className="bg-white text-[#111111]">
       <Hero />
       <ThesisSection />
-      <BentoGrid />
       <NumbersSection />
       <FourPillarsEngine />
       <VentureGallery />
@@ -292,41 +291,39 @@ function Hero() {
               ))}
             </h1>
 
-            {/* Sub + CTAs */}
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
-              <motion.p
-                initial={{ opacity: 0, y: 14 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.7, delay: 0.6, ease: EASE }}
-                className="text-white/55 text-[15px] md:text-[17px] font-medium leading-[1.6] max-w-xl"
-              >
-                A network of 190 hubs across 39 countries, built into a single
-                commercialization engine — infrastructure to build, programs to
-                validate, capital to scale, and community to compound.
-              </motion.p>
+            {/* Sub + CTAs — stacked vertically to fit constrained width */}
+            <motion.p
+              initial={{ opacity: 0, y: 14 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.6, ease: EASE }}
+              className="text-white/55 text-[14px] md:text-[16px] font-medium leading-[1.6] max-w-lg mb-6"
+            >
+              A network of 190 hubs across 39 countries, built into a single
+              commercialization engine — infrastructure to build, programs to
+              validate, capital to scale, and community to compound.
+            </motion.p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.7, delay: 0.75, ease: EASE }}
-                className="flex flex-col sm:flex-row gap-3 flex-shrink-0"
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.75, ease: EASE }}
+              className="flex flex-col sm:flex-row gap-3"
+            >
+              <Link
+                to="/capital"
+                className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#FF6A28] transition-colors"
               >
-                <Link
-                  to="/capital"
-                  className="group inline-flex items-center justify-center gap-2 px-7 py-4 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#FF6A28] transition-colors"
-                >
-                  Invest from $500
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
-                  to="/ventures"
-                  className="group inline-flex items-center justify-center gap-2 px-7 py-4 border border-white/25 text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-white hover:text-[#0A0A0A] transition-colors"
-                >
-                  <Play className="w-3.5 h-3.5" />
-                  Explore ventures
-                </Link>
-              </motion.div>
-            </div>
+                Invest from $500
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/ventures"
+                className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-white/25 text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-white hover:text-[#0A0A0A] transition-colors"
+              >
+                <Play className="w-3.5 h-3.5" />
+                Explore ventures
+              </Link>
+            </motion.div>
 
             {/* Slide indicators + scroll cue */}
             <div className="mt-10 md:mt-12 flex items-center justify-between">
@@ -456,219 +453,6 @@ function ThesisSection() {
   );
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   THE PLATFORM: Countdown ticker + thesis + pillar cards
-   ══════════════════════════════════════════════════════════════════════════ */
-
-/* Live countdown hook — ticks every second toward a target date */
-function useCountdown(targetDate: Date) {
-  const [tick, setTick] = useState(0);
-  const mountedRef = useRef(false);
-
-  useEffect(() => {
-    mountedRef.current = true;
-    const id = setInterval(() => setTick((t) => t + 1), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const now = mountedRef.current ? Date.now() : targetDate.getTime();
-  const diff = Math.max(0, targetDate.getTime() - now);
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  const minutes = Math.floor((diff % 3600000) / 60000);
-  const seconds = Math.floor((diff % 60000) / 1000);
-
-  return { days, hours, minutes, seconds, elapsed: diff === 0, mounted: mountedRef.current };
-}
-
-/* Pad a number to 2 digits */
-function pad2(n: number) {
-  return String(n).padStart(2, "0");
-}
-
-function BentoGrid() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
-  // Year One launch: March 15, 2027 — first cohort departs the Gulf of Guinea
-  const launchDate = new Date("2027-03-15T00:00:00Z");
-  const { days, hours, minutes, seconds, mounted } = useCountdown(launchDate);
-
-  const pillars = [
-    {
-      title: "Infrastructure",
-      stat: "190",
-      statLabel: "Hubs · 39 Countries",
-      description: "Physical spaces, legal frameworks, and shared systems that let ventures deploy faster and compound across borders.",
-      icon: Building2,
-      link: "/infrastructure",
-    },
-    {
-      title: "Ventures",
-      stat: "40+",
-      statLabel: "Portfolio Companies",
-      description: "From energy to space — critical technology designed for the markets that need it most and the century that demands it.",
-      icon: Rocket,
-      link: "/ventures",
-    },
-    {
-      title: "Capital",
-      stat: "6",
-      statLabel: "Investment Vehicles",
-      description: "From $500 to $250K+, aligned capital designed for every stage — so breakthroughs don't stall for funding.",
-      icon: Coins,
-      link: "/capital",
-    },
-    {
-      title: "Community",
-      stat: "100",
-      statLabel: "XCitizens per Cohort",
-      description: "Operators and builders moving through the Route together — a mobile university for civilizational prototyping.",
-      icon: Users,
-      link: "/programs",
-    },
-  ];
-
-  const countdownUnits = [
-    { value: days, label: "Days" },
-    { value: hours, label: "Hrs" },
-    { value: minutes, label: "Min" },
-    { value: seconds, label: "Sec" },
-  ];
-
-  return (
-    <section ref={ref} className="py-20 md:py-32 px-6 md:px-12 lg:px-20">
-      <div className="max-w-[1400px] mx-auto bg-[#0A0A0A] rounded-sm overflow-hidden">
-        {/* ── Countdown ticker bar ── */}
-        <div className="border-b border-white/[0.06]">
-          <div className="flex items-center">
-            {/* Mission status indicator */}
-            <div className="flex items-center gap-2 px-4 md:gap-2.5 md:px-10 py-3.5 md:py-5 border-r border-white/[0.06] shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] animate-pulse" />
-              <span className="text-[9px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]/60">
-                T-0
-              </span>
-            </div>
-            {/* Countdown digits */}
-            {countdownUnits.map((unit, i) => (
-              <motion.div
-                key={unit.label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: i * 0.07, ease: "easeOut" }}
-                className={`flex items-center gap-1.5 md:gap-2.5 px-2.5 md:px-7 py-3.5 md:py-5 shrink-0 ${
-                  i < countdownUnits.length - 1 ? "border-r border-white/[0.06]" : ""
-                }`}
-              >
-                <span className="text-[18px] md:text-[28px] font-display font-medium tracking-[-0.02em] text-white leading-none tabular-nums">
-                  {mounted ? pad2(unit.value) : "--"}
-                </span>
-                <span className="text-[8px] md:text-[9px] font-mono font-bold tracking-[0.15em] md:tracking-[0.2em] uppercase text-white/25">
-                  {unit.label}
-                </span>
-              </motion.div>
-            ))}
-            {/* Launch date label */}
-            <div className="hidden md:flex items-center ml-auto px-6 md:px-10 py-5 shrink-0">
-              <span className="text-[9px] font-mono font-bold tracking-[0.2em] uppercase text-white/15">
-                Mar 15, 2027 · Gulf of Guinea · Leg 1
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Thesis + Pillars: side-by-side on desktop ── */}
-        <div className="grid lg:grid-cols-12">
-          {/* Left: Thesis statement — sticky on scroll */}
-          <div className="lg:col-span-5 px-6 md:px-14 lg:px-20 py-14 md:py-20 lg:py-24 lg:sticky lg:top-[80px] lg:self-start border-b lg:border-b-0 lg:border-r border-white/[0.06]">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] mb-6 block">
-                The Platform
-              </span>
-              <h2 className="text-[32px] sm:text-[44px] md:text-[56px] lg:text-[64px] font-display font-medium tracking-[-0.035em] leading-[0.92] text-white mb-8 md:mb-10">
-                Four pillars,{" "}
-                <em className="italic font-serif text-[#FF4D00]">one thesis</em>.
-              </h2>
-              <div className="space-y-5">
-                <p className="text-[17px] md:text-[19px] leading-[1.6] text-white/40 font-medium">
-                  Critical technology creates industries, builds cities, and unlocks wealth for generations. The next century belongs to the Global South — youngest populations, fastest-growing markets, boldest ambitions.
-                </p>
-                <p className="text-[14px] md:text-[16px] leading-[1.65] text-white/25 font-medium">
-                  But isolated breakthroughs won&apos;t compound on their own.{" "}
-                  <span className="text-white/70 font-semibold">Connected ones can.</span> xCelero unites 190 hubs across 39 countries into one commercialization engine — infrastructure, ventures, capital, community — so prosperity doesn&apos;t remain a promise but can become a product.
-                </p>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Right: Pillar cards stacked vertically */}
-          <div className="lg:col-span-7">
-            {pillars.map((pillar, i) => {
-              const Icon = pillar.icon;
-              return (
-                <motion.div
-                  key={pillar.title}
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.7, delay: 0.3 + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <Link
-                    to={pillar.link}
-                    className="group block"
-                  >
-                    <div className={`relative overflow-hidden px-6 md:px-14 py-10 md:py-14 hover:bg-white/[0.02] transition-colors duration-500 ${
-                      i < pillars.length - 1 ? "border-b border-white/[0.06]" : ""
-                    }`}>
-                      {/* Watermark number */}
-                      <span className="absolute top-6 right-8 text-[72px] md:text-[96px] font-display font-medium tracking-[-0.04em] text-white/[0.03] leading-none select-none pointer-events-none">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-
-                      <div className="relative flex flex-col md:flex-row md:items-start gap-6 md:gap-10">
-                        {/* Icon */}
-                        <div className="w-11 h-11 shrink-0 flex items-center justify-center border border-white/10 group-hover:border-[#FF4D00]/30 transition-colors duration-300">
-                          <Icon className="w-[18px] h-[18px] text-white/20 group-hover:text-[#FF4D00] transition-colors duration-300" strokeWidth={1.5} />
-                        </div>
-
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-baseline gap-4 mb-4">
-                            <h3 className="text-[22px] md:text-[28px] font-display font-medium tracking-[-0.02em] text-white group-hover:text-[#FF4D00] transition-colors duration-300">
-                              {pillar.title}
-                            </h3>
-                            <ArrowRight className="w-4 h-4 text-white/0 group-hover:text-[#FF4D00] group-hover:translate-x-1 transition-all duration-300 shrink-0" />
-                          </div>
-
-                          <p className="text-[13px] md:text-[14px] leading-[1.75] text-white/20 group-hover:text-white/40 transition-colors duration-300 mb-6 max-w-md">
-                            {pillar.description}
-                          </p>
-
-                          {/* Stat badge */}
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-[32px] md:text-[40px] font-display font-medium tracking-[-0.03em] text-white/80 leading-none">
-                              {pillar.stat}
-                            </span>
-                            <span className="text-[9px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]/40">
-                              {pillar.statLabel}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ══════════════════════════════════════════════════════════════════════════
    NUMBERS SECTION: Animated counting stats
@@ -1003,8 +787,8 @@ function VentureGallery() {
           ))}
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+        {/* Grid — matches the Ventures page card layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <AnimatePresence mode="popLayout">
             {filtered.map((v, i) => (
               <motion.div
@@ -1013,43 +797,55 @@ function VentureGallery() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.4, delay: (i % 3) * 0.06, ease: EASE }}
+                transition={{ duration: 0.4, delay: (i % 5) * 0.05, ease: EASE }}
               >
                 <Link
                   to={`/ventures/${v.id}`}
-                  className="group block h-full border border-[#111111]/12 hover:border-[#111111] bg-white p-6 md:p-7 transition-colors"
+                  className="group block text-left w-full"
                 >
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="text-[10px] font-mono tracking-[0.15em] text-[#FF4D00] font-bold">
-                      {v.code}
-                    </span>
-                    <span className="text-[9px] font-mono tracking-[0.1em] uppercase text-[#111111]/40 border border-[#111111]/12 px-2 py-1">
-                      {v.vertical}
-                    </span>
-                  </div>
+                  <div className="relative bg-[#111111] text-white overflow-hidden transition-all duration-200 group-hover:scale-[1.02] group-hover:brightness-110 group-hover:ring-1 group-hover:ring-[#FF4D00]">
+                    {/* Top section: name + code */}
+                    <div className="p-4 pb-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-sm font-display font-bold text-white leading-tight truncate">
+                            {v.name}
+                          </h3>
+                          <span className="text-[10px] font-mono text-white/50 tracking-wider mt-1 block">
+                            {v.code}
+                          </span>
+                        </div>
+                      </div>
 
-                  <h3 className="font-display font-medium tracking-tight text-[26px] md:text-[30px] text-[#111111] mb-4 group-hover:text-[#FF4D00] transition-colors">
-                    {v.name}
-                  </h3>
+                      {/* Vertical badge */}
+                      <div className="mt-2.5">
+                        <span className="inline-block px-2 py-0.5 bg-white/10 text-[9px] font-mono uppercase tracking-widest text-white/70">
+                          {v.vertical}
+                        </span>
+                      </div>
+                    </div>
 
-                  <p className="text-[13px] text-[#111111]/60 font-medium leading-[1.55] line-clamp-3 mb-6">
-                    {v.problem}
-                  </p>
+                    {/* Middle section: solution excerpt */}
+                    <div className="px-4 pb-3">
+                      <p className="text-[11px] text-white/70 leading-relaxed line-clamp-2">
+                        {v.solution}
+                      </p>
+                    </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-[#111111]/10">
-                    <span className="flex items-center gap-1.5 text-[10px] font-mono tracking-[0.1em] uppercase text-[#111111]/45">
-                      <MapPin className="w-3 h-3" />
-                      {v.pilotLocations.split(",")[0]}
-                    </span>
-                    <span
-                      className={`text-[9px] font-mono font-bold tracking-[0.1em] uppercase px-2 py-1 ${
-                        v.launchModel === "Light"
-                          ? "text-green-600 bg-green-50"
-                          : "text-[#FF4D00] bg-[#FF4D00]/5"
-                      }`}
-                    >
-                      {v.launchModel}
-                    </span>
+                    {/* Bottom section: anchor partners */}
+                    <div className="px-4 pb-4 pt-1">
+                      <span className="text-[9px] font-mono uppercase tracking-widest text-white/30 block mb-0.5">
+                        Anchor Partners
+                      </span>
+                      <span className="text-[11px] text-white/60 leading-snug line-clamp-1 block">
+                        {v.anchorPartners}
+                      </span>
+                    </div>
+
+                    {/* Bottom-right orange square with first letter */}
+                    <div className="absolute bottom-3 right-3 w-8 h-8 bg-[#FF4D00] flex items-center justify-center font-display font-bold text-sm text-white">
+                      {v.name.charAt(0)}
+                    </div>
                   </div>
                 </Link>
               </motion.div>
@@ -1324,27 +1120,6 @@ function RouteJourney() {
 
   return (
     <div ref={rjRef} className="mb-16 md:mb-24">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-12">
-        <div>
-          <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-4">
-            The Route · 6 legs · 190 hubs
-          </span>
-          <h3 className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[28px] sm:text-[36px] md:text-[48px] lg:text-[56px] text-[#111111]">
-            One corridor.
-            <br />
-            <span className="text-[#111111]/35">Six civilizations deep.</span>
-          </h3>
-        </div>
-        <Link
-          to="/routes"
-          className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/50 hover:text-[#FF4D00] transition-colors flex-shrink-0"
-        >
-          Explore the full Route
-          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-        </Link>
-      </div>
-
       {/* Horizontal scroll cards */}
       <div className="overflow-x-auto scrollbar-thin [scrollbar-color:rgba(17,17,17,0.25)_transparent]">
         <div className="flex gap-4 md:gap-5 pb-6 w-max">
