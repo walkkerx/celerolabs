@@ -3,7 +3,6 @@
 import { RouterProvider, useRouter } from "@/artemis/router";
 import { Layout } from "@/artemis/components/Layout";
 import { Home } from "@/artemis/pages/Home";
-import { HomeV2 } from "@/artemis/pages/HomeV2";
 import { Manifesto } from "@/artemis/pages/Manifesto";
 import { Approach } from "@/artemis/pages/Approach";
 
@@ -32,7 +31,6 @@ function Router() {
   // Route matching
   const renderPage = () => {
     if (path === "/" || path === "") return <Home />;
-    if (path === "/v2") return <HomeV2 />;
     if (path === "/manifesto") return <Manifesto />;
     if (path === "/approach") return <Approach />;
 

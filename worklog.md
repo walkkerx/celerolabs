@@ -221,3 +221,27 @@ Stage Summary:
 - Old Home 2 completely removed: file deleted, route removed (404s), nav updated to "V2"
 - v1 home (/) untouched, still the default
 - Lint clean, browser-verified, mobile responsive, zero runtime errors
+
+---
+Task ID: remove-v2
+Agent: main
+Task: Remove v2
+
+Work Log:
+- Removed /v2 route and HomeV2 import from page.tsx
+- Removed V2 nav link from Layout.tsx desktop nav (was first nav item with "New" badge)
+- Removed V2 nav block from Layout.tsx mobile menu (was top entry with "New" label)
+- Deleted src/artemis/pages/HomeV2.tsx file
+- Verified zero stale references (grep for HomeV2 / /v2 / "V2" → all gone)
+- Ran `bun run lint` → clean (no errors/warnings)
+- Agent Browser verification:
+  - Home page (/) renders v1 intact with all sections (thesis, pillars, ventures, route, etc.), zero errors
+  - Nav: no "V2" link present (desktop or mobile)
+  - /v2 route now 404s ("Page Not Found" fallback)
+  - Mobile menu: no V2 entry, hamburger opens cleanly
+  - dev.log: all requests return 200
+
+Stage Summary:
+- v2 fully removed: page file deleted, route removed (404s), nav links removed (desktop + mobile)
+- v1 home (/) remains the only homepage, untouched and fully functional
+- Lint clean, browser-verified

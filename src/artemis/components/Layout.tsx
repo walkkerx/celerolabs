@@ -236,20 +236,6 @@ function Nav() {
 
           {/* Desktop nav links with dropdowns */}
           <div className="hidden lg:flex items-center gap-1">
-            {/* V2 — direct link to the v2 homepage */}
-            <Link
-              to="/v2"
-              className={`relative flex items-center gap-1.5 px-3 py-2 text-[11px] tracking-[0.1em] font-bold transition-colors ${
-                path === "/v2"
-                  ? "text-[#FF4D00]"
-                  : "text-[#111111]/80 hover:text-[#FF4D00]"
-              }`}
-            >
-              V2
-              <span className="inline-flex items-center justify-center text-[7px] font-mono font-bold tracking-[0.05em] uppercase px-1 py-0.5 bg-[#FF4D00] text-white">
-                New
-              </span>
-            </Link>
             {navGroups.map((group) => (
               <div key={group.label} className="relative group/dropdown">
                 <button
@@ -354,37 +340,6 @@ function Nav() {
 
             {/* Categorized nav links: centered vertically */}
             <div className="flex-1 flex flex-col justify-center px-8 md:px-16 lg:px-24 overflow-y-auto">
-              {/* V2 — new homepage */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0, duration: 0.4 }}
-                className="mb-8 md:mb-10"
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-[#FF4D00] whitespace-nowrap">
-                    New
-                  </span>
-                  <div className="flex-1 h-px bg-white/10" />
-                </div>
-                <Link
-                  to="/v2"
-                  className={`text-2xl sm:text-3xl font-display font-medium tracking-tight transition-colors flex items-center gap-2 ${
-                    path === "/v2"
-                      ? "text-[#FF4D00]"
-                      : "text-white/60 hover:text-[#FF4D00]"
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {path === "/v2" && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] flex-shrink-0" />
-                  )}
-                  V2
-                  <span className="inline-flex items-center justify-center text-[7px] font-mono font-bold tracking-[0.05em] uppercase px-1 py-0.5 bg-[#FF4D00] text-white">
-                    New
-                  </span>
-                </Link>
-              </motion.div>
               {mobileNavGroups.map((group, groupIdx) => (
                 <motion.div
                   key={group.label}
