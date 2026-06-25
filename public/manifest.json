@@ -1,0 +1,16 @@
+{
+  "name": "xCelero Labs",
+  "short_name": "xCelero",
+  "description": "Venture studio and infrastructure platform building critical technology across 39 countries.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FF4D00",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

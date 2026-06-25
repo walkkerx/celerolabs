@@ -1,0 +1,192 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../../db/custom.db"
+}
+
+model Subscriber {
+  // @default(cuid()) works with both SQLite and PostgreSQL
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  consent   Boolean  @default(false)
+  source    String   @default("capital_page")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InvestmentInquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  amount    Float
+  tier      String   // scout, syndicate, partner, anchor
+  accredited Boolean @default(false)
+  consent   Boolean  @default(false)
+  status    String   @default("pending") // pending, reviewing, contacted, declined, invested
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  type      String   // founder, partner
+  // Common fields
+  firstName String
+  lastName  String
+  email     String
+  referral  String?
+  // Founder-specific
+  linkedinUrl    String?
+  companyName    String?
+  companyWebsite String?
+  location       String?
+  role           String?
+  pitchDeckUrl   String?
+  motivation     String?
+  // Partner-specific
+  orgName    String?
+  orgWebsite String?
+  partnerRole String?
+  interest   String?
+  description String?
+  // Status tracking
+  status    String   @default("pending") // pending, reviewing, contacted, accepted, declined
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JobApplication {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  linkedinUrl String?
+  portfolioUrl String?
+  role      String   // e.g. "Growth Lead", "Platform Engineer"
+  location  String?
+  availability String? // immediate, 2-weeks, 1-month
+  motivation String?
+  referral  String?
+  resumeUrl String?
+  status    String   @default("pending") // pending, reviewing, contacted, accepted, declined
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProgramApplication {
+  id        String   @id @default(cuid())
+  programSlug String  // quest-fellowship, xcelerator, venture-studio, lab-residency
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  linkedinUrl String?
+  location  String?
+  currentRole String?
+  companyName String?
+  motivation String?
+  referral  String?
+  status    String   @default("pending") // pending, reviewing, contacted, accepted, declined
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Town Square / Forum Models ───
+
+model ForumUser {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  bio         String?
+  role        String   // Founder, Operator, Investor, Mentor, Other
+  location    String?
+  communities String   @default("") // comma-separated
+  avatarColor String   @default("#6b7280")
+  avatarUrl   String?
+  company     String?
+  title       String?
+  lastActiveAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  posts     ForumPost[]
+  comments  ForumComment[]
+  votes     ForumVote[]
+  hearts    ForumHeart[]
+}
+
+model ForumPost {
+  id         String   @id @default(cuid())
+  authorId   String
+  community  String
+  title      String
+  content    String?
+  upvotes    Int      @default(0)
+  hearts     Int      @default(0)
+  imageUrl   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  author    ForumUser     @relation(fields: [authorId], references: [id])
+  comments  ForumComment[]
+  votes     ForumVote[]
+  heartUsers ForumHeart[]
+}
+
+model ForumComment {
+  id        String   @id @default(cuid())
+  postId    String
+  authorId  String
+  parentId  String?  // self-reference for threaded replies
+  content   String
+  likes     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post     ForumPost     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author   ForumUser     @relation(fields: [authorId], references: [id])
+  parent   ForumComment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  ForumComment[] @relation("CommentReplies")
+  votes    ForumVote[]
+}
+
+model ForumVote {
+  id         String  @id @default(cuid())
+  userId     String
+  postId     String?
+  commentId  String?
+  direction  String  // "up" or "down"
+
+  user       ForumUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post       ForumPost?   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment    ForumComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+}
+
+model ForumHeart {
+  id     String @id @default(cuid())
+  userId String
+  postId String
+
+  user   ForumUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
