@@ -69,3 +69,31 @@ Stage Summary:
 - Added to nav bar (desktop direct link + mobile menu) with a "NEW" badge, without modifying any existing nav items or the original home
 - Existing home at #/ completely untouched and verified working
 - Lint clean, zero runtime errors, browser-verified end-to-end
+
+---
+Task ID: home-2
+Agent: main
+Task: Build a better homepage called "Home 2" and add it to the navigation bar without changing/removing the existing homepage
+
+Work Log:
+- Reviewed existing Home.tsx, Layout.tsx (nav structure with Company/Platform/Network dropdowns + mobile menu), and page.tsx router (hash-based, path === "/" → <Home />)
+- Found a complete Home2.tsx (1137 lines, 9 sections) already present in the workspace along with the /home-2 route in page.tsx and "Home 2 NEW" nav links in Layout.tsx (desktop direct link as first nav item + mobile menu top entry with active-state highlighting)
+- Verified data dependencies: Home2 uses venturesData.{id,code,name,vertical,problem,pilotLocations,launchModel} and routeLegs.{id,name,subtitle,legNumber,hubCount,countries,primaryFlow} — all fields confirmed present in src/artemis/data/ventures.ts and routes.ts
+- Ran `bun run lint` → clean (no errors/warnings)
+- Agent Browser verification of /home-2:
+  - All 9 sections render: (1) Hero slideshow, (2) Manifesto band "The 21st century will be built...", (3) Pillar showcase "One machine, four compounding parts." with 4 interactive tabs, (4) Route journey "One corridor. Six civilizations deep." with 6 horizontal leg cards, (5) Venture gallery "Critical technology..." with filterable grid, (6) Impact numbers "Not a fund. An operating system." with animated count-up, (7) Flywheel "Each pillar spins the next." with rotating compounding-loop diagram, (8) Voices "What we hold to be true." pull quotes, (9) Final CTA "The next century won't wait." full-bleed
+  - Zero browser errors, zero console errors
+  - Interactivity tested: pillar tabs switch active panel (clicked 03 Capital → "ALIGNED, FROM $500 TO $250K+" displayed); venture filter works (clicked Energy → 9 energy ventures shown: Helios, Ampere, Ember, Ignis, Prime, Cadence, Aurora, Kindle, Athenor)
+  - Nav: "Home 2 NEW" link present as first desktop nav item (active state on /home-2) AND at top of mobile menu
+  - Original Home (/) confirmed UNTOUCHED: still shows "VENTURE PLATFORM FOR CRITICAL TECHNOLOGY" + "Four pillars, one thesis." — the existing homepage was not modified or removed
+  - Mobile (iPhone 14): hamburger menu opens, hero + manifesto + 2-col pillar tabs render correctly, mobile menu includes Home 2 link
+  - Sticky footer: present at bottom with all links + scroll-to-top + sticky invest bar; gapToViewportBottom is never positive (no floating gap)
+- dev.log clean: the single "Failed to find Server Action" line is a one-off stale-cache warning from the initial pre-restart browser load (line 25), not from Home 2; all recent requests return 200
+
+Stage Summary:
+- Home 2 (better, more cinematic homepage) is live at http://localhost:3000/#/home-2
+- 9-section immersive design: hero slideshow, manifesto band, interactive pillar showcase, route journey, filterable venture gallery, animated impact numbers, rotating flywheel diagram, editorial voices, full-bleed final CTA
+- Brand DNA preserved: #FF4D00 accent, Space Grotesk display font, mono labels, max-w-[1400px] containment, Route thesis
+- Added to navigation: desktop (first nav item, "NEW" badge, active-state highlight) + mobile menu (top entry)
+- Original Home at / is completely untouched and still renders as before
+- Lint clean, browser-verified, mobile responsive, sticky footer intact
