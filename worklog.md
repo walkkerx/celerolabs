@@ -97,3 +97,34 @@ Stage Summary:
 - Added to navigation: desktop (first nav item, "NEW" badge, active-state highlight) + mobile menu (top entry)
 - Original Home at / is completely untouched and still renders as before
 - Lint clean, browser-verified, mobile responsive, sticky footer intact
+
+---
+Task ID: transfer-home2-sections
+Agent: main
+Task: Transfer three sections from Home 2 into the current Home page: "The thesis", "Four pillars, one engine", and "The portfolio · 40+ ventures"
+
+Work Log:
+- Read current Home.tsx structure: Hero → MissionBridge → BentoGrid → NumbersSection → ThreePillarsSection → LocationsSection → UpcomingEventsSection → ReviewSection → NewsletterSection
+- Read the three target sections from Home2.tsx: ManifestoBand (The thesis), PillarShowcase (Four pillars, one engine), VentureGallery (The portfolio · 40+ ventures)
+- Updated imports: added AnimatePresence (framer-motion), ArrowUpRight (lucide-react), venturesData (from data/ventures)
+- Replaced the old top-level `pillars` data array (4 pillars with heading/subtext/description/images — used only by the old ThreePillarsSection) with the `EASE` constant + `showcasePillars` data array (4 pillars with label/title/tagline/description/stats/image/link — used by the new FourPillarsEngine)
+- Replaced MissionBridge (image strip + dotted world map + mission text) with ThesisSection (centered editorial thesis statement + 3 framing columns: gap/method/compounding) — transferred from Home 2's ManifestoBand
+- Replaced ThreePillarsSection + PillarBlock (4 repeating pillar blocks with 2 images each) with FourPillarsEngine (interactive tabbed showcase: 4 pillar selector tabs + animated active panel with image + description + 3 stats + CTA) + VentureGallery (filterable venture grid with vertical filters + 9 venture cards) — transferred from Home 2
+- Removed orphaned PillarBlock function and all now-unused data (worldDots dot-matrix map, bridgeImages)
+- Updated Home() component section order: Hero → ThesisSection → BentoGrid → NumbersSection → FourPillarsEngine → VentureGallery → LocationsSection → UpcomingEventsSection → ReviewSection → NewsletterSection
+- Ran `bun run lint` → clean (no errors/warnings)
+- Agent Browser verification:
+  - All three transferred sections render in correct order: "The thesis" heading, "One machine, four compounding parts" (Four pillars, one engine), "Critical technology, for the markets that need it most" (portfolio with 9 venture cards: Helios, Ampere, Ember, Ignis, Nimbus, Ceres, Bounty, Meridian, Manna)
+  - Zero browser errors
+  - Interactivity tested: pillar tab click (03 Capital → active panel shows "ALIGNED, FROM $500 TO $250K+", "$500 / ENTRY POINT", "EXPLORE CAPITAL" CTA); venture filter click (ENERGY → list changed to 9 energy ventures: Helios, Ampere, Ember, Ignis, Prime, Cadence, Aurora, Kindle, Athenor)
+  - Mobile (iPhone 14): thesis section renders, pillar tabs in 2-col grid, venture cards responsive
+  - dev.log clean: all recent requests return 200 (the 500 "ThesisSection is not defined" was from the intermediate edit state before the Python script added the function)
+  - Original Home sections preserved: Hero, BentoGrid (countdown + "Four pillars, one thesis"), NumbersSection, LocationsSection (Route), UpcomingEventsSection, ReviewSection, NewsletterSection all still render
+
+Stage Summary:
+- Three Home 2 sections successfully transferred to the current Home page:
+  1. "The thesis" — centered editorial thesis statement with 3 framing columns (replaced MissionBridge)
+  2. "Four pillars, one engine" — interactive tabbed pillar showcase with image + stats + CTA per pillar (replaced ThreePillarsSection)
+  3. "The portfolio · 40+ ventures" — filterable venture gallery with 9 cards (new addition, no equivalent existed)
+- All original Home sections preserved (Hero, BentoGrid, NumbersSection, LocationsSection, UpcomingEventsSection, ReviewSection, NewsletterSection)
+- Lint clean, browser-verified, mobile responsive, zero runtime errors

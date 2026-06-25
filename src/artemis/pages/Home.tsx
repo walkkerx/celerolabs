@@ -1,10 +1,11 @@
 "use client";
 
 import { useRef, useState, useMemo, useEffect, useCallback } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "@/artemis/router";
 import {
   ArrowRight,
+  ArrowUpRight,
   ChevronDown,
   ChevronUp,
   Building2,
@@ -22,6 +23,7 @@ import {
 } from "lucide-react";
 import { ReviewSection } from "@/artemis/components/ReviewSection";
 import { routeLegs, MAP_LOCATIONS } from "@/artemis/data/routes";
+import { venturesData } from "@/artemis/data/ventures";
 
 /* ── Data ── */
 
@@ -55,93 +57,77 @@ const stats = [
   { value: 190, prefix: "", suffix: "", label: "Hub locations across 39 countries", icon: Globe2 },
 ];
 
-const pillars = [
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+/* ── Pillars for the interactive showcase (transferred from Home 2) ── */
+const showcasePillars = [
   {
     id: "infrastructure",
     icon: Building2,
-    heading: "Infrastructure",
-    subtext:
-      "M1 Core campuses, XEmbassy nodes, & distributed living labs",
+    label: "01",
+    title: "Infrastructure",
+    tagline: "The physical substrate",
     description:
-      "We are building the physical and digital infrastructure that ventures need to move from prototype to production. M1 Core campuses are designed to provide 50,000+ sq ft of lab, maker, and co-working space in prime hub cities. XEmbassy nodes — compact 5,000 sq ft drop-in studios — will extend reach into secondary markets. Distributed living labs will connect field testing sites across the Route, giving ventures access to real-world validation environments from day one.",
-    images: [
-      {
-        src: "https://images.unsplash.com/photo-1613457231357-a5db3bc5bd81?auto=format&fit=crop&w=1200&q=80",
-        alt: "African urban infrastructure development",
-        position: "center 40%",
-      },
-      {
-        src: "https://images.unsplash.com/photo-1579165466949-3180a3d056d5?auto=format&fit=crop&w=1200&q=80",
-        alt: "Black scientist conducting research",
-        position: "center 25%",
-      },
+      "M1 Core campuses, XEmbassy nodes, and distributed living labs. We build the physical and digital substrate ventures need to move from prototype to production — 50,000+ sq ft of lab, maker, and co-working space in prime hub cities.",
+    stats: [
+      { value: "190", label: "Hub locations" },
+      { value: "39", label: "Countries" },
+      { value: "50K", label: "Sq ft / campus" },
     ],
+    image:
+      "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1200&q=80",
     link: "/infrastructure",
   },
   {
     id: "ventures",
     icon: Rocket,
-    heading: "Ventures",
-    subtext:
-      "Venture commercialization programs with industry & government partners",
+    label: "02",
+    title: "Ventures",
+    tagline: "Critical technology, commercialized",
     description:
-      "We are designing structured commercialization programs that take ventures from idea to revenue. Each program will be co-designed with industry and government partners who provide market access, pilot opportunities, and first-customer contracts. The Quest Fellowship — our flagship semester-long program run in collaboration with DDQIC at Queen's University — uses MIT's Disciplined Entrepreneurship framework to guide founders through 24 steps of validated learning. Programs will run on the Route, connecting cohorts across hub cities for shared deal flow and peer support.",
-    images: [
-      {
-        src: "https://images.unsplash.com/photo-1653566031535-bcf33e1c2893?auto=format&fit=crop&w=1200&q=80",
-        alt: "Black founders building a venture",
-        position: "center 25%",
-      },
-      {
-        src: "https://images.unsplash.com/photo-1758691736903-c60a33e5b83f?auto=format&fit=crop&w=1200&q=80",
-        alt: "Diverse team brainstorming startup ideas",
-        position: "center 20%",
-      },
+      "Structured commercialization programs take ventures from idea to revenue, co-designed with industry and government partners who provide market access, pilot opportunities, and first-customer contracts across the Route.",
+    stats: [
+      { value: "40+", label: "Portfolio companies" },
+      { value: "9", label: "Verticals" },
+      { value: "24", label: "MIT steps" },
     ],
-    link: "/programs",
+    image:
+      "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80",
+    link: "/ventures",
   },
   {
     id: "capital",
     icon: Coins,
-    heading: "Capital",
-    subtext: "Aligned network of venture & non-dilutive capital",
+    label: "03",
+    title: "Capital",
+    tagline: "Aligned, from $500 to $250K+",
     description:
-      "We are mobilizing capital that matches the realities of building in the Global South. Our network is being built to include venture funds, national development allocators, development finance institutions, and non-dilutive grant programs. Solidarity pricing will ensure that founders in early-stage markets access the same quality of support at a fraction of Silicon Valley costs. We are also building a non-dilutive capital desk to match ventures with grants, prizes, and government incentives across 39+ countries on the Route.",
-    images: [
-      {
-        src: "https://images.unsplash.com/photo-1767893609884-622503897e53?auto=format&fit=crop&w=1200&q=80",
-        alt: "Investment discussion with data",
-        position: "center 30%",
-      },
-      {
-        src: "https://images.unsplash.com/photo-1741991109902-98bf764fb35d?auto=format&fit=crop&w=1200&q=80",
-        alt: "African city lights at night",
-        position: "center 40%",
-      },
+      "Capital that matches the realities of building in the Global South — venture funds, development finance, and a non-dilutive desk matching ventures with grants and incentives across 39+ countries. Solidarity pricing, every stage.",
+    stats: [
+      { value: "$500", label: "Entry point" },
+      { value: "6", label: "Vehicles" },
+      { value: "39+", label: "Grant markets" },
     ],
+    image:
+      "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80",
     link: "/capital",
   },
   {
     id: "community",
     icon: Users,
-    heading: "Community",
-    subtext:
-      "The XCitizens network, operators, founders, investors & mentors across the Route",
+    label: "04",
+    title: "Community",
+    tagline: "The connective tissue",
     description:
-      "The fourth pillar. Community is the connective tissue that will turn individual efforts into collective momentum. The XCitizens network is designed to span every hub on the Route: operators who run infrastructure, founders building ventures, investors deploying capital, and mentors transferring knowledge. Compound network effects mean every new member strengthens the whole, creating a flywheel that can accelerate commercialization for everyone.",
-    images: [
-      {
-        src: "https://images.unsplash.com/photo-1573496267526-08a69e46a409?auto=format&fit=crop&w=1200&q=80",
-        alt: "Black women colleagues collaborating",
-        position: "center 20%",
-      },
-      {
-        src: "https://images.unsplash.com/photo-1778876091184-8839210e1917?auto=format&fit=crop&w=1200&q=80",
-        alt: "Community gathering at conference",
-        position: "center 25%",
-      },
+      "The XCitizens network spans every hub — operators who run infrastructure, founders building ventures, investors deploying capital, mentors transferring knowledge. Compound network effects turn efforts into collective momentum.",
+    stats: [
+      { value: "100", label: "XCitizens / cohort" },
+      { value: "190", label: "Hubs connected" },
+      { value: "∞", label: "Compounding" },
     ],
-    link: "/join",
+    image:
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80",
+    link: "/community",
   },
 ];
 
@@ -182,10 +168,11 @@ export function Home() {
   return (
     <div className="bg-white text-[#111111]">
       <Hero />
-      <MissionBridge />
+      <ThesisSection />
       <BentoGrid />
       <NumbersSection />
-      <ThreePillarsSection />
+      <FourPillarsEngine />
+      <VentureGallery />
       <LocationsSection />
       <UpcomingEventsSection />
       <ReviewSection title="Dispatches from the field" />
@@ -317,171 +304,67 @@ function Hero() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   MISSION BRIDGE: Image strip + two-column mission statement with dotted map
+   THE THESIS — bold statement, centered (transferred from Home 2)
    ══════════════════════════════════════════════════════════════════════════ */
-
-/* Dot-matrix world map: recognizable continent outlines */
-const worldDots = (() => {
-  const rows = [
-    ".......##..........###.............#####..####..............",
-    "......####.........####............######.######............",
-    ".....######........#####...........########.######..........",
-    ".....#######.......#####..........#########..######.........",
-    "....#########......######.........#########...######........",
-    "....##########.....#######........#########....#####........",
-    "...############....########.......########.....#####........",
-    "...############....########.......########......####........",
-    "....###########....#########......#######.......####........",
-    "....##########.....##########.....######........###.........",
-    ".....#########.....##########.....######........###.........",
-    "......########.....###########....#####.........##..........",
-    ".......#######.....###########....#####.........##..........",
-    "........######.....############...######.........#..........",
-    ".........#####.....####.#####....########...................",
-    "..........####.....####..####...#########...................",
-    "...........###.....####...####..#########...................",
-    "............##.....####....###..########....................",
-    ".............#......###....###..#######.....................",
-    "....................###.....##...######.....................",
-    ".....................##.....##...#####......................",
-    "......................##.....#...####.......................",
-    ".......................#.........###........................",
-    "................................##.........................",
-    "................................#..........................",
-    "............................................................",
-    "............................................................",
-    "............................................................",
-    "............................................................",
-    "............................................................",
-  ];
-  const dots: { row: number; col: number }[] = [];
-  rows.forEach((row, r) => {
-    [...row].forEach((ch, c) => {
-      if (ch === "#") dots.push({ row: r, col: c });
-    });
-  });
-  return dots;
-})();
-
-const bridgeImages = [
-  {
-    src: "https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=800&q=80",
-    alt: "Black researcher in laboratory",
-    position: "center 30%",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1573164574397-dd250bc8a598?auto=format&fit=crop&w=800&q=80",
-    alt: "Black professionals collaborating",
-    position: "center 25%",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1669127300649-940337f1487e?auto=format&fit=crop&w=800&q=80",
-    alt: "African city development",
-    position: "center 40%",
-  },
-];
-
-function MissionBridge() {
+function ThesisSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section ref={ref} className="px-6 md:px-12 lg:px-20 pb-16 md:pb-24">
-      <div className="w-full max-w-[1400px] mx-auto">
-        {/* Image strip: three overlapping images */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative grid grid-cols-3 md:flex md:items-end md:justify-start md:gap-0 gap-3 md:gap-0 mb-16 md:mb-24"
+    <section ref={ref} className="py-24 md:py-36 bg-[#FAFAFA]">
+      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, ease: EASE }}
+          className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-8"
         >
-          {bridgeImages.map((img, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.1 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className={`relative overflow-hidden bg-[#F5F5F5] shadow-lg ${
-                i === 0
-                  ? "w-full md:w-[32%] aspect-[4/3] z-10"
-                  : i === 1
-                  ? "w-full md:w-[40%] aspect-[4/3] z-30 md:-mt-3 md:-ml-[4%]"
-                  : "w-full md:w-[32%] aspect-[4/3] z-10 md:-ml-[4%]"
-              }`}
-            >
-              <img
-                src={img.src}
-                alt={img.alt}
-                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                style={{ objectPosition: img.position }}
-              />
-            </motion.div>
+          The thesis
+        </motion.span>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: EASE }}
+          className="font-display font-medium tracking-[-0.025em] leading-[1.05] text-[30px] sm:text-[40px] md:text-[54px] lg:text-[68px] text-[#111111]"
+        >
+          The 21st century will be built in the markets that need its
+          breakthroughs most.{" "}
+          <span className="text-[#111111]/35">
+            We are building the infrastructure to make that inevitable.
+          </span>
+        </motion.h2>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
+          className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 max-w-4xl"
+        >
+          {[
+            {
+              k: "The gap",
+              v: "Capital, infrastructure, and talent sit on one side; the markets that need them sit on the other.",
+            },
+            {
+              k: "The method",
+              v: "Four pillars — Infrastructure, Ventures, Capital, Community — fused into a single commercialization engine.",
+            },
+            {
+              k: "The compounding",
+              v: "Every new venture strengthens the network. Every hub compounds the reach. 5,000 companies. 200 unicorns.",
+            },
+          ].map((b) => (
+            <div key={b.k} className="border-t border-[#111111]/15 pt-5">
+              <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00] mb-3">
+                {b.k}
+              </p>
+              <p className="text-[14px] md:text-[15px] text-[#111111]/70 font-medium leading-[1.6]">
+                {b.v}
+              </p>
+            </div>
           ))}
         </motion.div>
-
-        {/* Two-column layout: text left, dotted map right */}
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left: Mission text */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-6"
-          >
-            <p className="text-[22px] sm:text-[28px] md:text-[34px] leading-[1.25] font-display font-medium tracking-[-0.02em] text-[#111111] mb-6 md:mb-8">
-              The markets with the youngest populations and fastest growth will build what the next century runs on, yet <span className="text-[#FF4D00]">most ventures there never cross the valley of death</span>.
-            </p>
-            <p className="text-[15px] md:text-[17px] leading-[1.7] text-[#111111]/60 font-medium max-w-xl">
-              xCelero is designed to bridge that gap. A network of 190 hubs across 39 countries, built into a single commercialization engine: infrastructure to build, programs to validate, capital to scale, and community to compound. A breakthrough in isolation is a tragedy. <span className="text-[#111111] font-semibold">On the Route, it can become a flywheel.</span>
-            </p>
-          </motion.div>
-
-          {/* Right: Dotted world map */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-6 flex items-center justify-center"
-          >
-            <div className="relative w-full max-w-lg">
-              <svg
-                viewBox="0 0 60 30"
-                className="w-full h-auto"
-                style={{ imageRendering: "auto" }}
-              >
-                {/* All land dots in dark color */}
-                {worldDots.map((dot, i) => (
-                  <circle
-                    key={i}
-                    cx={dot.col * 1}
-                    cy={dot.row * 1}
-                    r="0.35"
-                    className="fill-[#111111]/70"
-                  />
-                ))}
-                {/* Africa highlighted region: cols 23-33, rows 3-21 */}
-                {worldDots
-                  .filter(
-                    (d) =>
-                      d.col >= 23 && d.col <= 33 && d.row >= 3 && d.row <= 21
-                  )
-                  .map((dot, i) => (
-                    <circle
-                      key={`af-${i}`}
-                      cx={dot.col * 1}
-                      cy={dot.row * 1}
-                      r="0.4"
-                      className="fill-[#FF4D00]"
-                    />
-                  ))}
-              </svg>
-              {/* Label */}
-              <div className="absolute bottom-2 right-4 text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]">
-                39 Countries · 190 Projected Hubs
-              </div>
-            </div>
-          </motion.div>
-        </div>
       </div>
     </section>
   );
@@ -825,95 +708,270 @@ function NumbersSection() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   THREE PILLARS SECTION, Each pillar: heading + subtext left, 2 images right
+   FOUR PILLARS, ONE ENGINE — interactive tabbed showcase (transferred from Home 2)
    ══════════════════════════════════════════════════════════════════════════ */
-function ThreePillarsSection() {
+function FourPillarsEngine() {
+  const [active, setActive] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const pillar = showcasePillars[active];
+  const Icon = pillar.icon;
+
   return (
-    <section className="border-t border-[#111111]/10">
-      {pillars.map((pillar, idx) => (
-        <PillarBlock key={pillar.id} pillar={pillar} index={idx} />
-      ))}
+    <section ref={ref} className="py-24 md:py-32 bg-white">
+      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+          <div>
+            <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-4">
+              Four pillars, one engine
+            </span>
+            <h2 className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[32px] sm:text-[44px] md:text-[56px] lg:text-[64px] text-[#111111]">
+              One machine,
+              <br />
+              <span className="text-[#111111]/35">four compounding parts.</span>
+            </h2>
+          </div>
+          <p className="text-[14px] md:text-[15px] text-[#111111]/60 font-medium leading-[1.6] max-w-sm">
+            Each pillar reinforces the others. Together they form a flywheel no
+            single fund, accelerator, or government could replicate alone.
+          </p>
+        </div>
+
+        {/* Pillar selector tabs */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-10 md:mb-14">
+          {showcasePillars.map((p, i) => {
+            const PIcon = p.icon;
+            const isActive = i === active;
+            return (
+              <button
+                key={p.id}
+                onClick={() => setActive(i)}
+                className={`group relative text-left p-5 md:p-6 border transition-all duration-300 ${
+                  isActive
+                    ? "border-[#FF4D00] bg-[#FF4D00]/5"
+                    : "border-[#111111]/12 hover:border-[#111111]/40 bg-white"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <PIcon
+                    className={`w-5 h-5 transition-colors ${
+                      isActive ? "text-[#FF4D00]" : "text-[#111111]/40"
+                    }`}
+                    strokeWidth={1.5}
+                  />
+                  <span
+                    className={`text-[10px] font-mono tracking-[0.2em] ${
+                      isActive ? "text-[#FF4D00]" : "text-[#111111]/30"
+                    }`}
+                  >
+                    {p.label}
+                  </span>
+                </div>
+                <p
+                  className={`font-display font-medium tracking-tight text-[18px] md:text-[20px] transition-colors ${
+                    isActive ? "text-[#111111]" : "text-[#111111]/60"
+                  }`}
+                >
+                  {p.title}
+                </p>
+                <p className="text-[11px] text-[#111111]/40 font-medium mt-1 hidden md:block">
+                  {p.tagline}
+                </p>
+                {isActive && (
+                  <motion.span
+                    layoutId="pillar-active-bar"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FF4D00]"
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Active pillar panel */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={pillar.id}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.45, ease: EASE }}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch"
+          >
+            {/* Image */}
+            <div className="relative overflow-hidden min-h-[320px] lg:min-h-[460px] bg-[#0A0A0A]">
+              <img
+                src={pillar.image}
+                alt={pillar.title}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ objectPosition: "center 40%" }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/70 via-transparent to-transparent" />
+              <div className="absolute top-6 left-6 flex items-center gap-2 text-white">
+                <Icon className="w-5 h-5 text-[#FF4D00]" strokeWidth={1.5} />
+                <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase">
+                  {pillar.title}
+                </span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col justify-between p-2 md:p-4">
+              <div>
+                <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00] block mb-4">
+                  Pillar {pillar.label} — {pillar.tagline}
+                </span>
+                <p className="text-[16px] md:text-[18px] text-[#111111]/80 font-medium leading-[1.65] mb-8">
+                  {pillar.description}
+                </p>
+
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-4 md:gap-6 mb-8">
+                  {pillar.stats.map((s) => (
+                    <div key={s.label} className="border-t border-[#111111]/15 pt-3">
+                      <p className="font-display font-medium text-[26px] md:text-[34px] tracking-tight text-[#111111] leading-none">
+                        {s.value}
+                      </p>
+                      <p className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] uppercase text-[#111111]/45 mt-2">
+                        {s.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Link
+                to={pillar.link}
+                className="group inline-flex items-center gap-2 self-start px-6 py-3.5 bg-[#111111] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#FF4D00] transition-colors"
+              >
+                Explore {pillar.title}
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </Link>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </section>
   );
 }
 
-function PillarBlock({
-  pillar,
-  index,
-}: {
-  pillar: (typeof pillars)[number];
-  index: number;
-}) {
+/* ══════════════════════════════════════════════════════════════════════════
+   THE PORTFOLIO · 40+ VENTURES — filterable grid (transferred from Home 2)
+   ══════════════════════════════════════════════════════════════════════════ */
+function VentureGallery() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const Icon = pillar.icon;
+
+  const verticals = useMemo(() => {
+    const set = new Set(venturesData.map((v) => v.vertical));
+    return ["All", ...Array.from(set)];
+  }, []);
+  const [filter, setFilter] = useState("All");
+
+  const filtered = useMemo(
+    () =>
+      filter === "All"
+        ? venturesData.slice(0, 9)
+        : venturesData.filter((v) => v.vertical === filter).slice(0, 9),
+    [filter]
+  );
 
   return (
-    <div
-      ref={ref}
-      className={`py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#111111]/10`}
-    >
-      <div className="w-full max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-        {/* Left: heading + subtext + description */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="lg:col-span-5"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-full border border-[#111111]/10 flex items-center justify-center">
-              <Icon className="w-4 h-4 text-[#FF4D00]" strokeWidth={1.5} />
-            </div>
-            <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#111111]/40">
-              {String(index + 1).padStart(2, "0")}
+    <section ref={ref} className="py-24 md:py-32 bg-[#FAFAFA]">
+      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-12">
+          <div>
+            <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-4">
+              The portfolio · 40+ ventures
             </span>
+            <h2 className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[32px] sm:text-[44px] md:text-[56px] lg:text-[64px] text-[#111111]">
+              Critical technology,
+              <br />
+              <span className="text-[#111111]/35">for the markets that need it most.</span>
+            </h2>
           </div>
-
-          <h2 className="text-[28px] sm:text-[36px] md:text-[64px] lg:text-[80px] font-display font-medium tracking-[-0.03em] leading-[0.9] mb-4">
-            {pillar.heading}
-          </h2>
-
-          <p className="text-[16px] md:text-[18px] leading-[1.6] text-[#111111]/80 font-medium max-w-md mb-4">
-            {pillar.subtext}
-          </p>
-
-          <p className="text-[14px] md:text-[15px] leading-[1.7] text-[#111111]/50 font-medium max-w-md mb-8">
-            {pillar.description}
-          </p>
-
           <Link
-            to={pillar.link}
-            className="inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.12em] text-[#FF4D00] hover:text-[#111111] transition-colors group"
+            to="/ventures"
+            className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/50 hover:text-[#FF4D00] transition-colors flex-shrink-0"
           >
-            Explore {pillar.heading}
+            All ventures
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </Link>
-        </motion.div>
+        </div>
 
-        {/* Right: 2 image cards side by side */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="lg:col-span-7 grid grid-cols-2 gap-4"
-        >
-          {pillar.images.map((img, i) => (
-            <div
-              key={i}
-              className="aspect-[3/4] overflow-hidden group"
+        {/* Filters */}
+        <div className="flex flex-wrap gap-2 mb-10">
+          {verticals.map((v) => (
+            <button
+              key={v}
+              onClick={() => setFilter(v)}
+              className={`px-4 py-2 text-[10px] font-mono font-bold tracking-[0.12em] uppercase border transition-colors ${
+                filter === v
+                  ? "bg-[#111111] text-white border-[#111111]"
+                  : "bg-transparent text-[#111111]/55 border-[#111111]/15 hover:border-[#111111]/40"
+              }`}
             >
-              <img
-                src={img.src}
-                alt={img.alt}
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                style={{ objectPosition: img.position }}
-              />
-            </div>
+              {v}
+            </button>
           ))}
-        </motion.div>
+        </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          <AnimatePresence mode="popLayout">
+            {filtered.map((v, i) => (
+              <motion.div
+                key={v.id}
+                layout
+                initial={{ opacity: 0, y: 16 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.4, delay: (i % 3) * 0.06, ease: EASE }}
+              >
+                <Link
+                  to={`/ventures/${v.id}`}
+                  className="group block h-full border border-[#111111]/12 hover:border-[#111111] bg-white p-6 md:p-7 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="text-[10px] font-mono tracking-[0.15em] text-[#FF4D00] font-bold">
+                      {v.code}
+                    </span>
+                    <span className="text-[9px] font-mono tracking-[0.1em] uppercase text-[#111111]/40 border border-[#111111]/12 px-2 py-1">
+                      {v.vertical}
+                    </span>
+                  </div>
+
+                  <h3 className="font-display font-medium tracking-tight text-[26px] md:text-[30px] text-[#111111] mb-4 group-hover:text-[#FF4D00] transition-colors">
+                    {v.name}
+                  </h3>
+
+                  <p className="text-[13px] text-[#111111]/60 font-medium leading-[1.55] line-clamp-3 mb-6">
+                    {v.problem}
+                  </p>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-[#111111]/10">
+                    <span className="flex items-center gap-1.5 text-[10px] font-mono tracking-[0.1em] uppercase text-[#111111]/45">
+                      <MapPin className="w-3 h-3" />
+                      {v.pilotLocations.split(",")[0]}
+                    </span>
+                    <span
+                      className={`text-[9px] font-mono font-bold tracking-[0.1em] uppercase px-2 py-1 ${
+                        v.launchModel === "Light"
+                          ? "text-green-600 bg-green-50"
+                          : "text-[#FF4D00] bg-[#FF4D00]/5"
+                      }`}
+                    >
+                      {v.launchModel}
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
