@@ -182,3 +182,42 @@ Stage Summary:
 - VentureGallery: cards now match Ventures page dark compact layout (5-col grid, name+code+vertical+solution+anchor partners+orange first-letter square)
 - BentoGrid ("The Platform / Four pillars, one thesis") section completely removed from page and code
 - Lint clean, browser-verified, mobile responsive, zero runtime errors
+
+---
+Task ID: build-v2-remove-home2
+Agent: main
+Task: Consider current home as v1. Build v2 of it. Remove Home 2.
+
+Work Log:
+- Surveyed current state: v1 Home.tsx (contained editorial, 9 sections), old Home2.tsx (cinematic, /home-2 route, "Home 2" nav link), Layout.tsx nav, page.tsx router
+- Designed v2 with a distinct "Operating System" identity — full-bleed, dark-dominant, system/dashboard aesthetic (vs v1's contained editorial light style)
+- Built new HomeV2.tsx with 8 cohesive sections:
+  1. SystemHero — full-bleed (not contained like v1), split layout: massive 3-line kinetic headline ("Build / the next / century." with orange "century.") left + live "Route Status" panel right (4 metrics grid, route progress bar, slide indicators). Top status bar with "xCelero OS · v2.0" + system metrics
+  2. ManifestoBand — full-bleed dark, auto-scrolling principles marquee at top + large thesis statement + 3 framing columns (gap/method/compounding) in a bordered grid
+  3. PillarAccordion — vertical accordion (distinct from v1's tabbed showcase): 4 expandable rows with number + icon + title + tagline + expand toggle; clicking expands to show description + 3 stats + "Explore" CTA
+  4. VentureMarquee — dual auto-scrolling marquees in opposite directions (distinct from v1's 5-col grid): 12 featured ventures as dark cards with name/code/vertical/solution/anchor partners/orange first-letter square
+  5. RouteTimeline — vertical timeline (distinct from v1's horizontal cards + blueprint map): 6 legs as timeline nodes with colored borders, hub/country counts, subtitle, primary flow, "View Full Route Map" CTA
+  6. ImpactGrid — bold full-bleed animated count-up stats (5,000+ companies, $1T+, 200+ unicorns, 190 hubs) in a 4-col bordered grid
+  7. VoicesSection — editorial pull quotes (3 beliefs) in a bordered grid
+  8. FinalCTA — full-bleed dramatic close with background image, "The next century won't wait." headline, 3 CTAs (Invest/Apply/Join), system status footer
+- Wired up routing: added /v2 route → <HomeV2 /> in page.tsx, removed /home-2 route
+- Updated nav in Layout.tsx: desktop "Home 2" → "V2" (to="/v2"), mobile menu "Home 2" → "V2" (to="/v2"), all active-state checks updated to path === "/v2"
+- Deleted old Home2.tsx file entirely
+- Ran `bun run lint` → clean (no errors/warnings)
+- Agent Browser verification:
+  - v2 renders at /#/v2 with all 8 sections: "Build the next century." hero, "One machine, four compounding parts." accordion, "Critical technology, for the markets that need it most." venture marquee, "One corridor. Six civilizations deep." route timeline, "Not a fund. An operating system." impact grid, "What we hold to be true." voices, final CTA
+  - Zero browser errors, zero console errors
+  - Interactivity tested: accordion expands (clicked Ventures → shows description + "40+" / "9 Verticals" / "24 MIT steps" stats + "EXPLORE VENTURES" CTA)
+  - Nav: "V2 NEW" link present in desktop nav (first item) and mobile menu (top entry)
+  - Venture marquee: 24 venture links confirming dual auto-scrolling rows render
+  - Route timeline: all 6 legs render as vertical timeline with colored nodes, hub/country counts, flows
+  - Old Home 2 fully removed: /home-2 route now 404s ("Page Not Found"), no "Home 2" text anywhere
+  - Mobile (iPhone 14): hero renders with stacked layout, accordion in 1-col, all sections responsive, V2 link in mobile menu
+  - dev.log: all recent requests return 200
+
+Stage Summary:
+- v2 home page built at /v2 with distinct "Operating System" design: full-bleed, dark-dominant, system/dashboard aesthetic
+- 8 cohesive sections, each visually distinct from v1's approach (split hero vs contained, accordion vs tabs, dual marquee vs grid, vertical timeline vs horizontal cards + map)
+- Old Home 2 completely removed: file deleted, route removed (404s), nav updated to "V2"
+- v1 home (/) untouched, still the default
+- Lint clean, browser-verified, mobile responsive, zero runtime errors
