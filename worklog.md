@@ -26,3 +26,46 @@ Stage Summary:
 - 22 pages, hash router, 16 API routes, 9 Prisma models all functional; DB seeded with example data
 - Single dependency added: remark-gfm. No code changes were required — the imported source ran as-is on the existing stack
 - Browser-verified: rendering, navigation, DB reads/writes, mobile responsiveness, sticky footer, zero runtime errors
+
+---
+Task ID: home-2
+Agent: main
+Task: Build a better homepage called "Home 2", add it to the navigation bar without changing/removing the existing home
+
+Work Log:
+- Read existing Home.tsx (1580 lines), Layout.tsx nav structure, router.tsx, ventures.ts + routes.ts data, ReviewSection.tsx to understand the design language (#FF4D00, Space Grotesk, mono labels, max-w-[1400px] containment, Framer Motion [0.22,1,0.36,1] easing)
+- Created src/artemis/pages/Home2.tsx — a bolder, more cinematic homepage with 9 sections:
+  1. CinematicHero — full-bleed dark hero, 4-slide auto-rotating slideshow (5.5s), word-by-word kinetic headline "Build the next century." (y:110%→0 stagger), grid overlay, dual CTAs, slide indicators, scroll cue
+  2. MetricTicker — auto-scrolling marquee of 6 metrics (5,000+ companies, 200+ unicorns, 190 hubs, 39 countries, etc.) using the existing `scroll` keyframe, pause-on-hover
+  3. ManifestoBand — bold large-type thesis statement + 3-column gap/method/compounding breakdown
+  4. PillarShowcase — interactive 4-tab interface (Infrastructure/Ventures/Capital/Community); clicking a tab swaps the right panel (image + description + 3 stats + CTA) via AnimatePresence, with a layoutId active-bar
+  5. RouteJourney — horizontal-scroll of 6 real route legs (Gulf of Guinea, Sahel, East African, Central, Southern, North Africa) from routes.ts data, each card showing leg number, hub count, subtitle, primary flow, country tags
+  6. VentureGallery — filterable grid (All/Energy/Water/Food&Ag/Materials/Mobility/Education) rendering real ventures from ventures.ts (Helios XCL-101, Ampere, Nimbus, Ceres, etc.) with code, vertical, problem, pilot location, launch model badge
+  7. ImpactNumbers — 4 animated count-up stats (5,000+ / $1T+ / 200+ / 190) using requestAnimationFrame easing
+  8. FlywheelSection — dark section with a rotating dashed ring + central orange "Flywheel" node + 4 satellite pillar nodes positioned via trigonometry, visualizing the compounding loop
+  9. VoicesSection — 3 editorial pull-quotes in a grid
+  10. FinalCTA — full-bleed dark CTA "The next century won't wait." with 3 buttons (Invest/Apply/Join)
+- Added /home-2 route to src/app/page.tsx (imported Home2, added `if (path === "/home-2") return <Home2 />;` immediately after the existing `/` home route — existing home untouched)
+- Added "Home 2" to nav in Layout.tsx:
+  - Desktop: direct link (non-dropdown) as the first item in the nav-links row, before the Company/Platform/Network dropdowns, with an orange "NEW" badge, active-state highlighting
+  - Mobile: dedicated "Home 2" entry as the first item in the mobile menu (before the categorized groups), styled to match the other mobile links, with "NEW" badge
+- Ran `bun run lint` → clean (0 errors)
+- Dev server compiled /home-2 cleanly (✓ Compiled in 285ms, etc.), no code errors
+- Agent Browser verification:
+  - Home 2 loads at #/home-2, title correct, zero console errors
+  - All 9 sections render (verified h1 "Build the next century." + 8 h2 headings + footer)
+  - Pillar tabs interactive: clicked "03 Capital" → panel swapped to Capital stats ("INVESTMENT VEHICLES" label confirmed)
+  - Venture filter interactive: clicked "WATER" → grid narrowed from 9 cards to 3 real Water ventures (Nimbus XCL-105, Ingress XCL-2301, Maelstrom XCL-2302)
+  - 6 route leg cards render with real data (LEG 1 Gulf of Guinea 49 hubs, etc.)
+  - "Home 2 NEW" link present in desktop nav (ref verified) — clicking navigates to #/home-2
+  - "Home 2 NEW" link present as first item in mobile hamburger menu
+  - Original home at #/ fully intact (h1 "VENTURE PLATFORM FOR CRITICAL TECHNOLOGY", bridge paragraph, 4 pillars all present)
+  - Mobile (iPhone 14): hero renders, hamburger menu opens with Home 2 link
+  - Sticky footer: Layout's min-h-screen flex flex-col + main flex-grow pattern intact; footer-bottom never floats above viewport (gapToViewportBottom negative on long page = pushed down naturally)
+  - Dev log clean (the single "Failed to find Server Action" line is a known Next.js dev-mode HMR artifact from a stale browser tab, not from Home 2 code which is a pure client component with no Server Actions)
+
+Stage Summary:
+- New "Home 2" page live at #/home-2 — a cinematic, more interactive homepage (full-bleed hero, animated counters, interactive pillar tabs, filterable venture gallery, flywheel diagram)
+- Added to nav bar (desktop direct link + mobile menu) with a "NEW" badge, without modifying any existing nav items or the original home
+- Existing home at #/ completely untouched and verified working
+- Lint clean, zero runtime errors, browser-verified end-to-end
