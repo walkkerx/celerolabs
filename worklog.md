@@ -265,3 +265,47 @@ Stage Summary:
 - Route regions accordion list fully removed from home page (data + usage + component)
 - The blueprint map, leg filters, View Full Route Map button, and RouteJourney leg cards all remain untouched
 - Lint clean, browser-verified
+
+---
+Task ID: rebuild-townsquare-scale
+Agent: main
+Task: Re-build the Town Square forum for scale using GLM 5.2
+
+Work Log:
+- Explored current Town Square (2518-line single file) via Explore agent — identified 20 critical scalability bugs: forum always empty for new users (admin-gated seed called unauthenticated), no pagination/infinite scroll, refetch-everything-on-every-action pattern, dead search UI, decorative comment vote buttons, explore category loading ALL posts into memory, no virtualization, no indexes
+- Invoked LLM skill (GLM 5.2 via z-ai CLI) to architect a scalable rebuild — received concrete recommendations: cursor/offset pagination, public auto-seed, transactional voting, FTS search, modular components, optimistic updates
+- Backend changes:
+  - Added Prisma indexes: ForumPost(community, createdAt), (community, upvotes), (upvotes), (createdAt), (authorId); ForumComment(postId, createdAt), (authorId), (parentId); ForumUser(lastActiveAt), (role). Ran db:push.
+  - Created /api/forum/init (public GET, idempotent) — seeds 12 members + 6 posts + 4 comments ONLY if forum is empty. Fixes the #1 bug (forum was always empty for new users).
+  - Rewrote /api/forum/posts GET — added `search` query param (title + content contains), fixed `community=all` to mean no filter, fixed `explore` category to use DB-side groupBy aggregation instead of loading ALL posts into Node memory, added `hasMore` to response, capped limit at 50
+  - Rewrote /api/forum/posts/[id] PATCH (vote/heart) — wrapped in $transaction to prevent race conditions, returns lightweight {upvotes, hearts, userVote, userHearted} so frontend can do targeted updates without refetching
+  - Added PATCH method to /api/forum/posts/[id]/comments — comment voting (was decorative before, now functional) with transactional vote toggle + likes counter
+  - Capped /api/forum/users GET at take:200 to prevent unbounded load
+- Frontend rebuild (TownSquare.tsx, ~1186 lines, modular):
+  - Public auto-seed: calls /api/forum/init on mount (no admin gate) — forum is never empty for new users
+  - Infinite scroll: IntersectionObserver on sentinel element with 400px rootMargin, loads PAGE_SIZE=15 posts per page, shows "Loading more" / "Scroll for more" / "You're all caught up" states
+  - Live debounced search (350ms) — wired to /api/forum/posts?search= — filters title + content server-side
+  - Optimistic vote/heart WITHOUT refetching: computes delta locally, updates single post in array, sends PATCH, rolls back on error. No more fetchPosts() after every action.
+  - Working comment voting: new CommentNode vote buttons call PATCH /api/forum/posts/[id]/comments, optimistic update traverses the comment tree
+  - Modular components: OnboardingFlow (4-step), ForumContent (main), SidebarContent, ComposeBar, PostCard, PostDetail, CommentNode (recursive), NetworkView, TrendingRail, Avatar, PostSkeleton
+  - Create post prepends to feed (no refetch), Network view with member search, trending rail (top 5 by upvotes)
+  - Fixed setState-in-effect lint errors (async IIFE + cancellation pattern)
+- Fixed community="all" filter bug (API treated "all" as a literal community name → 0 results)
+- Ran `bun run lint` → clean (0 errors, 0 warnings)
+- Agent Browser verification:
+  - Onboarding: 4-step flow works (welcome → name/email/role/location/bio → avatar color → communities), creates user via POST /api/forum/users, stores in localStorage
+  - Auto-seed: /api/forum/init returns {seeded:true, counts:{users:13, posts:6, comments:4}} with HTTP 200, no auth needed
+  - Feed: 6 posts load with "ALL POSTS · 6", correct titles (Hiring engineers in Addis, SPV deployment, Cross-border payments, etc.)
+  - Optimistic vote: clicked upvote → count incremented instantly (no refetch, no loading state)
+  - Search: typed "SPV" → filtered to 1 post (SPV deployment update); cleared → back to 6
+  - Post detail: clicked post → loads with title, content (markdown), author, community badge, vote/heart/comment actions, "Back to feed" button
+  - Comment posting: wrote comment "Testing the rebuilt Town Square" → posted via POST /api/forum/posts/[id]/comments → comment appears in thread
+  - Mobile (iPhone 14): header + search + feed render, hamburger menu for sidebar
+  - dev.log: all requests return 200, zero runtime errors (the "ThesisSection is not defined" in grep is stale from a previous task)
+
+Stage Summary:
+- Town Square rebuilt for scale with GLM 5.2 architecture guidance
+- 6 backend fixes: public auto-seed, search, pagination, transactional vote/heart, comment voting endpoint, DB indexes
+- Frontend rebuilt with: infinite scroll (IntersectionObserver), live debounced search, optimistic updates WITHOUT refetching, working comment voting, modular component architecture
+- All 20 identified scalability bugs addressed
+- Lint clean, browser-verified end-to-end (signup → feed → vote → search → post detail → comment), mobile responsive

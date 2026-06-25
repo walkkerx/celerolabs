@@ -1,0 +1,702 @@
+   600→                  {avatarUrl && (
+   601→                    <div className="absolute inset-0 rounded-full bg-[#111111]/0 group-hover:bg-[#111111]/30 flex items-center justify-center transition-colors">
+   602→                      <Camera className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+   603→                    </div>
+   604→                  )}
+   605→                </button>
+   606→
+   607→                {avatarUrl && (
+   608→                  <button
+   609→                    onClick={() => {
+   610→                      setAvatarUrl("");
+   611→                      setAvatarFile(null);
+   612→                    }}
+   613→                    className="text-[11px] font-mono font-bold tracking-[0.1em] uppercase text-[#111111]/30 hover:text-[#FF4D00] transition-colors mb-4"
+   614→                  >
+   615→                    Remove photo
+   616→                  </button>
+   617→                )}
+   618→
+   619→                <div className="flex items-center justify-between w-full mt-4">
+   620→                  <button
+   621→                    onClick={goBack}
+   622→                    className="px-5 py-2 text-sm font-bold text-[#111111]/50 hover:bg-[#111111]/5 rounded transition"
+   623→                  >
+   624→                    Back
+   625→                  </button>
+   626→                  <div className="flex items-center gap-3">
+   627→                    <button
+   628→                      onClick={goNext}
+   629→                      className="px-5 py-2 text-sm font-bold text-[#111111]/30 hover:text-[#111111]/50 transition"
+   630→                    >
+   631→                      Skip
+   632→                    </button>
+   633→                    <button
+   634→                      onClick={goNext}
+   635→                      className="flex items-center gap-2 px-6 py-2.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#FF4D00]/90 transition-colors"
+   636→                    >
+   637→                      Continue
+   638→                      <ArrowRight className="w-4 h-4" />
+   639→                    </button>
+   640→                  </div>
+   641→                </div>
+   642→              </div>
+   643→            )}
+   644→
+   645→            {step === 3 && (
+   646→              <div className="flex flex-col">
+   647→                <h2 className="text-2xl font-display font-medium tracking-tight text-[#111111] mb-2">
+   648→                  Choose Your Communities
+   649→                </h2>
+   650→                <p className="text-[14px] text-[#111111]/40 mb-8">
+   651→                  Select at least one community to join. You can always change these later.
+   652→                </p>
+   653→
+   654→                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+   655→                  {COMMUNITIES.map((c) => {
+   656→                    const isSelected = selectedCommunities.includes(c.name);
+   657→                    return (
+   658→                      <button
+   659→                        key={c.name}
+   660→                        onClick={() => toggleCommunity(c.name)}
+   661→                        className={`flex items-center gap-3 p-4 border text-left transition-all ${
+   662→                          isSelected
+   663→                            ? "border-[#FF4D00] bg-[#FF4D00]/5"
+   664→                            : "border-[#111111]/10 hover:border-[#111111]/20"
+   665→                        }`}
+   666→                      >
+   667→                        <div
+   668→                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${c.color} relative`}
+   669→                        >
+   670→                          <span className="text-[10px] font-bold text-white uppercase">
+   671→                            {c.name[0]}
+   672→                          </span>
+   673→                          {isSelected && (
+   674→                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#FF4D00] rounded-full flex items-center justify-center">
+   675→                              <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+   676→                            </div>
+   677→                          )}
+   678→                        </div>
+   679→                        <div className="flex-1 min-w-0">
+   680→                          <span
+   681→                            className={`text-[13px] font-medium block truncate ${
+   682→                              isSelected ? "text-[#111111]" : "text-[#111111]/60"
+   683→                            }`}
+   684→                          >
+   685→                            {c.name}
+   686→                          </span>
+   687→                        </div>
+   688→                      </button>
+   689→                    );
+   690→                  })}
+   691→                </div>
+   692→
+   693→                <div className="flex items-center justify-between mt-8">
+   694→                  <button
+   695→                    onClick={goBack}
+   696→                    className="px-5 py-2 text-sm font-bold text-[#111111]/50 hover:bg-[#111111]/5 rounded transition"
+   697→                  >
+   698→                    Back
+   699→                  </button>
+   700→                  <button
+   701→                    onClick={handleComplete}
+   702→                    disabled={selectedCommunities.length === 0 || isSubmitting}
+   703→                    className="flex items-center gap-2 px-6 py-2.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FF4D00]/90 transition-colors"
+   704→                  >
+   705→                    {isSubmitting ? (
+   706→                      <Loader2 className="w-4 h-4 animate-spin" />
+   707→                    ) : (
+   708→                      <ArrowRight className="w-4 h-4" />
+   709→                    )}
+   710→                    {isSubmitting ? "Creating..." : "Enter Town Square"}
+   711→                  </button>
+   712→                </div>
+   713→              </div>
+   714→            )}
+   715→          </div>
+   716→      </div>
+   717→    </div>
+   718→  );
+   719→}
+   720→
+   721→/* ══════════════════════════════════════════════════════════════════════════
+   722→   EDIT PROFILE MODAL
+   723→   ══════════════════════════════════════════════════════════════════════════ */
+   724→function EditProfileModal({
+   725→  user,
+   726→  onClose,
+   727→  onSave,
+   728→}: {
+   729→  user: ForumUser;
+   730→  onClose: () => void;
+   731→  onSave: (updatedUser: ForumUser) => void;
+   732→}) {
+   733→  const [name, setName] = useState(user.name);
+   734→  const [bio, setBio] = useState(user.bio || "");
+   735→  const [location, setLocation] = useState(user.location || "");
+   736→  const [role, setRole] = useState(user.role);
+   737→  const [selectedCommunities, setSelectedCommunities] = useState<string[]>(
+   738→    parseCommunities(user.communities)
+   739→  );
+   740→  const [avatarUrl, setAvatarUrl] = useState<string>(user.avatarUrl || "");
+   741→  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+   742→  const [isSaving, setIsSaving] = useState(false);
+   743→
+   744→  const toggleCommunity = (c: string) => {
+   745→    setSelectedCommunities((prev) =>
+   746→      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
+   747→    );
+   748→  };
+   749→
+   750→  const handleSave = async () => {
+   751→    setIsSaving(true);
+   752→    try {
+   753→      let finalAvatarUrl = avatarUrl;
+   754→
+   755→      // Upload new avatar if a file was selected
+   756→      if (avatarFile) {
+   757→        const formData = new FormData();
+   758→        formData.append("file", avatarFile);
+   759→        const uploadRes = await fetch("/api/upload", {
+   760→          method: "POST",
+   761→          body: formData,
+   762→        });
+   763→        if (uploadRes.ok) {
+   764→          const uploadData = await uploadRes.json();
+   765→          finalAvatarUrl = uploadData.url;
+   766→        }
+   767→      }
+   768→
+   769→      const res = await fetch("/api/forum/users", {
+   770→        method: "PUT",
+   771→        headers: { "Content-Type": "application/json" },
+   772→        body: JSON.stringify({
+   773→          id: user.id,
+   774→          name,
+   775→          bio: bio || null,
+   776→          role,
+   777→          location: location || null,
+   778→          avatarUrl: finalAvatarUrl || null,
+   779→          communities: selectedCommunities,
+   780→        }),
+   781→      });
+   782→
+   783→      if (res.ok) {
+   784→        const updatedUser: ForumUser = await res.json();
+   785→        onSave(updatedUser);
+   786→        onClose();
+   787→      }
+   788→    } catch (err) {
+   789→      console.error("Failed to save profile:", err);
+   790→    } finally {
+   791→      setIsSaving(false);
+   792→    }
+   793→  };
+   794→
+   795→  return (
+   796→    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#111111]/50" onClick={onClose}>
+   797→      <motion.div
+   798→        initial={{ opacity: 0, scale: 0.95 }}
+   799→        animate={{ opacity: 1, scale: 1 }}
+   800→        exit={{ opacity: 0, scale: 0.95 }}
+   801→        className="bg-white w-full max-w-[520px] max-h-[90vh] overflow-y-auto mx-4 shadow-xl"
+   802→        onClick={(e) => e.stopPropagation()}
+   803→      >
+   804→        {/* Header */}
+   805→        <div className="flex items-center justify-between px-6 py-4 border-b border-[#111111]/10">
+   806→          <h2 className="text-lg font-display font-medium tracking-tight text-[#111111]">
+   807→            Edit Profile
+   808→          </h2>
+   809→          <button onClick={onClose} className="p-1 hover:bg-[#111111]/5 rounded transition-colors">
+   810→            <X className="w-5 h-5 text-[#111111]/40" />
+   811→          </button>
+   812→        </div>
+   813→
+   814→        {/* Body */}
+   815→        <div className="p-6 space-y-5">
+   816→          {/* Avatar */}
+   817→          <div className="flex flex-col items-center">
+   818→            <input
+   819→              type="file"
+   820→              accept="image/*"
+   821→              id="avatar-upload-edit"
+   822→              className="hidden"
+   823→              onChange={(e) => {
+   824→                const file = e.target.files?.[0];
+   825→                if (file) {
+   826→                  setAvatarFile(file);
+   827→                  setAvatarUrl(URL.createObjectURL(file));
+   828→                }
+   829→              }}
+   830→            />
+   831→            <button
+   832→              onClick={() => document.getElementById("avatar-upload-edit")?.click()}
+   833→              className="relative group mb-3"
+   834→            >
+   835→              <div
+   836→                className="w-[80px] h-[80px] rounded-full overflow-hidden flex items-center justify-center border-2 border-dashed border-[#111111]/20 group-hover:border-[#FF4D00]/40 transition-colors"
+   837→                style={avatarUrl ? {} : { backgroundColor: user.avatarColor }}
+   838→              >
+   839→                {avatarUrl ? (
+   840→                  <img src={avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
+   841→                ) : (
+   842→                  <Camera className="w-7 h-7 text-white/70" />
+   843→                )}
+   844→              </div>
+   845→              {avatarUrl && (
+   846→                <div className="absolute inset-0 rounded-full bg-[#111111]/0 group-hover:bg-[#111111]/30 flex items-center justify-center transition-colors">
+   847→                  <Camera className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+   848→                </div>
+   849→              )}
+   850→            </button>
+   851→            <span className="text-[11px] text-[#111111]/30">Click to change photo</span>
+   852→          </div>
+   853→
+   854→          {/* Name */}
+   855→          <div>
+   856→            <label className="flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+   857→              <User className="w-3.5 h-3.5" />
+   858→              Display Name
+   859→            </label>
+   860→            <input
+   861→              type="text"
+   862→              value={name}
+   863→              onChange={(e) => setName(e.target.value)}
+   864→              className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] outline-none transition"
+   865→            />
+   866→          </div>
+   867→
+   868→          {/* Role */}
+   869→          <div>
+   870→            <label className="text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-3 block">
+   871→              Role
+   872→            </label>
+   873→            <div className="flex flex-wrap gap-2">
+   874→              {ROLES.map((r) => (
+   875→                <button
+   876→                  key={r}
+   877→                  onClick={() => setRole(r)}
+   878→                  className={`flex items-center gap-2 px-4 py-2.5 border text-[12px] font-bold uppercase tracking-[0.05em] transition-all ${
+   879→                    role === r
+   880→                      ? "border-[#FF4D00] bg-[#FF4D00]/5 text-[#FF4D00]"
+   881→                      : "border-[#111111]/10 text-[#111111]/40 hover:border-[#111111]/20 hover:text-[#111111]/60"
+   882→                  }`}
+   883→                >
+   884→                  {role === r && <Check className="w-3.5 h-3.5" />}
+   885→                  {r}
+   886→                </button>
+   887→              ))}
+   888→            </div>
+   889→          </div>
+   890→
+   891→          {/* Bio */}
+   892→          <div>
+   893→            <label className="text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2 block">
+   894→              Bio
+   895→            </label>
+   896→            <textarea
+   897→              value={bio}
+   898→              onChange={(e) => setBio(e.target.value)}
+   899→              placeholder="A short bio about yourself"
+   900→              rows={3}
+   901→              className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] placeholder-[#111111]/30 outline-none transition resize-y"
+   902→            />
+   903→          </div>
+   904→
+   905→          {/* Location */}
+   906→          <div>
+   907→            <label className="flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+   908→              <MapPin className="w-3.5 h-3.5" />
+   909→              Location
+   910→            </label>
+   911→            <input
+   912→              type="text"
+   913→              value={location}
+   914→              onChange={(e) => setLocation(e.target.value)}
+   915→              placeholder="Lagos, Nairobi, Accra..."
+   916→              className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] placeholder-[#111111]/30 outline-none transition"
+   917→            />
+   918→          </div>
+   919→
+   920→          {/* Communities */}
+   921→          <div>
+   922→            <label className="text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-3 block">
+   923→              Communities
+   924→            </label>
+   925→            <div className="grid grid-cols-2 gap-2">
+   926→              {COMMUNITIES.map((c) => {
+   927→                const isSelected = selectedCommunities.includes(c.name);
+   928→                return (
+   929→                  <button
+   930→                    key={c.name}
+   931→                    onClick={() => toggleCommunity(c.name)}
+   932→                    className={`flex items-center gap-2 p-3 border text-left transition-all ${
+   933→                      isSelected
+   934→                        ? "border-[#FF4D00] bg-[#FF4D00]/5"
+   935→                        : "border-[#111111]/10 hover:border-[#111111]/20"
+   936→                    }`}
+   937→                  >
+   938→                    <div
+   939→                      className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${c.color} relative`}
+   940→                    >
+   941→                      <span className="text-[8px] font-bold text-white uppercase">
+   942→                        {c.name[0]}
+   943→                      </span>
+   944→                    </div>
+   945→                    <span
+   946→                      className={`text-[11px] font-medium block truncate ${
+   947→                        isSelected ? "text-[#111111]" : "text-[#111111]/60"
+   948→                      }`}
+   949→                    >
+   950→                      {c.name}
+   951→                    </span>
+   952→                  </button>
+   953→                );
+   954→              })}
+   955→            </div>
+   956→          </div>
+   957→        </div>
+   958→
+   959→        {/* Footer */}
+   960→        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#111111]/10">
+   961→          <button
+   962→            onClick={onClose}
+   963→            className="px-5 py-2 text-sm font-bold text-[#111111]/50 hover:bg-[#111111]/5 rounded transition"
+   964→          >
+   965→            Cancel
+   966→          </button>
+   967→          <button
+   968→            onClick={handleSave}
+   969→            disabled={!name.trim() || isSaving}
+   970→            className="flex items-center gap-2 px-6 py-2.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FF4D00]/90 transition-colors"
+   971→          >
+   972→            {isSaving ? (
+   973→              <Loader2 className="w-4 h-4 animate-spin" />
+   974→            ) : (
+   975→              <Save className="w-4 h-4" />
+   976→            )}
+   977→            {isSaving ? "Saving..." : "Save Changes"}
+   978→          </button>
+   979→        </div>
+   980→      </motion.div>
+   981→    </div>
+   982→  );
+   983→}
+   984→
+   985→/* ══════════════════════════════════════════════════════════════════════════
+   986→   FORUM CONTENT (separated to avoid hooks-after-return issues)
+   987→   ══════════════════════════════════════════════════════════════════════════ */
+   988→function ForumContent({ user: initialUser }: { user: ForumUser }) {
+   989→  const { navigate } = useRouter();
+   990→  const [user, setUser] = useState<ForumUser>(initialUser);
+   991→  const userId = user.id;
+   992→  const userName = user.name;
+   993→  const userAvatarColor = user.avatarColor;
+   994→
+   995→  const [posts, setPosts] = useState<ForumPost[]>([]);
+   996→  const [postsLoading, setPostsLoading] = useState(true);
+   997→  const [activeCommunity, setActiveCommunity] = useState<string>("all");
+   998→  const [activeCategory, setActiveCategory] = useState<string>("home");
+   999→  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  1000→  const [selectedPost, setSelectedPost] = useState<(ForumPost & { comments: ForumComment[] }) | null>(null);
+  1001→  const [postDetailLoading, setPostDetailLoading] = useState(false);
+  1002→  const [commentText, setCommentText] = useState("");
+  1003→  const [replyingToCommentId, setReplyingToCommentId] = useState<string | null>(null);
+  1004→  const [replyContent, setReplyContent] = useState("");
+  1005→  const [newTitle, setNewTitle] = useState("");
+  1006→  const [newContent, setNewContent] = useState("");
+  1007→  const [isComposing, setIsComposing] = useState(false);
+  1008→  const [submittingPost, setSubmittingPost] = useState(false);
+  1009→  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  1010→  const [showProfile, setShowProfile] = useState(false);
+  1011→  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  1012→  const [selectedMember, setSelectedMember] = useState<(ForumUser & { posts: ForumPost[]; commentCount: number }) | null>(null);
+  1013→  const [memberDetailLoading, setMemberDetailLoading] = useState(false);
+  1014→  const [networkMembers, setNetworkMembers] = useState<ForumUser[]>([]);
+  1015→  const [networkLoading, setNetworkLoading] = useState(false);
+  1016→  const [networkSearch, setNetworkSearch] = useState("");
+  1017→  const [newCommunity, setNewCommunity] = useState<string>(
+  1018→    COMMUNITIES[0].name
+  1019→  );
+  1020→  const [actionLoading, setActionLoading] = useState<Record<string, boolean>>({});
+  1021→  const [showEditProfile, setShowEditProfile] = useState(false);
+  1022→
+  1023→  // Fetch posts from API
+  1024→  const fetchPosts = useCallback(async () => {
+  1025→    try {
+  1026→      const params = new URLSearchParams();
+  1027→      if (activeCommunity !== "all") params.set("community", activeCommunity);
+  1028→      if (activeCategory !== "network") params.set("category", activeCategory);
+  1029→      params.set("userId", userId);
+  1030→      params.set("limit", "50");
+  1031→
+  1032→      const res = await fetch(`/api/forum/posts?${params.toString()}`);
+  1033→      if (res.ok) {
+  1034→        const data = await res.json();
+  1035→        setPosts(data.posts || []);
+  1036→      }
+  1037→    } catch (err) {
+  1038→      console.error("Failed to fetch posts:", err);
+  1039→    } finally {
+  1040→      setPostsLoading(false);
+  1041→    }
+  1042→  }, [activeCommunity, activeCategory, userId]);
+  1043→
+  1044→  // Initial seed + fetch
+  1045→  useEffect(() => {
+  1046→    const init = async () => {
+  1047→      // Seed on first load
+  1048→      await fetch("/api/forum/seed", { method: "POST" }).catch(() => {});
+  1049→      await fetchPosts();
+  1050→    };
+  1051→    init();
+  1052→  }, []);
+  1053→
+  1054→  // Re-fetch when filters change
+  1055→  useEffect(() => {
+  1056→    if (activeCategory !== "network") {
+  1057→      setPostsLoading(true);
+  1058→      fetchPosts();
+  1059→    }
+  1060→  }, [activeCommunity, activeCategory, fetchPosts]);
+  1061→
+  1062→  // Fetch network members when category is network
+  1063→  useEffect(() => {
+  1064→    if (activeCategory === "network") {
+  1065→      const fetchMembers = async () => {
+  1066→        setNetworkLoading(true);
+  1067→        try {
+  1068→          const res = await fetch("/api/forum/users");
+  1069→          if (res.ok) {
+  1070→            const data = await res.json();
+  1071→            setNetworkMembers(data.users || []);
+  1072→          }
+  1073→        } catch (err) {
+  1074→          console.error("Failed to fetch members:", err);
+  1075→        } finally {
+  1076→          setNetworkLoading(false);
+  1077→        }
+  1078→      };
+  1079→      fetchMembers();
+  1080→    }
+  1081→  }, [activeCategory]);
+  1082→
+  1083→  // Fetch selected post detail when selectedPostId changes
+  1084→  useEffect(() => {
+  1085→    if (!selectedPostId) {
+  1086→      setSelectedPost(null);
+  1087→      return;
+  1088→    }
+  1089→    const fetchPostDetail = async () => {
+  1090→      setPostDetailLoading(true);
+  1091→      try {
+  1092→        const res = await fetch(`/api/forum/posts/${selectedPostId}?userId=${userId}`);
+  1093→        if (res.ok) {
+  1094→          const data = await res.json();
+  1095→          setSelectedPost(data);
+  1096→        }
+  1097→      } catch (err) {
+  1098→        console.error("Failed to fetch post detail:", err);
+  1099→      } finally {
+  1100→        setPostDetailLoading(false);
+  1101→      }
+  1102→    };
+  1103→    fetchPostDetail();
+  1104→  }, [selectedPostId, userId]);
+  1105→
+  1106→  // Fetch selected member detail
+  1107→  useEffect(() => {
+  1108→    if (!selectedMemberId) {
+  1109→      setSelectedMember(null);
+  1110→      return;
+  1111→    }
+  1112→    const fetchMemberDetail = async () => {
+  1113→      setMemberDetailLoading(true);
+  1114→      try {
+  1115→        const res = await fetch(`/api/forum/users/${selectedMemberId}`);
+  1116→        if (res.ok) {
+  1117→          const data = await res.json();
+  1118→          setSelectedMember(data);
+  1119→        }
+  1120→      } catch (err) {
+  1121→        console.error("Failed to fetch member detail:", err);
+  1122→      } finally {
+  1123→        setMemberDetailLoading(false);
+  1124→      }
+  1125→    };
+  1126→    fetchMemberDetail();
+  1127→  }, [selectedMemberId]);
+  1128→
+  1129→  // Close profile dropdown when clicking outside
+  1130→  useEffect(() => {
+  1131→    if (!showProfile) return;
+  1132→    const handleClickOutside = () => setShowProfile(false);
+  1133→    document.addEventListener("click", handleClickOutside);
+  1134→    return () => document.removeEventListener("click", handleClickOutside);
+  1135→  }, [showProfile]);
+  1136→
+  1137→  // Create post
+  1138→  const handleCreatePost = async (e: React.FormEvent) => {
+  1139→    e.preventDefault();
+  1140→    if (!newTitle.trim() || submittingPost) return;
+  1141→    setSubmittingPost(true);
+  1142→    try {
+  1143→      const res = await fetch("/api/forum/posts", {
+  1144→        method: "POST",
+  1145→        headers: { "Content-Type": "application/json" },
+  1146→        body: JSON.stringify({
+  1147→          authorId: userId,
+  1148→          community: newCommunity,
+  1149→          title: newTitle,
+  1150→          content: newContent || undefined,
+  1151→        }),
+  1152→      });
+  1153→      if (res.ok) {
+  1154→        setNewTitle("");
+  1155→        setNewContent("");
+  1156→        setIsComposing(false);
+  1157→        await fetchPosts();
+  1158→      }
+  1159→    } catch (err) {
+  1160→      console.error("Failed to create post:", err);
+  1161→    } finally {
+  1162→      setSubmittingPost(false);
+  1163→    }
+  1164→  };
+  1165→
+  1166→  // Vote
+  1167→  const handleVote = async (id: string, dir: "up" | "down", e: React.MouseEvent) => {
+  1168→    e.stopPropagation();
+  1169→    if (actionLoading[`vote-${id}`]) return;
+  1170→    setActionLoading((prev) => ({ ...prev, [`vote-${id}`]: true }));
+  1171→
+  1172→    // Optimistic update
+  1173→    setPosts((prev) =>
+  1174→      prev.map((p) => {
+  1175→        if (p.id !== id) return p;
+  1176→        let diff = 0;
+  1177→        let nextVote: "up" | "down" | null = dir;
+  1178→        if (p.userVote === dir) {
+  1179→          diff = dir === "up" ? -1 : 1;
+  1180→          nextVote = null;
+  1181→        } else if (p.userVote === null) {
+  1182→          diff = dir === "up" ? 1 : -1;
+  1183→        } else {
+  1184→          diff = dir === "up" ? 2 : -2;
+  1185→        }
+  1186→        return { ...p, userVote: nextVote, upvotes: p.upvotes + diff };
+  1187→      })
+  1188→    );
+  1189→
+  1190→    try {
+  1191→      await fetch(`/api/forum/posts/${id}`, {
+  1192→        method: "PATCH",
+  1193→        headers: { "Content-Type": "application/json" },
+  1194→        body: JSON.stringify({ action: "vote", userId, direction: dir }),
+  1195→      });
+  1196→      // Refetch to get accurate counts
+  1197→      await fetchPosts();
+  1198→      // Also refresh detail view if this is the selected post
+  1199→      if (selectedPostId === id) {
+  1200→        const res = await fetch(`/api/forum/posts/${id}?userId=${userId}`);
+  1201→        if (res.ok) setSelectedPost(await res.json());
+  1202→      }
+  1203→    } catch (err) {
+  1204→      console.error("Failed to vote:", err);
+  1205→      await fetchPosts();
+  1206→    } finally {
+  1207→      setActionLoading((prev) => ({ ...prev, [`vote-${id}`]: false }));
+  1208→    }
+  1209→  };
+  1210→
+  1211→  // Heart
+  1212→  const handleHeart = async (id: string, e: React.MouseEvent) => {
+  1213→    e.stopPropagation();
+  1214→    if (actionLoading[`heart-${id}`]) return;
+  1215→    setActionLoading((prev) => ({ ...prev, [`heart-${id}`]: true }));
+  1216→
+  1217→    // Optimistic update
+  1218→    setPosts((prev) =>
+  1219→      prev.map((p) => {
+  1220→        if (p.id !== id) return p;
+  1221→        return { ...p, userHearted: !p.userHearted, hearts: p.hearts + (p.userHearted ? -1 : 1) };
+  1222→      })
+  1223→    );
+  1224→
+  1225→    try {
+  1226→      await fetch(`/api/forum/posts/${id}`, {
+  1227→        method: "PATCH",
+  1228→        headers: { "Content-Type": "application/json" },
+  1229→        body: JSON.stringify({ action: "heart", userId }),
+  1230→      });
+  1231→      await fetchPosts();
+  1232→      if (selectedPostId === id) {
+  1233→        const res = await fetch(`/api/forum/posts/${id}?userId=${userId}`);
+  1234→        if (res.ok) setSelectedPost(await res.json());
+  1235→      }
+  1236→    } catch (err) {
+  1237→      console.error("Failed to heart:", err);
+  1238→      await fetchPosts();
+  1239→    } finally {
+  1240→      setActionLoading((prev) => ({ ...prev, [`heart-${id}`]: false }));
+  1241→    }
+  1242→  };
+  1243→
+  1244→  // Add comment
+  1245→  const handleAddComment = async (postId: string) => {
+  1246→    if (!commentText.trim()) return;
+  1247→    try {
+  1248→      const res = await fetch(`/api/forum/posts/${postId}/comments`, {
+  1249→        method: "POST",
+  1250→        headers: { "Content-Type": "application/json" },
+  1251→        body: JSON.stringify({ authorId: userId, content: commentText }),
+  1252→      });
+  1253→      if (res.ok) {
+  1254→        setCommentText("");
+  1255→        // Refresh post detail
+  1256→        const detailRes = await fetch(`/api/forum/posts/${postId}?userId=${userId}`);
+  1257→        if (detailRes.ok) setSelectedPost(await detailRes.json());
+  1258→        await fetchPosts();
+  1259→      }
+  1260→    } catch (err) {
+  1261→      console.error("Failed to add comment:", err);
+  1262→    }
+  1263→  };
+  1264→
+  1265→  // Add reply
+  1266→  const handleAddReply = async (postId: string, commentId: string) => {
+  1267→    if (!replyContent.trim()) return;
+  1268→    try {
+  1269→      const res = await fetch(`/api/forum/posts/${postId}/comments`, {
+  1270→        method: "POST",
+  1271→        headers: { "Content-Type": "application/json" },
+  1272→        body: JSON.stringify({ authorId: userId, content: replyContent, parentId: commentId }),
+  1273→      });
+  1274→      if (res.ok) {
+  1275→        setReplyContent("");
+  1276→        setReplyingToCommentId(null);
+  1277→        // Refresh post detail
+  1278→        const detailRes = await fetch(`/api/forum/posts/${postId}?userId=${userId}`);
+  1279→        if (detailRes.ok) setSelectedPost(await detailRes.json());
+  1280→        await fetchPosts();
+  1281→      }
+  1282→    } catch (err) {
+  1283→      console.error("Failed to add reply:", err);
+  1284→    }
+  1285→  };
+  1286→
+  1287→  const filteredPosts = useMemo(() => {
+  1288→    let result = posts;
+  1289→    // The API already filters by community and category, but for client-side "all" we need the full set
+  1290→    return result;
+  1291→  }, [posts]);
+  1292→
+  1293→  const userCommunities = parseCommunities(user.communities);
+  1294→
+  1295→  // Edit Profile Modal
+  1296→  const editProfileModal = showEditProfile && (
+  1297→    <EditProfileModal
+  1298→      user={user}
+  1299→      onClose={() => setShowEditProfile(false)}
+
+[showing lines 600-1299 of 2519; use offset=1300 with limit to continue reading]

@@ -2,17 +2,28 @@ import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 import { isValidInput } from '@/lib/auth'
 
-// GET /api/forum/posts - List posts with pagination and filtering
+// GET /api/forum/posts - List posts with pagination, filtering, and search
+// Query params: community, category (home|popular|news|explore), userId, page, limit, search, cursor
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const community = searchParams.get('community') || ''
+    const communityRaw = searchParams.get('community') || ''
+    const community = communityRaw === 'all' ? '' : communityRaw
     const category = searchParams.get('category') || 'home'
     const userId = searchParams.get('userId') || ''
-    const page = Math.min(Math.max(parseInt(searchParams.get('page') || '1', 10), 1), 100)
-    const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '20', 10), 1), 50)
+    const search = searchParams.get('search') || ''
+    const page = Math.min(Math.max(parseInt(searchParams.get('page') || '1', 10), 1), 200)
+    const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '15', 10), 1), 50)
 
-    const where = community ? { community } : {}
+    // Build where clause
+    const where: Record<string, unknown> = {}
+    if (community) where.community = community
+    if (search) {
+      where.OR = [
+        { title: { contains: search } },
+        { content: { contains: search } },
+      ]
+    }
 
     const total = await db.forumPost.count({ where })
     const totalPages = Math.ceil(total / limit)
@@ -21,14 +32,50 @@ export async function GET(request: NextRequest) {
     let orderBy: Record<string, string> = { createdAt: 'desc' }
     if (category === 'popular') {
       orderBy = { upvotes: 'desc' }
-    } else if (category === 'news') {
-      orderBy = { createdAt: 'desc' }
     }
 
-    // For "explore" category, sort by comment count desc
+    const skip = (page - 1) * limit
+
+    // For "explore" category, sort by comment count using a groupBy + take approach
+    // instead of loading ALL posts into memory.
     if (category === 'explore') {
-      const allPosts = await db.forumPost.findMany({
-        where,
+      // Get post IDs ordered by comment count via groupBy (DB-side aggregation)
+      const commentCounts = await db.forumComment.groupBy({
+        by: ['postId'],
+        _count: { postId: true },
+        orderBy: { _count: { postId: 'desc' } },
+        take: skip + limit,
+      })
+      const postIds = commentCounts.slice(skip, skip + limit).map((c) => c.postId)
+
+      if (postIds.length === 0) {
+        // Fallback: if no comments exist, show newest posts
+        const fallback = await db.forumPost.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          take: limit,
+          include: {
+            author: true,
+            _count: { select: { comments: true } },
+            votes: userId ? { where: { userId } } : false,
+            heartUsers: userId ? { where: { userId } } : false,
+          },
+        })
+        const posts = fallback.map((post) => ({
+          ...post,
+          commentCount: post._count.comments,
+          userVote: post.votes?.[0]?.direction || null,
+          userHearted: (post.heartUsers?.length ?? 0) > 0,
+          _count: undefined,
+          votes: undefined,
+          heartUsers: undefined,
+        }))
+        return NextResponse.json({ posts, total, page, totalPages, hasMore: page < totalPages })
+      }
+
+      // Fetch the full posts for those IDs, preserving comment-count order
+      const dbPosts = await db.forumPost.findMany({
+        where: { id: { in: postIds } },
         include: {
           author: true,
           _count: { select: { comments: true } },
@@ -36,13 +83,11 @@ export async function GET(request: NextRequest) {
           heartUsers: userId ? { where: { userId } } : false,
         },
       })
+      // Re-sort to match the groupBy order
+      const orderMap = new Map(postIds.map((id, i) => [id, i]))
+      dbPosts.sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0))
 
-      allPosts.sort((a, b) => b._count.comments - a._count.comments)
-
-      const skip = (page - 1) * limit
-      const paginatedPosts = allPosts.slice(skip, skip + limit)
-
-      const posts = paginatedPosts.map((post) => ({
+      const posts = dbPosts.map((post) => ({
         ...post,
         commentCount: post._count.comments,
         userVote: post.votes?.[0]?.direction || null,
@@ -51,11 +96,8 @@ export async function GET(request: NextRequest) {
         votes: undefined,
         heartUsers: undefined,
       }))
-
-      return NextResponse.json({ posts, total, page, totalPages })
+      return NextResponse.json({ posts, total, page, totalPages, hasMore: page < totalPages })
     }
-
-    const skip = (page - 1) * limit
 
     const dbPosts = await db.forumPost.findMany({
       where,
@@ -80,7 +122,7 @@ export async function GET(request: NextRequest) {
       heartUsers: undefined,
     }))
 
-    return NextResponse.json({ posts, total, page, totalPages })
+    return NextResponse.json({ posts, total, page, totalPages, hasMore: page < totalPages })
   } catch (error) {
     console.error('Error fetching forum posts:', error)
     return NextResponse.json(
@@ -136,10 +178,17 @@ export async function POST(request: NextRequest) {
       },
       include: {
         author: true,
+        _count: { select: { comments: true } },
       },
     })
 
-    return NextResponse.json(post, { status: 201 })
+    return NextResponse.json({
+      ...post,
+      commentCount: post._count.comments,
+      userVote: null,
+      userHearted: false,
+      _count: undefined,
+    }, { status: 201 })
   } catch (error) {
     console.error('Error creating forum post:', error)
     return NextResponse.json(

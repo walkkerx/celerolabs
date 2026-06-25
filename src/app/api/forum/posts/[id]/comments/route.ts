@@ -87,3 +87,103 @@ export async function POST(
     )
   }
 }
+
+// PATCH /api/forum/posts/[id]/comments - Vote on a comment
+// Body: { action: "vote", userId, commentId, direction: "up"|"down" }
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+    const body = await request.json()
+    const { action, userId, commentId, direction } = body
+
+    if (action !== 'vote') {
+      return NextResponse.json(
+        { error: 'Invalid action. Must be "vote"' },
+        { status: 400 }
+      )
+    }
+    if (!userId || !commentId) {
+      return NextResponse.json(
+        { error: 'userId and commentId are required' },
+        { status: 400 }
+      )
+    }
+    if (!direction || (direction !== 'up' && direction !== 'down')) {
+      return NextResponse.json(
+        { error: 'direction must be "up" or "down"' },
+        { status: 400 }
+      )
+    }
+    if (!isValidInput(id, 100) || !isValidInput(userId, 100) || !isValidInput(commentId, 100)) {
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+    }
+
+    // Verify user + comment exist
+    const actingUser = await db.forumUser.findUnique({ where: { id: userId } })
+    if (!actingUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+    const comment = await db.forumComment.findUnique({ where: { id: commentId } })
+    if (!comment || comment.postId !== id) {
+      return NextResponse.json({ error: 'Comment not found' }, { status: 404 })
+    }
+
+    // Transaction: vote toggle + likes counter update
+    const result = await db.$transaction(async (tx) => {
+      const existingVote = await tx.forumVote.findUnique({
+        where: { userId_commentId: { userId, commentId } },
+      })
+
+      let userVote: string | null = direction
+
+      if (existingVote) {
+        if (existingVote.direction === direction) {
+          // Same direction: remove vote
+          await tx.forumVote.delete({ where: { id: existingVote.id } })
+          await tx.forumComment.update({
+            where: { id: commentId },
+            data: { likes: { increment: direction === 'up' ? -1 : 1 } },
+          })
+          userVote = null
+        } else {
+          // Opposite: flip
+          await tx.forumVote.update({
+            where: { id: existingVote.id },
+            data: { direction },
+          })
+          await tx.forumComment.update({
+            where: { id: commentId },
+            data: { likes: { increment: direction === 'up' ? 2 : -2 } },
+          })
+          userVote = direction
+        }
+      } else {
+        await tx.forumVote.create({
+          data: { userId, commentId, direction },
+        })
+        await tx.forumComment.update({
+          where: { id: commentId },
+          data: { likes: { increment: direction === 'up' ? 1 : -1 } },
+        })
+        userVote = direction
+      }
+
+      const updated = await tx.forumComment.findUnique({
+        where: { id: commentId },
+        select: { likes: true },
+      })
+      return { likes: updated?.likes ?? 0, userVote }
+    })
+
+    return NextResponse.json(result)
+  } catch (error) {
+    console.error('Error voting on comment:', error)
+    return NextResponse.json(
+      { error: 'Failed to vote on comment' },
+      { status: 500 }
+    )
+  }
+}

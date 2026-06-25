@@ -109,6 +109,9 @@ export async function GET(
 }
 
 // PATCH /api/forum/posts/[id] - Update post (vote/heart actions)
+// Wrapped in transactions to prevent race conditions.
+// Returns lightweight { upvotes, hearts, userVote, userHearted } so the frontend
+// can do targeted state updates without refetching the full post list.
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -152,74 +155,104 @@ export async function PATCH(
         )
       }
 
-      const existingVote = await db.forumVote.findUnique({
-        where: { userId_postId: { userId, postId: id } },
-      })
+      // Transaction: read existing vote, mutate, update counter — atomically
+      const result = await db.$transaction(async (tx) => {
+        const existingVote = await tx.forumVote.findUnique({
+          where: { userId_postId: { userId, postId: id } },
+        })
 
-      if (existingVote) {
-        if (existingVote.direction === direction) {
-          await db.forumVote.delete({
-            where: { id: existingVote.id },
-          })
-          await db.forumPost.update({
-            where: { id },
-            data: { upvotes: { increment: direction === 'up' ? -1 : 1 } },
-          })
+        let userVote: string | null = direction
+
+        if (existingVote) {
+          if (existingVote.direction === direction) {
+            // Same direction: remove vote
+            await tx.forumVote.delete({ where: { id: existingVote.id } })
+            await tx.forumPost.update({
+              where: { id },
+              data: { upvotes: { increment: direction === 'up' ? -1 : 1 } },
+            })
+            userVote = null
+          } else {
+            // Opposite direction: flip vote
+            await tx.forumVote.update({
+              where: { id: existingVote.id },
+              data: { direction },
+            })
+            await tx.forumPost.update({
+              where: { id },
+              data: { upvotes: { increment: direction === 'up' ? 2 : -2 } },
+            })
+            userVote = direction
+          }
         } else {
-          await db.forumVote.update({
-            where: { id: existingVote.id },
-            data: { direction },
+          // No existing vote: create
+          await tx.forumVote.create({
+            data: { userId, postId: id, direction },
           })
-          await db.forumPost.update({
+          await tx.forumPost.update({
             where: { id },
-            data: { upvotes: { increment: direction === 'up' ? 2 : -2 } },
+            data: { upvotes: { increment: direction === 'up' ? 1 : -1 } },
           })
+          userVote = direction
         }
-      } else {
-        await db.forumVote.create({
-          data: { userId, postId: id, direction },
-        })
-        await db.forumPost.update({
-          where: { id },
-          data: { upvotes: { increment: direction === 'up' ? 1 : -1 } },
-        })
-      }
 
-      const updatedPost = await db.forumPost.findUnique({
-        where: { id },
-        include: { author: true },
+        const updated = await tx.forumPost.findUnique({
+          where: { id },
+          select: { upvotes: true, hearts: true },
+        })
+        return { upvotes: updated?.upvotes ?? 0, hearts: updated?.hearts ?? 0, userVote }
       })
-      return NextResponse.json(updatedPost)
+
+      return NextResponse.json({
+        upvotes: result.upvotes,
+        hearts: result.hearts,
+        userVote: result.userVote,
+        userHearted: (await db.forumHeart.findUnique({
+          where: { userId_postId: { userId, postId: id } },
+        })) !== null,
+      })
     }
 
     if (action === 'heart') {
-      const existingHeart = await db.forumHeart.findUnique({
-        where: { userId_postId: { userId, postId: id } },
+      const result = await db.$transaction(async (tx) => {
+        const existingHeart = await tx.forumHeart.findUnique({
+          where: { userId_postId: { userId, postId: id } },
+        })
+
+        let userHearted: boolean
+        if (existingHeart) {
+          await tx.forumHeart.delete({ where: { id: existingHeart.id } })
+          await tx.forumPost.update({
+            where: { id },
+            data: { hearts: { decrement: 1 } },
+          })
+          userHearted = false
+        } else {
+          await tx.forumHeart.create({ data: { userId, postId: id } })
+          await tx.forumPost.update({
+            where: { id },
+            data: { hearts: { increment: 1 } },
+          })
+          userHearted = true
+        }
+
+        const updated = await tx.forumPost.findUnique({
+          where: { id },
+          select: { upvotes: true, hearts: true },
+        })
+        // Preserve existing vote
+        const existingVote = await tx.forumVote.findUnique({
+          where: { userId_postId: { userId, postId: id } },
+        })
+        return {
+          upvotes: updated?.upvotes ?? 0,
+          hearts: updated?.hearts ?? 0,
+          userVote: existingVote?.direction ?? null,
+          userHearted,
+        }
       })
 
-      if (existingHeart) {
-        await db.forumHeart.delete({
-          where: { id: existingHeart.id },
-        })
-        await db.forumPost.update({
-          where: { id },
-          data: { hearts: { decrement: 1 } },
-        })
-      } else {
-        await db.forumHeart.create({
-          data: { userId, postId: id },
-        })
-        await db.forumPost.update({
-          where: { id },
-          data: { hearts: { increment: 1 } },
-        })
-      }
-
-      const updatedPost = await db.forumPost.findUnique({
-        where: { id },
-        include: { author: true },
-      })
-      return NextResponse.json(updatedPost)
+      return NextResponse.json(result)
     }
 
     return NextResponse.json(

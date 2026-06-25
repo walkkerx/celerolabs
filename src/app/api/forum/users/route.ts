@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
     const users = await db.forumUser.findMany({
       where,
       orderBy: { lastActiveAt: 'desc' },
+      take: 200, // cap to prevent unbounded load at scale
     })
 
     return NextResponse.json({ users })
