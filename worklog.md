@@ -245,3 +245,23 @@ Stage Summary:
 - v2 fully removed: page file deleted, route removed (404s), nav links removed (desktop + mobile)
 - v1 home (/) remains the only homepage, untouched and fully functional
 - Lint clean, browser-verified
+
+---
+Task ID: remove-route-regions-accordion
+Agent: main
+Task: Remove the route regions accordion list (Gulf of Guinea Arc, East Africa Corridor, Southern Africa Arc, Mediterranean Bridge, Sahel Band, Central African Heartland) from the home page
+
+Work Log:
+- Located three pieces in Home.tsx: routeRegions data array (6 regions), the accordion usage in LocationsSection (after RouteJourney cards), and the LocationAccordion component function
+- Removed all three: routeRegions data array, the accordion <div> block in LocationsSection, and the LocationAccordion function definition
+- Verified zero stale references (grep for routeRegions / LocationAccordion → all gone)
+- Ran `bun run lint` → clean (no errors/warnings)
+- Agent Browser verification:
+  - All 6 accordion descriptions confirmed gone: "Lagos, Accra, Abidjan, Dakar", "Nairobi, Kampala, Kigali", "Cape Town, Johannesburg", "Cairo, Tunis, Casablanca", "Bamako, Ouagadougou", "Kinshasa, Brazzaville" — all false
+  - Route section still intact: "THE ROUTE" heading, blueprint map, leg filter buttons, "VIEW FULL ROUTE MAP" button, 6 RouteJourney leg cards (LEG 1-6 with ENTER LEG) all still present
+  - Zero browser errors
+
+Stage Summary:
+- Route regions accordion list fully removed from home page (data + usage + component)
+- The blueprint map, leg filters, View Full Route Map button, and RouteJourney leg cards all remain untouched
+- Lint clean, browser-verified

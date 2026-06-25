@@ -144,36 +144,6 @@ const showcasePillars = [
   },
 ];
 
-const routeRegions = [
-  {
-    name: "Gulf of Guinea Arc",
-    description: "Lagos, Accra, Abidjan, Dakar: the commercial backbone of West Africa",
-  },
-  {
-    name: "East Africa Corridor",
-    description:
-      "Nairobi, Kampala, Kigali, Addis Ababa: innovation hubs of East Africa",
-  },
-  {
-    name: "Southern Africa Arc",
-    description:
-      "Cape Town, Johannesburg, Harare, Maputo: mining, manufacturing, and finance",
-  },
-  {
-    name: "Mediterranean Bridge",
-    description: "Cairo, Tunis, Casablanca: Mediterranean gateway to the continent",
-  },
-  {
-    name: "Sahel Band",
-    description: "Bamako, Ouagadougou, Niamey, N'Djamena: climate adaptation frontier",
-  },
-  {
-    name: "Central African Heartland",
-    description:
-      "Kinshasa, Brazzaville, Douala: mineral-rich, infrastructure-poor corridor",
-  },
-];
-
 /* ══════════════════════════════════════════════════════════════════════════
    HOME
    ══════════════════════════════════════════════════════════════════════════ */
@@ -1290,13 +1260,6 @@ function LocationsSection() {
 
         {/* Route Journey — 6 leg cards (adopted from Home 2, contained) */}
         <RouteJourney />
-
-        {/* Accordion list of route regions */}
-        <div className="max-w-4xl mx-auto">
-          {routeRegions.map((region, i) => (
-            <LocationAccordion key={i} region={region} index={i} />
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -1355,64 +1318,6 @@ function BlueprintMap({ activeLeg }: { activeLeg: string | null }) {
         ))}
       </div>
     </div>
-  );
-}
-
-/* ── Location Accordion ── */
-function LocationAccordion({
-  region,
-  index,
-}: {
-  region: (typeof routeRegions)[number];
-  index: number;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
-      className="border-t border-[#111111]/10 border-l-[3px] border-l-[#FF4D00] pl-4 md:pl-6 hover:bg-[#FF4D00]/[0.02] transition-colors"
-    >
-      <button
-        suppressHydrationWarning
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-5 md:py-6 text-left group"
-      >
-        <div className="flex items-center gap-3">
-          <span className="relative flex h-3 w-3 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF4D00]/40 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FF4D00]" />
-          </span>
-          <MapPin className="w-4 h-4 text-[#FF4D00]/60 group-hover:text-[#FF4D00] transition-colors" />
-          <span className="text-[18px] md:text-[22px] font-display font-medium tracking-tight">
-            {region.name}
-          </span>
-        </div>
-        <div className="text-[#111111]/30 group-hover:text-[#111111]/60 transition-colors">
-          {isOpen ? (
-            <ChevronUp className="w-5 h-5" />
-          ) : (
-            <ChevronDown className="w-5 h-5" />
-          )}
-        </div>
-      </button>
-      <motion.div
-        initial={false}
-        animate={{
-          height: isOpen ? "auto" : 0,
-          opacity: isOpen ? 1 : 0,
-        }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="overflow-hidden"
-      >
-        <p className="pb-5 md:pb-6 pl-10 text-[15px] md:text-[17px] text-[#111111]/50 font-medium leading-[1.6]">
-          {region.description}
-        </p>
-      </motion.div>
-    </motion.div>
   );
 }
 
