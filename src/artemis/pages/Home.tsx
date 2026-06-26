@@ -22,6 +22,8 @@ import {
   Globe2,
   Play,
   ChevronRight,
+  X,
+  Sparkles,
 } from "lucide-react";
 import { ReviewSection } from "@/artemis/components/ReviewSection";
 import { routeLegs, MAP_LOCATIONS } from "@/artemis/data/routes";
@@ -153,6 +155,7 @@ export function Home() {
       <Hero />
       <ThesisSection />
       <NumbersSection />
+      <OperatingBeliefsSection />
       <FourPillarsEngine />
       <VentureGallery />
       <LocationsSection />
@@ -542,6 +545,116 @@ function NumbersSection() {
             );
           })}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   OPERATING BELIEFS — dark themed section with editorial pull quotes
+   ══════════════════════════════════════════════════════════════════════════ */
+function OperatingBeliefsSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  const beliefs = [
+    {
+      quote: "A breakthrough in isolation is a tragedy. On the Route, it becomes a flywheel.",
+      source: "Operating Belief",
+      tag: "01",
+    },
+    {
+      quote: "We are building the infrastructure that lets the next 5,000 companies deploy faster and compound across borders.",
+      source: "Platform Mandate",
+      tag: "02",
+    },
+    {
+      quote: "The 21st century will be built in the markets that need its breakthroughs most. We are building the infrastructure to make that inevitable.",
+      source: "The Thesis",
+      tag: "03",
+    },
+  ];
+
+  return (
+    <section ref={ref} className="relative py-24 md:py-36 bg-[#0A0A0A] text-white overflow-hidden">
+      {/* Decorative grid */}
+      <div
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
+        }}
+      />
+      {/* Radial glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#FF4D00]/8 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="relative w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
+        {/* Header */}
+        <div className="mb-14 md:mb-20 max-w-3xl">
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-6"
+          >
+            Operating beliefs
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, ease: EASE }}
+            className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[32px] sm:text-[44px] md:text-[56px] lg:text-[64px]"
+          >
+            What we hold
+            <br />
+            <span className="text-white/30">to be true.</span>
+          </motion.h2>
+        </div>
+
+        {/* Pull quotes */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/8 border border-white/8">
+          {beliefs.map((b, i) => (
+            <motion.figure
+              key={i}
+              initial={{ opacity: 0, y: 24 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: i * 0.12, ease: EASE }}
+              className="bg-[#0A0A0A] p-8 md:p-10 lg:p-12 flex flex-col"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#FF4D00]">{b.tag}</span>
+                <div className="flex-1 h-px bg-white/10" />
+              </div>
+              <span className="font-display text-[#FF4D00] text-6xl leading-none mb-4">&ldquo;</span>
+              <blockquote className="text-[18px] md:text-[20px] lg:text-[22px] font-display font-medium tracking-tight leading-[1.35] text-white mb-8 flex-1">
+                {b.quote}
+              </blockquote>
+              <figcaption className="border-t border-white/10 pt-4">
+                <p className="text-[10px] font-mono tracking-[0.15em] uppercase text-white/40">{b.source}</p>
+              </figcaption>
+            </motion.figure>
+          ))}
+        </div>
+
+        {/* CTA row */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.8, delay: 0.5, ease: EASE }}
+          className="mt-14 md:mt-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-8 border-t border-white/10"
+        >
+          <p className="text-[14px] md:text-[15px] text-white/50 font-medium leading-[1.6] max-w-md">
+            These aren&apos;t slogans. They&apos;re the constraints we design every pillar, program, and venture around.
+          </p>
+          <Link
+            to="/manifesto"
+            className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-white/40 hover:text-[#FF4D00] transition-colors flex-shrink-0"
+          >
+            Read the manifesto
+            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </Link>
+        </motion.div>
       </div>
     </section>
   );
@@ -1268,15 +1381,29 @@ function LocationsSection() {
 /* ── Blueprint Map, Newlab topographic map with color-coded pin markers ── */
 function BlueprintMap({ activeLeg }: { activeLeg: string | null }) {
   const isAnyActive = activeLeg !== null;
+  const [activeLocId, setActiveLocId] = useState<string | null>(null);
 
   const visibleLocations = useMemo(
     () => (isAnyActive ? MAP_LOCATIONS.filter((l) => l.legId === activeLeg) : MAP_LOCATIONS),
     [isAnyActive, activeLeg]
   );
 
+  const activeLocData = useMemo(
+    () => MAP_LOCATIONS.find((l) => l.id === activeLocId),
+    [activeLocId]
+  );
+  const legOfActive = activeLocData
+    ? routeLegs.find((l) => l.id === activeLocData.legId)
+    : null;
+
   return (
     <div className="w-full relative">
-      <div className="relative w-full overflow-hidden bg-white">
+      <div
+        className="relative w-full overflow-hidden bg-white"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setActiveLocId(null);
+        }}
+      >
         {/* World map image, Newlab topographic map */}
         <img
           alt="World Map showing xCelero Routes"
@@ -1284,38 +1411,125 @@ function BlueprintMap({ activeLeg }: { activeLeg: string | null }) {
           src="/routes/newlab-map.avif"
         />
 
-        {/* Pin markers with always-visible labels */}
-        {visibleLocations.map((loc, index) => (
-          <Link
-            key={loc.id}
-            to="/routes"
-            className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10"
-            style={{ left: `${loc.x}%`, top: `${loc.y}%` }}
-          >
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 350, damping: 25, delay: index * 0.03 }}
-              className="relative flex items-center justify-center"
+        {/* Pin markers with always-visible labels — click opens inline info */}
+        {visibleLocations.map((loc, index) => {
+          const isSelected = activeLocId === loc.id;
+          return (
+            <div
+              key={loc.id}
+              className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10"
+              style={{ left: `${loc.x}%`, top: `${loc.y}%` }}
             >
-              {/* Colored marker dot */}
-              <span
-                className="relative w-3.5 h-3.5 md:w-4 md:h-4 rounded-full shrink-0 cursor-pointer transition-all duration-200 border-[2.5px] border-transparent hover:border-black/20 hover:scale-110"
-                style={{ backgroundColor: loc.legColor }}
-                aria-label={`View ${loc.name} on Routes page`}
-              />
-
-              {/* Always-visible label */}
-              <div
-                className={`absolute bg-[#111111] text-white font-mono text-[8px] md:text-[10px] font-bold tracking-[0.15em] px-2 py-1 md:px-3 md:py-1.5 whitespace-nowrap top-1/2 -translate-y-1/2 pointer-events-none shadow-sm ${
-                  loc.labelPos === "left" ? "right-full mr-2 md:mr-3" : "left-full ml-2 md:ml-3"
-                }`}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 350, damping: 25, delay: index * 0.03 }}
+                className="relative flex items-center justify-center"
               >
-                {loc.name}
+                {/* Colored marker dot — button toggles inline panel */}
+                <button
+                  onClick={() => setActiveLocId(isSelected ? null : loc.id)}
+                  className={`relative w-3.5 h-3.5 md:w-4 md:h-4 rounded-full shrink-0 cursor-pointer transition-all duration-200 border-[2.5px] border-transparent hover:border-black/20 hover:scale-110 ${isSelected ? "scale-125 border-black/30" : ""}`}
+                  style={{ backgroundColor: loc.legColor }}
+                  aria-label={`View ${loc.name}`}
+                />
+
+                {/* Always-visible label */}
+                <div
+                  className={`absolute bg-[#111111] text-white font-mono text-[8px] md:text-[10px] font-bold tracking-[0.15em] px-2 py-1 md:px-3 md:py-1.5 whitespace-nowrap top-1/2 -translate-y-1/2 pointer-events-none shadow-sm ${
+                    loc.labelPos === "left" ? "right-full mr-2 md:mr-3" : "left-full ml-2 md:ml-3"
+                  }`}
+                >
+                  {loc.name}
+                </div>
+              </motion.div>
+            </div>
+          );
+        })}
+
+        {/* Inline info panel — matches Routes page behavior */}
+        <AnimatePresence>
+          {activeLocData && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 30, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-x-0 bottom-0 top-auto sm:inset-x-auto sm:left-auto sm:top-4 sm:bottom-4 sm:right-4 w-full sm:w-72 md:w-80 lg:w-96 max-h-[85vh] sm:max-h-none bg-white border border-[#111111]/10 shadow-2xl p-5 sm:p-6 md:p-8 flex flex-col z-50 overflow-y-auto rounded-t-lg sm:rounded-none"
+            >
+              <button
+                onClick={() => setActiveLocId(null)}
+                className="absolute top-4 right-4 p-2 text-[#111111]/30 hover:text-[#111111] transition-colors"
+                aria-label="Close panel"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Leg indicator */}
+              <div className="flex items-center gap-2 mb-4 mt-2">
+                <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: activeLocData.legColor }} />
+                <span className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase" style={{ color: activeLocData.legColor }}>
+                  Leg {activeLocData.legNumber}
+                </span>
+              </div>
+
+              {/* City name */}
+              <h3 className="text-2xl font-display font-medium uppercase tracking-tight text-[#111111] mb-4 pr-8">
+                {activeLocData.name}
+              </h3>
+
+              <div className="w-10 h-1 mb-5" style={{ backgroundColor: activeLocData.legColor }} />
+
+              <div className="space-y-6">
+                {/* About */}
+                <div>
+                  <h4 className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase mb-2" style={{ color: activeLocData.legColor }}>
+                    About
+                  </h4>
+                  <p className="text-[#111111]/60 text-sm leading-relaxed">{activeLocData.description}</p>
+                </div>
+
+                {/* Route info */}
+                {legOfActive && (
+                  <div>
+                    <h4 className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase mb-2" style={{ color: activeLocData.legColor }}>
+                      Route
+                    </h4>
+                    <p className="text-sm font-display font-medium text-[#111111]/70">{legOfActive.name}</p>
+                    <p className="text-xs text-[#111111]/40 mt-1">
+                      {legOfActive.subtitle}, {legOfActive.hubCount} hubs
+                    </p>
+                  </div>
+                )}
+
+                {/* Countries */}
+                <div>
+                  <h4 className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase mb-3" style={{ color: activeLocData.legColor }}>
+                    Countries
+                  </h4>
+                  <ul className="flex flex-wrap gap-2">
+                    {activeLocData.countries.map((c, i) => (
+                      <li key={i} className="bg-[#111111]/[0.06] px-3 py-1.5 text-xs font-medium text-[#111111]/70 rounded-sm">
+                        {c}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* View full route link */}
+              <div className="mt-auto pt-6">
+                <Link
+                  to="/routes"
+                  className="block w-full py-3 text-center text-[11px] font-mono font-bold tracking-widest uppercase text-white transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: activeLocData.legColor }}
+                >
+                  View Full Route
+                </Link>
               </div>
             </motion.div>
-          </Link>
-        ))}
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

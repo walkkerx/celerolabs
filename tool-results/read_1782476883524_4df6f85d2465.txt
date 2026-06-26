@@ -1,0 +1,1163 @@
+     1→"use client";
+     2→
+     3→import { useState, useRef } from "react";
+     4→import { motion, AnimatePresence, useInView } from "framer-motion";
+     5→import { Plus, Minus, ArrowRight, ChevronDown, Building2, Rocket, Coins, Users } from "lucide-react";
+     6→import { Link } from "@/artemis/router";
+     7→import { ReviewSection } from "@/artemis/components/ReviewSection";
+     8→
+     9→/* ── Hero metric cards (right column) ── */
+    10→const heroMetrics = [
+    11→  { value: "500+", label: "Companies Backed" },
+    12→  { value: "3-5 hrs", label: "Per Deep Diligence" },
+    13→  { value: "$1-7M", label: "Initial Investment Range" },
+    14→];
+    15→
+    16→/* ── The 4 Pillars ── */
+    17→const pillars = [
+    18→  {
+    19→    num: "01",
+    20→    title: "Infrastructure",
+    21→    icon: Building2,
+    22→    desc: "A distributed constellation of 190 XHansa Hubs spanning every African nation and 19 global cities. M1 Cores, XEmbassies, and living labs for real-world testing: the physical and digital operating system for civilization-building.",
+    23→    link: "/infrastructure",
+    24→  },
+    25→  {
+    26→    num: "02",
+    27→    title: "Ventures",
+    28→    icon: Rocket,
+    29→    desc: "Convening industry, government, and entrepreneurs to run real-world pilots. Structured commercialization programs, from the Quest Fellowship to industry sprints, transforming ideas into tangible change at civilizational scale.",
+    30→    link: "/programs",
+    31→  },
+    32→  {
+    33→    num: "03",
+    34→    title: "Capital",
+    35→    icon: Coins,
+    36→    desc: "Mobilizing capital through dedicated funds and SPVs. Blending grants, risk capital, and project finance to ensure transformative tech scales. Solidarity pricing so founders in early-stage markets access the same quality at a fraction of Silicon Valley costs.",
+    37→    link: "/capital",
+    38→  },
+    39→  {
+    40→    num: "04",
+    41→    title: "Community",
+    42→    icon: Users,
+    43→    desc: "The XCitizens network, operators, founders, investors, and mentors creating compound network effects across the Route. Every hub, every cohort, every deal strengthens the connective tissue that turns individual efforts into collective momentum.",
+    44→    link: "/join",
+    45→  },
+    46→];
+    47→
+    48→/* ── The 13 Critical Domains ── */
+    49→const criticalDomains = [
+    50→  { name: "Energy (Generation & Transmission)", desc: "Microgrids, non-lithium storage, low-temp geothermal, small modular nuclear / fusion pathways." },
+    51→  { name: "Water & Aquatic Systems", desc: "Distributed desalination, atmospheric H₂O harvesting, aquaculture optimization, open-source water grids." },
+    52→  { name: "Food & Algorithmic Agriculture", desc: "Climate resilient crop genetics, vertical protein farming, algorithmic harvest optimization." },
+    53→  { name: "Materials & Computation", desc: "Ethical refining architectures, bio-plastics, mycelium composites, semi-conductor material independence." },
+    54→  { name: "Mobility & Logistics", desc: "Electric mass transit retrofits, heavy-lift drone logistics for remote delivery, autonomous port management." },
+    55→  { name: "Cognitive Systems & Data Independence", desc: "Edge AI, decentralized identity, indigenous language LLMs, private locally-controlled clouds." },
+    56→  { name: "Built Environments & Circularity", desc: "Algorithmic urban planning, cooling architectures, waste-to-energy syndicates." },
+    57→  { name: "Earth Systems & Biometrics", desc: "Real-time planetary monitoring, early warning sensors, programmable conservation efforts." },
+    58→  { name: "Space & Deep Sea Tech", desc: "Micro-satellite constellations for climate tracking, deep sea non-extractive resource mapping." },
+    59→  { name: "Industrial Biotech", desc: "Programmable biology, synthetic enzymes, and microbial factories." },
+    60→  { name: "Hypersonics", desc: "Next-generation high-speed atmospheric transit." },
+    61→  { name: "Quantum Technologies", desc: "Quantum sensing and unbreakable independent encryption architectures." },
+    62→  { name: "Semiconductors", desc: "Independent fabrication capabilities and novel chip design." },
+    63→];
+    64→
+    65→/* ── Traits ── */
+    66→const traits = [
+    67→  {
+    68→    title: "Believe in the art of the pick",
+    69→    desc: "There's a popular narrative that a startup's first few years are for moving fast and finding ways out of tough problems later. We're firm believers in taking beginnings seriously, in slowing down to speed up. A high degree of startup mortality is baked in at the beginning, so being a good picker of technology, market, and architecture is vastly underrated.",
+    70→    image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=800&q=80",
+    71→    position: "center 20%"
+    72→  },
+    73→  {
+    74→    title: "Embrace their extremes",
+    75→    desc: "We don't back well-rounded founders. We seek people who have one or two outlier abilities, areas where they have a shot at being the best in the world. This is what allows them to see opportunities others miss, solve problems others can't crack, and work with a drive that others don't match.",
+    76→    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    77→    position: "center 25%"
+    78→  },
+    79→  {
+    80→    title: "Go unreasonably deep",
+    81→    desc: "There's a particular kind of intensity we look for, a relentless drive that goes far beyond surface insights or hard work. It's curiosity that crosses over into obsession but reads more \"learn-it-all\" than \"know-it-all.\" It means full immersion in materials science when starting an energy company or working on the factory floor to live the pain of industrial bottlenecks.",
+    82→    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
+    83→    position: "center 20%"
+    84→  }
+    85→];
+    86→
+    87→const howWeWork = [
+    88→  {
+    89→    step: "01",
+    90→    title: "Deep Diligence",
+    91→    desc: "We spend three to five hours with every team before making a decision. Not slideshows, real conversations about your core technical insight, the specific bottleneck you're addressing, and the architecture you've chosen to solve it."
+    92→  },
+    93→  {
+    94→    step: "02",
+    95→    title: "Conviction-Led Investment",
+    96→    desc: "We invest based on conviction in the founding team and their thesis, not momentum or social proof. Our decisions are made by the people who'll work closest with you, no investment committees, no off-site partners weighing in."
+    97→  },
+    98→  {
+    99→    step: "03",
+   100→    title: "Hands-On Foundation Building",
+   101→    desc: "After investing, we embed. From your first hire to your first revenue milestone, we operate alongside you, not as consultants, but as co-builders who've been in the trenches of early-stage company construction before."
+   102→  }
+   103→];
+   104→
+   105→const faqs = [
+   106→  { category: "Timing", q: "Is it ever too early to approach xCelero about investing?", a: "No, it's never too early to reach out. We don't see divisions between angel, pre-seed and seed, we're interested across the board." },
+   107→  { category: "Timing", q: "What if I'm still employed elsewhere?", a: "Absolutely reach out. We regularly meet with future proto-citizens who are in exactly this position, months away from making the official leap." },
+   108→  { category: "Timing", q: "What if I've already raised from angels or a pre-seed fund, is it too late?", a: "Of course not. While we're usually the first money in, we've worked with a number of teams that raised a small round before coming to us." },
+   109→  { category: "Timing", q: "Do I need customers and revenue?", a: "Nope. Many of our 500+ companies came to us when they were a couple of people with an idea and a lab." },
+   110→  { category: "Timing", q: "I'm raising my Series B or Series C, should I contact you?", a: "Nope. We're explicitly focused on the foundation phase." },
+   111→  { category: "Decision making", q: "What does xCelero look for in a thesis?", a: "Above all, we look for compelling and contrarian insight into how infrastructure works." },
+   112→  { category: "Decision making", q: "How do you weigh different criteria in your decision-making process?", a: "The biggest factor in our decision-making is always the founding team. How innovative, resourceful and resilient are you?" },
+   113→  { category: "Where we invest", q: "Does xCelero only invest in particular areas or industries?", a: "We focus heavily on the 13 Critical Domains, from energy generation and biotech to cognitive systems and hypersonics." },
+   114→  { category: "Where we invest", q: "Do you invest in companies located outside of major tech hubs?", a: "Yes! Our flexible constellation spans 190 XHansa Hubs across the globe." },
+   115→  { category: "Where we invest", q: "Do you invest outside of the United States?", a: "We tend to focus on companies based in the U.S. or allied zones." },
+   116→  { category: "Process", q: "What does your investment process look like?", a: "Our process is rigorous but fast. We like to spend at least three to five hours on any company before we make a final decision." },
+   117→  { category: "Process", q: "What's the best way to get on your radar?", a: "A direct referral from someone within the XEmbassy network works best, but cold outreach with a strong technical whitepaper is highly welcome." },
+   118→  { category: "Process", q: "How should I prep for your partner meeting?", a: "We recommend focusing on your core technical insight, the specific civilizational bottleneck you are addressing." },
+   119→  { category: "Terms", q: "How much do you usually invest in a new company?", a: "Our initial investments typically range from $1 million to $7 million." },
+   120→  { category: "Terms", q: "Do you have strict ownership requirements?", a: "Unlike some traditional funds that require 20 to 25% ownership, we don't." },
+   121→  { category: "Terms", q: "Will xCelero only invest if you can lead the round?", a: "No. We don't care about terms like lead, co-lead or follow." }
+   122→];
+   123→
+   124→const categories = ["Timing", "Decision making", "Where we invest", "Process", "Terms"];
+   125→
+   126→/* ══════════════════════════════════════════════════════════════════════════
+   127→   APPROACH PAGE
+   128→   ══════════════════════════════════════════════════════════════════════════ */
+   129→export function Approach() {
+   130→  return (
+   131→    <div className="bg-white text-[#111111]">
+   132→      <HeroSection />
+   133→      <ApproachBridge />
+   134→      <ThreePillarsSection />
+   135→      <WhoWeBackSection />
+   136→      <HowWeWorkSection />
+   137→      <CriticalDomainsSection />
+   138→      <FaqSection />
+   139→      <ReviewSection title="Hard-won wisdom from xCelero founders:" />
+   140→    </div>
+   141→  );
+   142→}
+   143→
+   144→/* ══════════════════════════════════════════════════════════════════════════
+   145→   HERO, Light bg, 7+5 grid (NEWLAB style, matching Programs)
+   146→   ══════════════════════════════════════════════════════════════════════════ */
+   147→function HeroSection() {
+   148→  const ref = useRef<HTMLDivElement>(null);
+   149→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   150→
+   151→  return (
+   152→    <section
+   153→      ref={ref}
+   154→      className="bg-[#FAFAFA] py-16 md:py-24 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10"
+   155→    >
+   156→      <div className="w-full max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+   157→        {/* Left: label + heading + para */}
+   158→        <motion.div
+   159→          initial={{ opacity: 0, y: 30 }}
+   160→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   161→          transition={{ duration: 0.8, ease: "easeOut" }}
+   162→          className="lg:col-span-7"
+   163→        >
+   164→          <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00] mb-6 block">
+   165→            Our Approach
+   166→          </span>
+   167→
+   168→          <h1 className="text-[36px] sm:text-[48px] md:text-[64px] lg:text-[80px] font-display font-medium tracking-[-0.03em] leading-[0.9] mb-6">
+   169→            You&apos;re not for everyone.
+   170→            <br />
+   171→            <span className="text-[#111111]/40">Neither are we.</span>
+   172→          </h1>
+   173→
+   174→          <p className="text-[16px] md:text-[18px] leading-[1.7] text-[#111111]/60 font-medium max-w-lg">
+   175→            We back founders who go unreasonably deep to get their beginnings right, and we provide the infrastructure, ventures, capital, and community to make it work.
+   176→          </p>
+   177→        </motion.div>
+   178→
+   179→        {/* Right: metric cards */}
+   180→        <motion.div
+   181→          initial={{ opacity: 0, y: 30 }}
+   182→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   183→          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+   184→          className="lg:col-span-5 flex flex-col"
+   185→        >
+   186→          {heroMetrics.map((metric, i) => (
+   187→            <div
+   188→              key={i}
+   189→              className={`py-6 ${
+   190→                i > 0 ? "border-t border-[#111111]/10" : ""
+   191→              }`}
+   192→            >
+   193→              <div className="text-[40px] sm:text-[48px] md:text-[56px] font-display font-medium tracking-[-0.03em] leading-[1] mb-2">
+   194→                {metric.value}
+   195→              </div>
+   196→              <div className="text-[13px] md:text-[15px] text-[#111111]/50 font-medium leading-[1.5]">
+   197→                {metric.label}
+   198→              </div>
+   199→            </div>
+   200→          ))}
+   201→        </motion.div>
+   202→      </div>
+   203→    </section>
+   204→  );
+   205→}
+   206→
+   207→/* ── Pillar taglines ── */
+   208→const pillarTaglines: Record<string, string> = {
+   209→  Infrastructure: "The physical OS",
+   210→  Ventures: "Commercialization at scale",
+   211→  Capital: "Patient, blended, non-dilutive",
+   212→  Community: "Compound network effects",
+   213→};
+   214→
+   215→/* ── Approach Bridge images ── */
+   216→const approachBridgeImages = [
+   217→  {
+   218→    src: "https://images.unsplash.com/photo-1573164574511-73c773193279?auto=format&fit=crop&w=800&q=80",
+   219→    alt: "Black professionals meeting",
+   220→    position: "center 30%",
+   221→  },
+   222→  {
+   223→    src: "https://images.unsplash.com/photo-1653566031587-74f7d86a2e71?auto=format&fit=crop&w=800&q=80",
+   224→    alt: "Black professional team",
+   225→    position: "center 25%",
+   226→  },
+   227→  {
+   228→    src: "https://images.unsplash.com/photo-1579165466949-3180a3d056d5?auto=format&fit=crop&w=800&q=80",
+   229→    alt: "Black researcher",
+   230→    position: "center 25%",
+   231→  },
+   232→];
+   233→
+   234→/* Dot-matrix world map for Approach page */
+   235→const approachWorldDots = (() => {
+   236→  const rows = [
+   237→    ".......##..........###.............#####..####..............",
+   238→    "......####.........####............######.######............",
+   239→    ".....######........#####...........########.######..........",
+   240→    ".....#######.......#####..........#########..######.........",
+   241→    "....#########......######.........#########...######........",
+   242→    "....##########.....#######........#########....#####........",
+   243→    "...############....########.......########.....#####........",
+   244→    "...############....########.......########......####........",
+   245→    "....###########....#########......#######.......####........",
+   246→    "....##########.....##########.....######........###.........",
+   247→    ".....#########.....##########.....######........###.........",
+   248→    "......########.....###########....#####.........##..........",
+   249→    ".......#######.....###########....#####.........##..........",
+   250→    "........######.....############...######.........#..........",
+   251→    ".........#####.....####.#####....########...................",
+   252→    "..........####.....####..####...#########...................",
+   253→    "...........###.....####...####..#########...................",
+   254→    "............##.....####....###..########....................",
+   255→    ".............#......###....###..#######.....................",
+   256→    "....................###.....##...######.....................",
+   257→    ".....................##.....##...#####......................",
+   258→    "......................##.....#...####.......................",
+   259→    ".......................#.........###........................",
+   260→    "................................##.........................",
+   261→    "................................#..........................",
+   262→    "............................................................",
+   263→    "............................................................",
+   264→    "............................................................",
+   265→    "............................................................",
+   266→    "............................................................",
+   267→  ];
+   268→  const dots: { row: number; col: number }[] = [];
+   269→  rows.forEach((row, r) => {
+   270→    [...row].forEach((ch, c) => {
+   271→      if (ch === "#") dots.push({ row: r, col: c });
+   272→    });
+   273→  });
+   274→  return dots;
+   275→})();
+   276→
+   277→/* ══════════════════════════════════════════════════════════════════════════
+   278→   APPROACH BRIDGE, Image strip + thesis text + dotted world map
+   279→   ══════════════════════════════════════════════════════════════════════════ */
+   280→function ApproachBridge() {
+   281→  const ref = useRef<HTMLDivElement>(null);
+   282→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   283→
+   284→  return (
+   285→    <section ref={ref} className="px-6 md:px-12 lg:px-20 pb-16 md:pb-24">
+   286→      <div className="w-full max-w-[1400px] mx-auto">
+   287→        {/* Image strip: three overlapping images */}
+   288→        <motion.div
+   289→          initial={{ opacity: 0, y: 30 }}
+   290→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   291→          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+   292→          className="relative flex items-end justify-start gap-0 mb-16 md:mb-24"
+   293→        >
+   294→          {approachBridgeImages.map((img, i) => (
+   295→            <motion.div
+   296→              key={i}
+   297→              initial={{ opacity: 0, y: 20 }}
+   298→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   299→              transition={{ duration: 0.6, delay: 0.1 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+   300→              className={`relative overflow-hidden bg-[#F5F5F5] shadow-lg ${
+   301→                i === 0
+   302→                  ? "w-[36%] md:w-[32%] aspect-[4/3] z-10"
+   303→                  : i === 1
+   304→                  ? "w-[44%] md:w-[40%] aspect-[4/3] z-30 -mt-3 -ml-[8%] md:-ml-[4%]"
+   305→                  : "w-[36%] md:w-[32%] aspect-[4/3] z-10 -ml-[8%] md:-ml-[4%]"
+   306→              }`}
+   307→            >
+   308→              <img
+   309→                src={img.src}
+   310→                alt={img.alt}
+   311→                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+   312→                style={{ objectPosition: img.position }}
+   313→              />
+   314→            </motion.div>
+   315→          ))}
+   316→        </motion.div>
+   317→
+   318→        {/* Two-column layout: text left, dotted map right */}
+   319→        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+   320→          {/* Left: Approach thesis text */}
+   321→          <motion.div
+   322→            initial={{ opacity: 0, y: 30 }}
+   323→            animate={isInView ? { opacity: 1, y: 0 } : {}}
+   324→            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+   325→            className="lg:col-span-6"
+   326→          >
+   327→            <p className="text-[22px] sm:text-[28px] md:text-[34px] leading-[1.25] font-display font-medium tracking-[-0.02em] text-[#111111] mb-6 md:mb-8">
+   328→              We don&apos;t back slides. We back <span className="text-[#FF4D00]">conviction</span>.
+   329→            </p>
+   330→            <p className="text-[15px] md:text-[17px] leading-[1.7] text-[#111111]/60 font-medium max-w-xl">
+   331→              Most venture capital optimizes for momentum and social proof. xCelero optimizes for technical depth and founder obsession. Three to five hours of deep diligence with every team. No investment committees. No off-site partners. The people who work closest with you make the decision. <span className="text-[#111111] font-semibold">Conviction is the only edge that compounds.</span>
+   332→            </p>
+   333→          </motion.div>
+   334→
+   335→          {/* Right: Dotted world map */}
+   336→          <motion.div
+   337→            initial={{ opacity: 0, y: 30 }}
+   338→            animate={isInView ? { opacity: 1, y: 0 } : {}}
+   339→            transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+   340→            className="lg:col-span-6 flex items-center justify-center"
+   341→          >
+   342→            <div className="relative w-full max-w-lg">
+   343→              <svg
+   344→                viewBox="0 0 60 30"
+   345→                className="w-full h-auto"
+   346→                style={{ imageRendering: "auto" }}
+   347→              >
+   348→                {/* All land dots in dark color */}
+   349→                {approachWorldDots.map((dot, i) => (
+   350→                  <circle
+   351→                    key={i}
+   352→                    cx={dot.col * 1}
+   353→                    cy={dot.row * 1}
+   354→                    r="0.35"
+   355→                    className="fill-[#111111]/70"
+   356→                  />
+   357→                ))}
+   358→                {/* Africa highlighted region: cols 23-33, rows 3-21 */}
+   359→                {approachWorldDots
+   360→                  .filter(
+   361→                    (d) =>
+   362→                      d.col >= 23 && d.col <= 33 && d.row >= 3 && d.row <= 21
+   363→                  )
+   364→                  .map((dot, i) => (
+   365→                    <circle
+   366→                      key={`af-${i}`}
+   367→                      cx={dot.col * 1}
+   368→                      cy={dot.row * 1}
+   369→                      r="0.4"
+   370→                      className="fill-[#FF4D00]"
+   371→                    />
+   372→                  ))}
+   373→              </svg>
+   374→              {/* Label */}
+   375→              <div className="absolute bottom-2 right-4 text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]">
+   376→                190 Hubs · 39 Countries
+   377→              </div>
+   378→            </div>
+   379→          </motion.div>
+   380→        </div>
+   381→      </div>
+   382→    </section>
+   383→  );
+   384→}
+   385→
+   386→/* ══════════════════════════════════════════════════════════════════════════
+   387→   4 ENGINES, Horizontal Pipeline / Flywheel Diagram
+   388→   ══════════════════════════════════════════════════════════════════════════ */
+   389→function ThreePillarsSection() {
+   390→  const ref = useRef<HTMLDivElement>(null);
+   391→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   392→  const [active, setActive] = useState<number | null>(null);
+   393→
+   394→  return (
+   395→    <section
+   396→      ref={ref}
+   397→      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10"
+   398→    >
+   399→      <div className="w-full max-w-[1400px] mx-auto">
+   400→        {/* Header */}
+   401→        <motion.div
+   402→          initial={{ opacity: 0, y: 30 }}
+   403→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   404→          transition={{ duration: 0.8, ease: "easeOut" }}
+   405→          className="max-w-3xl mb-16 md:mb-24"
+   406→        >
+   407→          <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00] mb-6 block">
+   408→            The 4 Pillars
+   409→          </span>
+   410→          <h2 className="text-[32px] md:text-[48px] lg:text-[60px] font-display font-medium tracking-tight leading-[1.05] mb-6">
+   411→            Four pillars, <span className="text-[#111111]/40">one machine.</span>
+   412→          </h2>
+   413→          <p className="text-[17px] md:text-[19px] text-[#111111]/50 font-medium leading-relaxed">
+   414→            xCelero operates through four integrated pillars, Infrastructure, Ventures, Capital, and Community, each reinforcing the others to unblock commercialization at civilizational scale.
+   415→          </p>
+   416→        </motion.div>
+   417→
+   418→        {/* Desktop: Horizontal pipeline with flowing arrows */}
+   419→        <div className="hidden lg:block">
+   420→          <div className="flex items-stretch gap-0">
+   421→            {pillars.map((pillar, i) => {
+   422→              const Icon = pillar.icon;
+   423→              const isActive = active === i;
+   424→              const isNextActive = active !== null && active === i + 1;
+   425→              const isLast = i === pillars.length - 1;
+   426→
+   427→              return (
+   428→                <div key={i} className="flex items-stretch flex-1">
+   429→                  {/* Pillar card */}
+   430→                  <motion.button
+   431→                    suppressHydrationWarning
+   432→                    initial={{ opacity: 0, y: 30 }}
+   433→                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+   434→                    transition={{ duration: 0.6, delay: 0.2 + i * 0.12, ease: "easeOut" }}
+   435→                    onClick={() => setActive(active === i ? null : i)}
+   436→                    onMouseEnter={() => setActive(i)}
+   437→                    onMouseLeave={() => setActive(null)}
+   438→                    className={`group relative w-full text-left border p-6 transition-all duration-300 cursor-pointer flex flex-col ${
+   439→                      isActive
+   440→                        ? "border-[#FF4D00] bg-[#FF4D00]/5 shadow-lg shadow-[#FF4D00]/10 z-10 -mt-2 mb-0"
+   441→                        : "border-[#111111]/10 bg-white hover:border-[#FF4D00]/30 hover:-mt-1"
+   442→                    }`}
+   443→                  >
+   444→                    {/* Pillar number + icon */}
+   445→                    <div className="flex items-center gap-3 mb-4">
+   446→                      <div
+   447→                        className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 shrink-0 ${
+   448→                          isActive
+   449→                            ? "border-[#FF4D00] bg-[#FF4D00]/10"
+   450→                            : "border-[#111111]/15 bg-white group-hover:border-[#FF4D00]/50"
+   451→                        }`}
+   452→                      >
+   453→                        <Icon
+   454→                          className={`w-5 h-5 transition-colors duration-300 ${
+   455→                            isActive ? "text-[#FF4D00]" : "text-[#111111]/40 group-hover:text-[#FF4D00]"
+   456→                          }`}
+   457→                          strokeWidth={1.5}
+   458→                        />
+   459→                      </div>
+   460→                      <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]">
+   461→                        Pillar {pillar.num}
+   462→                      </span>
+   463→                    </div>
+   464→
+   465→                    {/* Title + tagline */}
+   466→                    <h3 className={`text-[20px] md:text-[24px] font-display font-medium tracking-tight leading-[1.15] mb-1 transition-colors duration-300 ${
+   467→                      isActive ? "text-[#FF4D00]" : "text-[#111111]"
+   468→                    }`}>
+   469→                      {pillar.title}
+   470→                    </h3>
+   471→                    <div className="text-[10px] font-mono tracking-wider uppercase text-[#111111]/40 mb-4">
+   472→                      {pillarTaglines[pillar.title]}
+   473→                    </div>
+   474→
+   475→                    {/* Description (always visible, more prominent on active) */}
+   476→                    <p className={`text-[14px] leading-[1.6] font-medium transition-all duration-300 ${
+   477→                      isActive ? "text-[#111111]/70" : "text-[#111111]/40 group-hover:text-[#111111]/55"
+   478→                    }`}>
+   479→                      {pillar.desc}
+   480→                    </p>
+   481→
+   482→                    {/* Explore link (visible on active) */}
+   483→                    <div className={`mt-auto pt-4 transition-all duration-300 overflow-hidden ${
+   484→                      isActive ? "max-h-12 opacity-100" : "max-h-0 opacity-0"
+   485→                    }`}>
+   486→                      <Link
+   487→                        to={pillar.link}
+   488→                        className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF4D00] hover:text-[#111111] transition-colors group/link"
+   489→                      >
+   490→                        Explore {pillar.title}
+   491→                        <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+   492→                      </Link>
+   493→                    </div>
+   494→
+   495→                    {/* Top accent line on active */}
+   496→                    <div className={`absolute top-0 left-0 right-0 h-1 bg-[#FF4D00] transition-all duration-300 ${
+   497→                      isActive ? "opacity-100" : "opacity-0"
+   498→                    }`} />
+   499→                  </motion.button>
+   500→
+   501→                  {/* Arrow connector between cards */}
+   502→                  {!isLast && (
+   503→                    <div className="flex items-center justify-center w-10 shrink-0 relative z-20">
+   504→                      <div className={`h-px flex-1 transition-all duration-500 ${
+   505→                        isActive || isNextActive
+   506→                          ? "bg-[#FF4D00] w-4"
+   507→                          : "bg-[#111111]/15"
+   508→                      }`} />
+   509→                      <svg
+   510→                        className={`w-3 h-3 shrink-0 -ml-px transition-colors duration-500 ${
+   511→                          isActive || isNextActive ? "text-[#FF4D00]" : "text-[#111111]/15"
+   512→                        }`}
+   513→                        viewBox="0 0 6 10"
+   514→                        fill="currentColor"
+   515→                      >
+   516→                        <path d="M0 0L6 5L0 10V0Z" />
+   517→                      </svg>
+   518→                    </div>
+   519→                  )}
+   520→                </div>
+   521→              );
+   522→            })}
+   523→          </div>
+   524→
+   525→          {/* Flyback arrow: Community → Infrastructure (cycle indicator) */}
+   526→          <motion.div
+   527→            initial={{ opacity: 0 }}
+   528→            animate={isInView ? { opacity: 1 } : {}}
+   529→            transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
+   530→            className="flex items-center justify-center mt-6"
+   531→          >
+   532→            <div className="flex items-center gap-3 text-[#FF4D00]/60">
+   533→              <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase">Community</span>
+   534→              <svg className="w-4 h-3" viewBox="0 0 16 10" fill="none">
+   535→                <path d="M0 5H12M12 5L8 1M12 5L8 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+   536→              </svg>
+   537→              <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase">Infrastructure</span>
+   538→              <span className="text-[10px] font-mono tracking-[0.15em] uppercase text-[#111111]/30 ml-2">→ flywheel</span>
+   539→            </div>
+   540→          </motion.div>
+   541→        </div>
+   542→
+   543→        {/* Tablet: 2x2 grid with connection lines */}
+   544→        <div className="hidden md:grid lg:hidden md:grid-cols-2 gap-6">
+   545→          {pillars.map((pillar, i) => {
+   546→            const Icon = pillar.icon;
+   547→            const isActive = active === i;
+   548→            return (
+   549→              <motion.button
+   550→                key={i}
+   551→                suppressHydrationWarning
+   552→                initial={{ opacity: 0, y: 30 }}
+   553→                animate={isInView ? { opacity: 1, y: 0 } : {}}
+   554→                transition={{ duration: 0.6, delay: 0.2 + i * 0.12, ease: "easeOut" }}
+   555→                onClick={() => setActive(active === i ? null : i)}
+   556→                className={`group text-left border p-6 transition-all duration-300 cursor-pointer ${
+   557→                  isActive
+   558→                    ? "border-[#FF4D00] bg-[#FF4D00]/5 shadow-lg shadow-[#FF4D00]/10"
+   559→                    : "border-[#111111]/10 bg-white hover:border-[#FF4D00]/30"
+   560→                }`}
+   561→              >
+   562→                <div className="flex items-center gap-3 mb-4">
+   563→                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 shrink-0 ${
+   564→                    isActive
+   565→                      ? "border-[#FF4D00] bg-[#FF4D00]/10"
+   566→                      : "border-[#111111]/15 bg-white group-hover:border-[#FF4D00]/50"
+   567→                  }`}>
+   568→                    <Icon className={`w-5 h-5 transition-colors duration-300 ${
+   569→                      isActive ? "text-[#FF4D00]" : "text-[#111111]/40 group-hover:text-[#FF4D00]"
+   570→                    }`} strokeWidth={1.5} />
+   571→                  </div>
+   572→                  <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]">Pillar {pillar.num}</span>
+   573→                </div>
+   574→                <h3 className={`text-[20px] font-display font-medium tracking-tight leading-[1.15] mb-1 transition-colors ${
+   575→                  isActive ? "text-[#FF4D00]" : "text-[#111111]"
+   576→                }`}>{pillar.title}</h3>
+   577→                <div className="text-[10px] font-mono tracking-wider uppercase text-[#111111]/40 mb-3">{pillarTaglines[pillar.title]}</div>
+   578→                <p className={`text-[14px] leading-[1.6] font-medium transition-colors ${
+   579→                  isActive ? "text-[#111111]/70" : "text-[#111111]/40"
+   580→                }`}>{pillar.desc}</p>
+   581→                {isActive && (
+   582→                  <Link
+   583→                    to={pillar.link}
+   584→                    className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF4D00] hover:text-[#111111] transition-colors mt-4 group/link"
+   585→                  >
+   586→                    Explore {pillar.title}
+   587→                    <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+   588→                  </Link>
+   589→                )}
+   590→                <div className={`absolute top-0 left-0 right-0 h-1 bg-[#FF4D00] transition-all duration-300 ${
+   591→                  isActive ? "opacity-100" : "opacity-0"
+   592→                }`} />
+   593→              </motion.button>
+   594→            );
+   595→          })}
+   596→        </div>
+   597→
+   598→        {/* Mobile: Vertical stack with flowing connectors */}
+   599→        <div className="md:hidden flex flex-col">
+   600→          {pillars.map((pillar, i) => {
+   601→            const Icon = pillar.icon;
+   602→            const isActive = active === i;
+   603→            const isLast = i === pillars.length - 1;
+   604→            return (
+   605→              <div key={i}>
+   606→                <motion.button
+   607→                  suppressHydrationWarning
+   608→                  initial={{ opacity: 0, x: -20 }}
+   609→                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+   610→                  transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
+   611→                  onClick={() => setActive(active === i ? null : i)}
+   612→                  className={`group w-full text-left border p-5 transition-all duration-300 cursor-pointer ${
+   613→                    isActive
+   614→                      ? "border-[#FF4D00] bg-[#FF4D00]/5 shadow-md shadow-[#FF4D00]/10"
+   615→                      : "border-[#111111]/10 bg-white hover:border-[#FF4D00]/30"
+   616→                  }`}
+   617→                >
+   618→                  <div className="flex items-center gap-3 mb-3">
+   619→                    <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 shrink-0 ${
+   620→                      isActive
+   621→                        ? "border-[#FF4D00] bg-[#FF4D00]/10"
+   622→                        : "border-[#111111]/15 bg-white group-hover:border-[#FF4D00]/50"
+   623→                    }`}>
+   624→                      <Icon className={`w-5 h-5 transition-colors duration-300 ${
+   625→                        isActive ? "text-[#FF4D00]" : "text-[#111111]/40 group-hover:text-[#FF4D00]"
+   626→                      }`} strokeWidth={1.5} />
+   627→                    </div>
+   628→                    <div>
+   629→                      <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00] block">Pillar {pillar.num}</span>
+   630→                      <h3 className={`text-[18px] font-display font-medium tracking-tight leading-[1.15] transition-colors ${
+   631→                        isActive ? "text-[#FF4D00]" : "text-[#111111]"
+   632→                      }`}>{pillar.title}</h3>
+   633→                    </div>
+   634→                    <div className="ml-auto text-[10px] font-mono tracking-wider uppercase text-[#111111]/40">
+   635→                      {pillarTaglines[pillar.title]}
+   636→                    </div>
+   637→                  </div>
+   638→                  <p className={`text-[14px] leading-[1.6] font-medium transition-all duration-300 ${
+   639→                    isActive ? "text-[#111111]/70" : "text-[#111111]/40"
+   640→                  }`}>{pillar.desc}</p>
+   641→                  {isActive && (
+   642→                    <Link
+   643→                      to={pillar.link}
+   644→                      className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#FF4D00] hover:text-[#111111] transition-colors mt-4 group/link"
+   645→                    >
+   646→                      Explore {pillar.title}
+   647→                      <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+   648→                    </Link>
+   649→                  )}
+   650→                  {/* Top accent line on active */}
+   651→                  <div className={`absolute top-0 left-0 right-0 h-1 bg-[#FF4D00] transition-all duration-300 ${
+   652→                    isActive ? "opacity-100" : "opacity-0"
+   653→                  }`} />
+   654→                </motion.button>
+   655→
+   656→                {/* Vertical connector between cards */}
+   657→                {!isLast && (
+   658→                  <div className="flex justify-center py-2">
+   659→                    <div className="flex flex-col items-center">
+   660→                      <div className={`w-px h-4 transition-colors duration-300 ${
+   661→                        isActive ? "bg-[#FF4D00]" : "bg-[#111111]/15"
+   662→                      }`} />
+   663→                      <svg
+   664→                        className={`w-3 h-3 -mt-px transition-colors duration-300 ${
+   665→                          isActive ? "text-[#FF4D00]" : "text-[#111111]/15"
+   666→                        }`}
+   667→                        viewBox="0 0 6 10"
+   668→                        fill="currentColor"
+   669→                      >
+   670→                        <path d="M0 0L6 5L0 10V0Z" />
+   671→                      </svg>
+   672→                    </div>
+   673→                  </div>
+   674→                )}
+   675→
+   676→                {/* Flyback indicator at bottom of last card */}
+   677→                {isLast && (
+   678→                  <div className="flex items-center justify-center py-3 gap-2 text-[#FF4D00]/50">
+   679→                    <svg className="w-3 h-3 rotate-180" viewBox="0 0 6 10" fill="currentColor">
+   680→                      <path d="M0 0L6 5L0 10V0Z" />
+   681→                    </svg>
+   682→                    <span className="text-[9px] font-mono font-bold tracking-[0.15em] uppercase">→ Infrastructure → flywheel</span>
+   683→                  </div>
+   684→                )}
+   685→              </div>
+   686→            );
+   687→          })}
+   688→        </div>
+   689→      </div>
+   690→    </section>
+   691→  );
+   692→}
+   693→
+   694→/* ══════════════════════════════════════════════════════════════════════════
+   695→   WHO WE BACK, Split Screen Layout
+   696→   ══════════════════════════════════════════════════════════════════════════ */
+   697→function WhoWeBackSection() {
+   698→  const [activeTrait, setActiveTrait] = useState(0);
+   699→  const ref = useRef<HTMLDivElement>(null);
+   700→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   701→
+   702→  return (
+   703→    <section
+   704→      ref={ref}
+   705→      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10"
+   706→    >
+   707→      <div className="w-full max-w-[1400px] mx-auto">
+   708→        {/* Centered intro */}
+   709→        <motion.div
+   710→          initial={{ opacity: 0, y: 30 }}
+   711→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   712→          transition={{ duration: 0.8, ease: "easeOut" }}
+   713→          className="text-center max-w-3xl mx-auto mb-16 md:mb-24"
+   714→        >
+   715→          <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00] mb-6">
+   716→            Who We Back
+   717→          </div>
+   718→          <h2 className="text-[32px] md:text-[48px] lg:text-[60px] font-display font-medium tracking-tight leading-[1.05] mb-6">
+   719→            The best founders have a few things <span className="text-[#111111]/40">in common</span>.
+   720→          </h2>
+   721→          <p className="text-[17px] md:text-[19px] text-[#111111]/50 font-medium leading-relaxed">
+   722→            We don&apos;t look for well-rounded resumes. We look for people with one or two outlier abilities and the conviction to go all the way.
+   723→          </p>
+   724→        </motion.div>
+   725→
+   726→        {/* Split Screen Layout */}
+   727→        <motion.div
+   728→          initial={{ opacity: 0, y: 30 }}
+   729→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   730→          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+   731→          className="grid lg:grid-cols-12 gap-12 lg:gap-16"
+   732→        >
+   733→          {/* Left Column, Number Indicators */}
+   734→          <div className="lg:col-span-4">
+   735→            <div className="lg:sticky lg:top-32 flex lg:flex-col flex-row gap-4 lg:gap-0 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 scrollbar-hide">
+   736→              {traits.map((trait, i) => (
+   737→                <button
+   738→                  key={i}
+   739→                  suppressHydrationWarning
+   740→                  onClick={() => setActiveTrait(i)}
+   741→                  className={`flex items-center lg:items-center gap-4 lg:gap-6 shrink-0 lg:shrink group transition-all duration-300 cursor-pointer ${
+   742→                    i > 0 ? "lg:mt-2" : ""
+   743→                  }`}
+   744→                >
+   745→                  {/* Orange vertical bar indicator */}
+   746→                  <div className="relative flex items-center">
+   747→                    <div
+   748→                      className={`w-1 rounded-full transition-all duration-300 ${
+   749→                        activeTrait === i
+   750→                          ? "h-[40px] sm:h-[60px] md:h-[80px] bg-[#FF4D00]"
+   751→                          : "h-[40px] sm:h-[60px] md:h-[80px] bg-[#111111]/10 group-hover:bg-[#111111]/20"
+   752→                      }`}
+   753→                    />
+   754→                  </div>
+   755→                  {/* Number */}
+   756→                  <span
+   757→                    className={`text-[36px] sm:text-[60px] md:text-[80px] lg:text-[120px] font-display font-medium leading-none transition-all duration-300 ${
+   758→                      activeTrait === i
+   759→                        ? "text-[#111111]"
+   760→                        : "text-[#111111]/15 group-hover:text-[#111111]/30"
+   761→                    }`}
+   762→                  >
+   763→                    0{i + 1}
+   764→                  </span>
+   765→                  {/* Title, only visible on mobile/tablet inline */}
+   766→                  <span
+   767→                    className={`lg:hidden text-[14px] md:text-[16px] font-display font-medium transition-colors whitespace-nowrap ${
+   768→                      activeTrait === i
+   769→                        ? "text-[#111111]"
+   770→                        : "text-[#111111]/40"
+   771→                    }`}
+   772→                  >
+   773→                    {trait.title}
+   774→                  </span>
+   775→                </button>
+   776→              ))}
+   777→            </div>
+   778→          </div>
+   779→
+   780→          {/* Right Column, Active Trait Content */}
+   781→          <div className="lg:col-span-8 min-h-[320px] md:min-h-[400px]">
+   782→            <AnimatePresence mode="wait">
+   783→              <motion.div
+   784→                key={activeTrait}
+   785→                initial={{ opacity: 0, x: 30 }}
+   786→                animate={{ opacity: 1, x: 0 }}
+   787→                exit={{ opacity: 0, x: -30 }}
+   788→                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+   789→                className="grid md:grid-cols-2 gap-8 md:gap-12 items-start"
+   790→              >
+   791→                {/* Text content */}
+   792→                <div className="flex flex-col justify-center">
+   793→                  <h3 className="text-[28px] md:text-[36px] lg:text-[44px] font-display font-medium tracking-tight leading-[1.1] mb-6 text-[#111111]">
+   794→                    {traits[activeTrait].title}
+   795→                  </h3>
+   796→                  <p className="text-[17px] md:text-[19px] text-[#111111]/60 font-medium leading-[1.7]">
+   797→                    {traits[activeTrait].desc}
+   798→                  </p>
+   799→                  {activeTrait === traits.length - 1 && (
+   800→                    <div className="mt-8 text-[#FF4D00]">
+   801→                      <svg width="26" height="53" viewBox="0 0 26 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+   802→                        <path d="M3.02421 0.5L0 14.1035H8.64923V52.5H26V0.5H3.02421Z" fill="currentColor"></path>
+   803→                      </svg>
+   804→                    </div>
+   805→                  )}
+   806→                </div>
+   807→                {/* Image */}
+   808→                <div className="relative overflow-hidden rounded-sm">
+   809→                  <img
+   810→                    src={traits[activeTrait].image}
+   811→                    alt={traits[activeTrait].title}
+   812→                    className="w-full aspect-[3/4] object-cover"
+   813→                    style={{ objectPosition: traits[activeTrait].position }}
+   814→                  />
+   815→                  <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/10 to-transparent" />
+   816→                </div>
+   817→              </motion.div>
+   818→            </AnimatePresence>
+   819→          </div>
+   820→        </motion.div>
+   821→      </div>
+   822→    </section>
+   823→  );
+   824→}
+   825→
+   826→/* ══════════════════════════════════════════════════════════════════════════
+   827→   HOW WE WORK, Card Carousel Layout
+   828→   ══════════════════════════════════════════════════════════════════════════ */
+   829→function HowWeWorkSection() {
+   830→  const ref = useRef<HTMLDivElement>(null);
+   831→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   832→
+   833→  return (
+   834→    <section
+   835→      ref={ref}
+   836→      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 bg-[#FAFAFA] border-b border-[#111111]/10"
+   837→    >
+   838→      <div className="w-full max-w-[1400px] mx-auto">
+   839→        {/* Centered header */}
+   840→        <motion.div
+   841→          initial={{ opacity: 0, y: 30 }}
+   842→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   843→          transition={{ duration: 0.8, ease: "easeOut" }}
+   844→          className="text-center max-w-3xl mx-auto mb-16 md:mb-24"
+   845→        >
+   846→          <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00] mb-6">
+   847→            How We Work
+   848→          </div>
+   849→          <h2 className="text-[32px] md:text-[48px] lg:text-[60px] font-display font-medium tracking-tight leading-[1.05] mb-6">
+   850→            Rigorous, fast, <span className="text-[#111111]/40">and on your side</span>.
+   851→          </h2>
+   852→          <p className="text-[17px] md:text-[19px] text-[#111111]/50 font-medium leading-relaxed">
+   853→            Our process is designed to respect your time and get to conviction quickly, because the best founders don&apos;t wait.
+   854→          </p>
+   855→        </motion.div>
+   856→
+   857→        {/* Connector line with dots */}
+   858→        <motion.div
+   859→          initial={{ opacity: 0, y: 20 }}
+   860→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   861→          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+   862→          className="max-w-6xl mx-auto mb-0"
+   863→        >
+   864→          <div className="hidden md:flex items-center px-8 md:px-12 relative">
+   865→            {/* Horizontal line */}
+   866→            <div className="absolute top-1/2 left-[calc(16.66%)] right-[calc(16.66%)] h-px bg-[#111111]/10 -translate-y-1/2" />
+   867→            {/* Dots at each card position */}
+   868→            {howWeWork.map((_, i) => (
+   869→              <div
+   870→                key={i}
+   871→                className="flex-1 flex justify-center relative z-10"
+   872→              >
+   873→                <div className="w-3 h-3 rounded-full bg-[#FF4D00] border-2 border-white shadow-sm" />
+   874→              </div>
+   875→            ))}
+   876→          </div>
+   877→        </motion.div>
+   878→
+   879→        {/* Card carousel */}
+   880→        <div className="max-w-6xl mx-auto">
+   881→          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+   882→            {howWeWork.map((step, i) => (
+   883→              <HowWeWorkCard key={i} step={step} index={i} />
+   884→            ))}
+   885→          </div>
+   886→        </div>
+   887→
+   888→        {/* CTA */}
+   889→        <motion.div
+   890→          initial={{ opacity: 0, y: 20 }}
+   891→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   892→          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+   893→          className="text-center mt-16 md:mt-24"
+   894→        >
+   895→          <Link
+   896→            to="/programs"
+   897→            className="group inline-flex items-center gap-6 px-10 py-5 bg-[#111111] text-white text-[12px] font-bold tracking-[0.2em] uppercase hover:bg-[#FF4D00] transition-all"
+   898→          >
+   899→            Start an Application <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+   900→          </Link>
+   901→        </motion.div>
+   902→      </div>
+   903→    </section>
+   904→  );
+   905→}
+   906→
+   907→function HowWeWorkCard({ step, index }: { step: typeof howWeWork[number]; index: number }) {
+   908→  const ref = useRef<HTMLDivElement>(null);
+   909→  const isInView = useInView(ref, { once: true, margin: "-50px" });
+   910→
+   911→  return (
+   912→    <motion.div
+   913→      ref={ref}
+   914→      initial={{ opacity: 0, y: 30 }}
+   915→      animate={isInView ? { opacity: 1, y: 0 } : {}}
+   916→      transition={{ duration: 0.7, delay: index * 0.15, ease: "easeOut" }}
+   917→      className="group"
+   918→    >
+   919→      <div className="border-l-4 border-[#FF4D00] pt-8 pb-8 px-6 md:px-8 bg-white shadow-sm hover:shadow-md transition-all duration-300 min-h-[280px] flex flex-col justify-between hover:-translate-y-1">
+   920→        {/* Top content */}
+   921→        <div>
+   922→          <div className="text-[48px] md:text-[56px] font-display font-medium tracking-[-0.03em] leading-none text-[#FF4D00] mb-6">
+   923→            {step.step}
+   924→          </div>
+   925→          <h3 className="text-[22px] md:text-[26px] font-display font-medium tracking-tight leading-[1.15] mb-5 text-[#111111]">
+   926→            {step.title}
+   927→          </h3>
+   928→          <p className="text-[15px] md:text-[16px] text-[#111111]/55 font-medium leading-[1.7]">
+   929→            {step.desc}
+   930→          </p>
+   931→        </div>
+   932→
+   933→        {/* Bottom bar */}
+   934→        <div className="flex items-center justify-between mt-8 pt-6 border-t border-[#111111]/5">
+   935→          <span className="text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/30">
+   936→            Step {step.step}
+   937→          </span>
+   938→          <span className="w-8 h-8 rounded-full border border-[#111111]/10 flex items-center justify-center text-[#111111]/30 group-hover:border-[#FF4D00] group-hover:text-[#FF4D00] transition-all">
+   939→            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+   940→          </span>
+   941→        </div>
+   942→      </div>
+   943→    </motion.div>
+   944→  );
+   945→}
+   946→
+   947→/* ══════════════════════════════════════════════════════════════════════════
+   948→   13 CRITICAL DOMAINS, Moved from Infrastructure page
+   949→   ══════════════════════════════════════════════════════════════════════════ */
+   950→function CriticalDomainsSection() {
+   951→  const ref = useRef<HTMLDivElement>(null);
+   952→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   953→
+   954→  return (
+   955→    <section
+   956→      ref={ref}
+   957→      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10"
+   958→    >
+   959→      <div className="w-full max-w-[1400px] mx-auto">
+   960→        {/* Header */}
+   961→        <motion.div
+   962→          initial={{ opacity: 0, y: 30 }}
+   963→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   964→          transition={{ duration: 0.8, ease: "easeOut" }}
+   965→          className="max-w-3xl mb-16 md:mb-24"
+   966→        >
+   967→          <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00] mb-6 block">
+   968→            The 13 Critical Domains
+   969→          </span>
+   970→          <h2 className="text-[32px] md:text-[48px] lg:text-[60px] font-display font-medium tracking-tight leading-[1.05] mb-6">
+   971→            Where we focus <span className="text-[#111111]/40">our conviction.</span>
+   972→          </h2>
+   973→          <p className="text-[17px] md:text-[19px] text-[#111111]/50 font-medium leading-relaxed">
+   974→            These are the domains where self-reliance is technological: the ability to generate electricity, secure food, purify water, and defend networks on one&apos;s own terms.
+   975→          </p>
+   976→        </motion.div>
+   977→
+   978→        {/* Domain grid */}
+   979→        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
+   980→          {criticalDomains.map((field, i) => (
+   981→            <motion.div
+   982→              key={i}
+   983→              initial={{ opacity: 0, y: 20 }}
+   984→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   985→              transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+   986→              className="border-t border-[#111111]/10 pt-6 group"
+   987→            >
+   988→              <div className="text-[11px] font-mono font-bold text-[#FF4D00] mb-4">{(i + 1).toString().padStart(2, '0')}</div>
+   989→              <h3 className="text-[17px] md:text-[18px] font-bold tracking-tight mb-3 text-[#111111] group-hover:text-[#FF4D00] transition-colors">{field.name}</h3>
+   990→              <p className="text-[13px] md:text-[14px] leading-[1.6] text-[#111111]/55 font-medium">{field.desc}</p>
+   991→            </motion.div>
+   992→          ))}
+   993→        </div>
+   994→      </div>
+   995→    </section>
+   996→  );
+   997→}
+   998→
+   999→/* ══════════════════════════════════════════════════════════════════════════
+  1000→   FAQ, Centered layout with horizontal category tabs
+  1001→   ══════════════════════════════════════════════════════════════════════════ */
+  1002→function FaqSection() {
+  1003→  const [activeCategory, setActiveCategory] = useState("Timing");
+  1004→  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  1005→  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  1006→
+  1007→  const filteredFaqs = faqs.filter(f => f.category === activeCategory);
+  1008→
+  1009→  const ref = useRef<HTMLDivElement>(null);
+  1010→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  1011→
+  1012→  return (
+  1013→    <section
+  1014→      ref={ref}
+  1015→      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10"
+  1016→    >
+  1017→      <div className="w-full max-w-[1400px] mx-auto">
+  1018→        {/* Centered header */}
+  1019→        <motion.div
+  1020→          initial={{ opacity: 0, y: 30 }}
+  1021→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1022→          transition={{ duration: 0.8, ease: "easeOut" }}
+  1023→          className="text-center max-w-3xl mx-auto mb-12 md:mb-16"
+  1024→        >
+  1025→          <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00] mb-6">
+  1026→            Frequently Asked
+  1027→          </div>
+  1028→          <h2 className="text-[32px] md:text-[48px] lg:text-[56px] font-display font-medium tracking-tight leading-[1.05]">
+  1029→            If this sounds like you, you likely have <span className="text-[#111111]/40">these questions</span>.
+  1030→          </h2>
+  1031→        </motion.div>
+  1032→
+  1033→        {/* Desktop category tabs, horizontal, centered */}
+  1034→        <motion.div
+  1035→          initial={{ opacity: 0, y: 20 }}
+  1036→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1037→          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+  1038→          className="hidden md:flex justify-center gap-2 mb-16"
+  1039→        >
+  1040→          {categories.map(c => (
+  1041→            <button
+  1042→              key={c}
+  1043→              suppressHydrationWarning
+  1044→              onClick={() => { setActiveCategory(c); setOpenFaq(null); }}
+  1045→              className={`px-6 py-3 text-[11px] font-mono font-bold tracking-[0.15em] uppercase transition-all border ${
+  1046→                activeCategory === c
+  1047→                  ? "bg-[#111111] text-white border-[#111111]"
+  1048→                  : "bg-white text-[#111111]/40 border-[#111111]/10 hover:border-[#111111]/30 hover:text-[#111111]/70"
+  1049→              }`}
+  1050→            >
+  1051→              {c}
+  1052→            </button>
+  1053→          ))}
+  1054→        </motion.div>
+  1055→
+  1056→        {/* Mobile category dropdown */}
+  1057→        <div className="md:hidden relative mb-10">
+  1058→          <button
+  1059→            suppressHydrationWarning
+  1060→            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+  1061→            className="w-full flex items-center justify-between border border-[#111111]/10 px-6 py-4 bg-white"
+  1062→          >
+  1063→            <span className="text-[12px] font-mono font-bold tracking-[0.15em] uppercase">
+  1064→              {activeCategory}
+  1065→            </span>
+  1066→            <ChevronDown
+  1067→              className={`w-4 h-4 transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`}
+  1068→            />
+  1069→          </button>
+  1070→          {mobileMenuOpen && (
+  1071→            <div className="absolute top-full left-0 right-0 bg-white border border-[#111111]/10 border-t-0 shadow-lg z-50 flex flex-col">
+  1072→              {categories.map(c => (
+  1073→                <button
+  1074→                  key={c}
+  1075→                  suppressHydrationWarning
+  1076→                  onClick={() => {
+  1077→                    setActiveCategory(c);
+  1078→                    setOpenFaq(null);
+  1079→                    setMobileMenuOpen(false);
+  1080→                  }}
+  1081→                  className={`text-left px-6 py-4 text-[12px] font-mono font-bold tracking-[0.15em] uppercase border-b border-[#111111]/5 last:border-0 transition-colors ${
+  1082→                    activeCategory === c
+  1083→                      ? "bg-[#FAFAFA] text-[#FF4D00]"
+  1084→                      : "text-[#111111]/50 hover:text-[#111111]/80"
+  1085→                  }`}
+  1086→                >
+  1087→                  {c}
+  1088→                </button>
+  1089→              ))}
+  1090→            </div>
+  1091→          )}
+  1092→        </div>
+  1093→
+  1094→        {/* FAQ items, centered */}
+  1095→        <div className="max-w-4xl mx-auto">
+  1096→          {filteredFaqs.map((faq, index) => (
+  1097→            <FaqItem
+  1098→              key={index}
+  1099→              faq={faq}
+  1100→              index={index}
+  1101→              isOpen={openFaq === index}
+  1102→              onToggle={() => setOpenFaq(openFaq === index ? null : index)}
+  1103→            />
+  1104→          ))}
+  1105→        </div>
+  1106→      </div>
+  1107→    </section>
+  1108→  );
+  1109→}
+  1110→
+  1111→function FaqItem({
+  1112→  faq,
+  1113→  index,
+  1114→  isOpen,
+  1115→  onToggle,
+  1116→}: {
+  1117→  faq: { q: string; a: string };
+  1118→  index: number;
+  1119→  isOpen: boolean;
+  1120→  onToggle: () => void;
+  1121→}) {
+  1122→  const ref = useRef<HTMLDivElement>(null);
+  1123→  const isInView = useInView(ref, { once: true, margin: "-30px" });
+  1124→
+  1125→  return (
+  1126→    <motion.div
+  1127→      ref={ref}
+  1128→      initial={{ opacity: 0, y: 15 }}
+  1129→      animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1130→      transition={{ duration: 0.5, delay: index * 0.06, ease: "easeOut" }}
+  1131→      className="border-b border-[#111111]/10"
+  1132→    >
+  1133→      <button
+  1134→        suppressHydrationWarning
+  1135→        onClick={onToggle}
+  1136→        className="w-full py-6 md:py-8 flex items-start justify-between text-left group gap-6"
+  1137→      >
+  1138→        <span className="text-[18px] md:text-[22px] font-display font-medium tracking-tight leading-[1.3] group-hover:text-[#FF4D00] transition-colors">
+  1139→          {faq.q}
+  1140→        </span>
+  1141→        <span
+  1142→          className={`shrink-0 w-8 h-8 rounded-full border flex items-center justify-center transition-all mt-0.5 ${
+  1143→            isOpen
+  1144→              ? "bg-[#FF4D00] text-white border-[#FF4D00]"
+  1145→              : "border-[#111111]/10 group-hover:border-[#FF4D00] group-hover:text-[#FF4D00]"
+  1146→          }`}
+  1147→        >
+  1148→          {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+  1149→        </span>
+  1150→      </button>
+  1151→      <div
+  1152→        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+  1153→          isOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+  1154→        }`}
+  1155→      >
+  1156→        <p className="pb-6 md:pb-8 text-[16px] md:text-[17px] text-[#111111]/55 font-medium leading-[1.7] max-w-2xl">
+  1157→          {faq.a}
+  1158→        </p>
+  1159→      </div>
+  1160→    </motion.div>
+  1161→  );
+  1162→}
+  1163→

@@ -171,6 +171,9 @@ function Nav() {
       links: [
         { name: "About", path: "/about" },
         { name: "How We Work", path: "/approach" },
+        { name: "How We Work · Alt 1", path: "/approach-alt-1" },
+        { name: "How We Work · Alt 2", path: "/approach-alt-2" },
+        { name: "How We Work · Alt 3", path: "/approach-alt-3" },
         { name: "Manifesto", path: "/manifesto" },
       ],
     },
@@ -178,6 +181,9 @@ function Nav() {
       label: "Platform",
       links: [
         { name: "Infrastructure", path: "/infrastructure" },
+        { name: "Infrastructure · Alt 1", path: "/infrastructure-alt-1" },
+        { name: "Infrastructure · Alt 2", path: "/infrastructure-alt-2" },
+        { name: "Infrastructure · Alt 3", path: "/infrastructure-alt-3" },
         { name: "Routes", path: "/routes" },
         { name: "Ventures", path: "/ventures" },
       ],
@@ -186,6 +192,9 @@ function Nav() {
       label: "Network",
       links: [
         { name: "Capital", path: "/capital" },
+        { name: "Capital · Alt 1", path: "/capital-alt-1" },
+        { name: "Capital · Alt 2", path: "/capital-alt-2" },
+        { name: "Capital · Alt 3", path: "/capital-alt-3" },
         { name: "Programs", path: "/programs" },
         { name: "Community", path: "/community" },
         { name: "Insights", path: "/insights" },
@@ -200,6 +209,9 @@ function Nav() {
       links: [
         { name: "About", path: "/about" },
         { name: "How We Work", path: "/approach" },
+        { name: "How We Work · Alt 1", path: "/approach-alt-1" },
+        { name: "How We Work · Alt 2", path: "/approach-alt-2" },
+        { name: "How We Work · Alt 3", path: "/approach-alt-3" },
         { name: "Manifesto", path: "/manifesto" },
       ],
     },
@@ -207,6 +219,9 @@ function Nav() {
       label: "The Platform",
       links: [
         { name: "Infrastructure", path: "/infrastructure" },
+        { name: "Infrastructure · Alt 1", path: "/infrastructure-alt-1" },
+        { name: "Infrastructure · Alt 2", path: "/infrastructure-alt-2" },
+        { name: "Infrastructure · Alt 3", path: "/infrastructure-alt-3" },
         { name: "Routes", path: "/routes" },
         { name: "Ventures", path: "/ventures" },
       ],
@@ -215,6 +230,9 @@ function Nav() {
       label: "Capital & Network",
       links: [
         { name: "Capital", path: "/capital" },
+        { name: "Capital · Alt 1", path: "/capital-alt-1" },
+        { name: "Capital · Alt 2", path: "/capital-alt-2" },
+        { name: "Capital · Alt 3", path: "/capital-alt-3" },
         { name: "Programs", path: "/programs" },
         { name: "Community", path: "/community" },
         { name: "Careers", path: "/careers" },

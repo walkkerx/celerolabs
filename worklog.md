@@ -309,3 +309,73 @@ Stage Summary:
 - Frontend rebuilt with: infinite scroll (IntersectionObserver), live debounced search, optimistic updates WITHOUT refetching, working comment voting, modular component architecture
 - All 20 identified scalability bugs addressed
 - Lint clean, browser-verified end-to-end (signup → feed → vote → search → post detail → comment), mobile responsive
+
+---
+Task ID: capital-alts
+Agent: main
+Task: Build 3 alternate layouts for the Capital page (CapitalAlt1, CapitalAlt2, CapitalAlt3) as A/B-test candidates against the existing /capital page. Do NOT modify the existing Capital page.
+
+Work Log:
+- Read prior worklog and existing `src/artemis/pages/Capital.tsx` to absorb the brand system (accent #FF4D00, dark #0A0A0A, light #FAFAFA, font-display = Space Grotesk, font-mono + tracking-[0.2em] uppercase mono labels, max-w-[1400px] container, framer-motion + useInView with easing [0.22, 1, 0.36, 1], Link from @/artemis/router, lucide-react icons).
+- Read router.tsx, globals.css, tailwind.config.ts, and ventures.ts to confirm the `Link` component shape, available font/CSS utilities, and real venture names (Helios, Ampere, Ember, Ignis, Nimbus, Ceres, Bounty, Meridian, Manna, Chorus) for use in the alt pages.
+- Created `src/artemis/pages/CapitalAlt1.tsx` — "Flow Visualization" (DARK):
+  - Asymmetrical split hero (cols 1-6 copy, cols 7-12 animated SVG flow diagram).
+  - SIGNATURE: animated SVG "capital flow" diagram — 5 source nodes on the left fan orange gradient curves (animated stroke-dashoffset, flowing particles) to 6 venture verticals on the right, with pulsing source nodes and a central "FLOW ENGINE" label.
+  - Sections: FlowHero → CapitalSources (6 vehicles as animated deploy-weight bars) → PortfolioImpact ($4B / 6 / 39 / 190 stat grid) → FutureVision (2025-2032 milestone bar chart rising to 100%/$4B) → FlowCTA.
+  - All 6 vehicles with real-ish min entries ($500, $5K, $50K, $10K, advisory, $250K).
+- Created `src/artemis/pages/CapitalAlt2.tsx` — "Magazine Editorial" (LIGHT):
+  - Full-bleed magazine cover hero with "ISSUE 04 · Capital" numbering, masthead bar, giant serif drop-cap standfirst, and an "In this issue" TOC + 5-cell masthead strip.
+  - SIGNATURE: large serif drop-cap pull quotes (Georgia serif stack) + horizontal timeline ("Five issues, one deployment arc") with issue numbers (No. 01-05), a horizontal spine, year markers, and metrics.
+  - Sections: MagazineHero → InvestmentTimeline (5-milestone horizontal timeline 2024-2026) → SectorBreakdown (6-sector grid: Energy/Water/Food/Digital Finance/Manufacturing/Critical Tech with allocations) → TeamInsights (2 alternating drop-cap pull quotes from committee) → ContactCTA (dark, 3 action cards).
+  - Mono section dividers "01 — DISPATCHES", "02 — THE PORTFOLIO", "03 — VOICES", "04 — SUBSCRIBE".
+- Created `src/artemis/pages/CapitalAlt3.tsx` — "Spatial Globe" (DARK):
+  - Interactive hero with headline on the left and an SVG orbital globe + live detail card on the right.
+  - SIGNATURE: stylized SVG "orbital globe" — central orange xCelero core with pulsing ring, 3 dashed orbital rings, 9 real venture nodes positioned via polar coordinates (sin/cos), animated connecting arcs from core to each node with flowing particles, and hover/click reveals a detail card (code, vertical, location, vehicle, orbit).
+  - Sections: SpatialHero (interactive globe + AnimatePresence detail card) → GeographicDistribution (39/190/4/2 stats + mini "route constellation" SVG with dotted continent field and pulsing hub nodes) → InvestmentThesis (6 vehicles on a vertical spine with node markers) → PortfolioGrid (9 venture cards decoded from the globe nodes) → SpatialCTA.
+  - useState for active node hover, fully interactive (mouse + click for touch).
+- Each page is self-contained (~330-450 lines), uses `"use client"`, framer-motion animations with the [0.22, 1, 0.36, 1] easing, real content about xCelero's capital vehicles (Fund/SPV/Thematic/Catalyst/Non-Dilutive/Anchor, entry from $500, 6 vehicles, 39 grant markets, 190 hubs, $4B target), and is visually distinct (dark-flow / light-magazine / dark-orbital).
+- Ran `bun run lint` — clean, zero errors/warnings. Dev server recompiles successfully (verified dev.log).
+- Did NOT wire routes or nav (per instructions — separate task). Only created the 3 page components, each exporting its named component.
+
+Files created:
+- src/artemis/pages/CapitalAlt1.tsx (Flow Visualization, DARK)
+- src/artemis/pages/CapitalAlt2.tsx (Magazine Editorial, LIGHT)
+- src/artemis/pages/CapitalAlt3.tsx (Spatial Globe, DARK)
+
+---
+Task ID: map-fix-alts-dark-section
+Agent: main
+Task: (1) Fix home map pins to show inline info like routes page (not navigate), (2) build alt1/alt2/alt3 layouts for Capital, Approach, Infrastructure with GLM 5.2, (3) add a dark themed section to homepage
+
+Work Log:
+- (1) Map fix: Explored home vs routes map behavior via Explore agent — home used `<Link to="/routes">` on every pin (navigated away), routes used `<button onClick>` with inline AnimatePresence panel. Rewrote Home's BlueprintMap: added `activeLocId` state + `activeLocData`/`legOfActive` derived, replaced `<Link>` pin wrappers with `<div>` + `<button onClick>`, added the full inline info panel (leg indicator, city name, About, Route info, Countries chips, View Full Route button) + backdrop-click-to-close. Added X + Sparkles icon imports. Verified: clicking LAGOS pin shows inline panel, URL stays on `/` (no navigation).
+- (2) Alt layouts: Invoked GLM 5.2 via z-ai CLI for 9 distinct concepts (3 per page). Built all 9 alt pages:
+  - CapitalAlt1 "Flow Visualization" (dark, animated SVG capital-flow diagram) — built by full-stack-developer agent
+  - CapitalAlt2 "Magazine Editorial" (light, serif drop-caps + horizontal timeline) — built by full-stack-developer agent
+  - CapitalAlt3 "Spatial Globe" (dark, SVG orbital globe with interactive nodes) — built by full-stack-developer agent
+  - ApproachAlt1 "Subway Map" (dark, SVG metro lines + clickable stations with detail panel) — built by main
+  - ApproachAlt2 "Workspace Artifacts" (light, sticky-note method cards with rotation + pin dots) — built by main
+  - ApproachAlt3 "Blueprint Construction" (dark, stacked assembly layers with blueprint grid) — built by main
+  - InfrastructureAlt1 "Neural Network" (dark, SVG node graph with animated connection pulses) — built by main
+  - InfrastructureAlt2 "Cross-Section" (light, building floors with blueprint annotations) — built by main
+  - InfrastructureAlt3 "System Grid" (dark, expandable card grid + interconnection flow diagram) — built by main
+- Wired all 9 routes in page.tsx (/capital-alt-1..3, /approach-alt-1..3, /infrastructure-alt-1..3)
+- Added all 9 to nav (desktop dropdowns + mobile menu) under Company/Platform/Network groups, labeled "· Alt 1/2/3"
+- (3) Dark homepage section: Added OperatingBeliefsSection between NumbersSection and FourPillarsEngine — dark #0A0A0A bg with decorative grid, radial orange glow, 3 editorial pull-quote cards (breakthrough/flywheel, infrastructure mandate, the thesis) in a bordered grid, CTA row linking to manifesto. Added Sparkles icon import.
+- Ran `bun run lint` → clean (0 errors, 0 warnings)
+- Agent Browser verification:
+  - Map: clicked LAGOS pin → inline panel appeared with "About", "Leg 1", city name — URL stayed on `/` (no navigation) ✓
+  - Dark section: "What we hold to be true." heading found on homepage, renders on mobile too ✓
+  - Capital Alt 1: "Capital that moves like current." hero renders ✓
+  - Approach Alt 1: "The Route has stops." subway map renders ✓
+  - Infrastructure Alt 3: "Six systems. Click to expand." grid renders ✓
+  - All 9 alt routes return HTTP 200
+  - Mobile (iPhone 14): dark section renders, all pages responsive
+  - Zero browser errors
+
+Stage Summary:
+- Home map fixed: pins now show inline info panels (matching routes page), no navigation
+- 9 alt layout pages built with GLM 5.2 concepts: 3 Capital + 3 Approach + 3 Infrastructure, each visually distinct (flow viz / magazine / globe / subway / workspace / blueprint / neural net / cross-section / system grid)
+- All wired to routes + nav (labeled "· Alt 1/2/3"), current pages untouched
+- Dark "Operating Beliefs" section added to homepage with 3 pull quotes + manifesto CTA
+- Lint clean, all routes 200, browser-verified, mobile responsive

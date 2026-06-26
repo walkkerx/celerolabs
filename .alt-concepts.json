@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "CAPITAL / ALT 1\n(a) Asymmetrical split-screen with animated capital flow visualization\n(b) Hero → Capital sources → Portfolio impact → Future vision → CTA\n(c) Dark background with orange accent trails showing capital movement, dynamic data viz, bold typography hierarchy\n\nCAPITAL / ALT 2\n(a) Magazine-style editorial layout with capital as cover story\n(b) Full-bleed hero → Timeline of investments → Sector breakdown → Team insights → Contact\n(c) Light background with orange pull quotes, mono labels as section dividers, grid-based portfolio showcase\n\nCAPITAL / ALT 3\n(a) Minimalist 3D rotating globe with capital nodes\n(b) Interactive hero → Geographic distribution → Investment thesis → Portfolio companies → CTA\n(c) Dark theme with orange connection lines, hover reveals company cards, spatial navigation experience\n\nAPPROACH / ALT 1\n(a) Process as subway/metro map with colored routes\n(b) Hero → Methodology lines → Process stops → Case study → Principles → CTA\n(c) Dark background with orange route highlights, interactive stops reveal details, unconventional navigation metaphor\n\nAPPROACH / ALT 2\n(a) Collaborative workspace with process artifacts\n(b) Hero → Workspace overview → Method cards → Case study board → Principles wall → CTA\n(c) Light background with sticky-note aesthetic, orange accent pins, hands-on feel with textured elements\n\nAPPROACH / ALT 3\n(a) Step-by-step construction visualization\n(b) Hero → Blueprint reveal → Methodology build → Case study → Principles → CTA\n(c) Dark theme with orange construction lines, animated assembly process, technical drawing aesthetic\n\nINFRASTRUCTURE / ALT 1\n(a) Tech stack as interconnected neural network\n(b) Hero → Network overview → Core nodes → Supporting systems → Ecosystem → CTA\n(c) Dark background with orange connection pulses, interactive nodes reveal details, futuristic visualization\n\nINFRASTRUCTURE / ALT 2\n(a) Infrastructure as building cross-section\n(b) Hero → Foundation → Frameworks → Tools → Ecosystem → CTA\n(c) Light background with orange structural highlights, cutaway view metaphor, blueprint-style annotations\n\nINFRASTRUCTURE / ALT 3\n(a) Minimalist grid with system cards that expand\n(b) Hero → System overview → Expandable cards → Interconnections → Ecosystem → CTA\n(c) Dark theme with orange grid lines, card-based interaction, modular design approach",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782476179,
+  "id": "20260626201613dab4f7f4830d4cbe",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20260626201613dab4f7f4830d4cbe",
+  "usage": {
+    "completion_tokens": 500,
+    "prompt_tokens": 230,
+    "total_tokens": 730
+  }
+}

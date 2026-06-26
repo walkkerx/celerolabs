@@ -1,0 +1,1502 @@
+     1→"use client";
+     2→
+     3→import { useRef, useState, useMemo, useEffect, useCallback } from "react";
+     4→import { motion, useInView, AnimatePresence } from "framer-motion";
+     5→import { Link } from "@/artemis/router";
+     6→import {
+     7→  ArrowRight,
+     8→  ArrowUpRight,
+     9→  ChevronDown,
+    10→  ChevronUp,
+    11→  Building2,
+    12→  Rocket,
+    13→  Coins,
+    14→  Users,
+    15→  MapPin,
+    16→  Check,
+    17→  Calendar,
+    18→  Clock,
+    19→  Star,
+    20→  Zap,
+    21→  TrendingUp,
+    22→  Globe2,
+    23→  Play,
+    24→  ChevronRight,
+    25→} from "lucide-react";
+    26→import { ReviewSection } from "@/artemis/components/ReviewSection";
+    27→import { routeLegs, MAP_LOCATIONS } from "@/artemis/data/routes";
+    28→import { venturesData } from "@/artemis/data/ventures";
+    29→
+    30→/* ── Data ── */
+    31→
+    32→/* Hero slideshow (adopted from Home 2 cinematic hero) */
+    33→const heroSlides = [
+    34→  {
+    35→    src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80",
+    36→    alt: "Engineer operating advanced machinery",
+    37→    position: "center 35%",
+    38→  },
+    39→  {
+    40→    src: "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=1920&q=80",
+    41→    alt: "Solar panel field at dawn",
+    42→    position: "center 40%",
+    43→  },
+    44→  {
+    45→    src: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80",
+    46→    alt: "Circuit board macro detail",
+    47→    position: "center 45%",
+    48→  },
+    49→  {
+    50→    src: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80",
+    51→    alt: "Earth from space at night",
+    52→    position: "center 50%",
+    53→  },
+    54→];
+    55→
+    56→/* Live ticker metrics */
+    57→const tickerMetrics = [
+    58→  { label: "Companies on the Route", value: "5,000+" },
+    59→  { label: "Projected unicorns", value: "200+" },
+    60→  { label: "Hub locations", value: "190" },
+    61→  { label: "Countries", value: "39" },
+    62→  { label: "Investment vehicles", value: "6" },
+    63→  { label: "Civilizational fields", value: "9" },
+    64→];
+    65→
+    66→const stats = [
+    67→  { value: 5000, prefix: "", suffix: "+", label: "Market-defining companies on the Route", icon: Rocket },
+    68→  { value: 1, prefix: "$", suffix: "T+", label: "Projected portfolio value at scale", icon: TrendingUp },
+    69→  { value: 200, prefix: "", suffix: "+", label: "Unicorns projected", icon: Zap },
+    70→  { value: 190, prefix: "", suffix: "", label: "Hub locations across 39 countries", icon: Globe2 },
+    71→];
+    72→
+    73→const EASE = [0.22, 1, 0.36, 1] as const;
+    74→
+    75→/* ── Pillars for the interactive showcase (transferred from Home 2) ── */
+    76→const showcasePillars = [
+    77→  {
+    78→    id: "infrastructure",
+    79→    icon: Building2,
+    80→    label: "01",
+    81→    title: "Infrastructure",
+    82→    tagline: "The physical substrate",
+    83→    description:
+    84→      "M1 Core campuses, XEmbassy nodes, and distributed living labs. We build the physical and digital substrate ventures need to move from prototype to production — 50,000+ sq ft of lab, maker, and co-working space in prime hub cities.",
+    85→    stats: [
+    86→      { value: "190", label: "Hub locations" },
+    87→      { value: "39", label: "Countries" },
+    88→      { value: "50K", label: "Sq ft / campus" },
+    89→    ],
+    90→    image:
+    91→      "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1200&q=80",
+    92→    link: "/infrastructure",
+    93→  },
+    94→  {
+    95→    id: "ventures",
+    96→    icon: Rocket,
+    97→    label: "02",
+    98→    title: "Ventures",
+    99→    tagline: "Critical technology, commercialized",
+   100→    description:
+   101→      "Structured commercialization programs take ventures from idea to revenue, co-designed with industry and government partners who provide market access, pilot opportunities, and first-customer contracts across the Route.",
+   102→    stats: [
+   103→      { value: "40+", label: "Portfolio companies" },
+   104→      { value: "9", label: "Verticals" },
+   105→      { value: "24", label: "MIT steps" },
+   106→    ],
+   107→    image:
+   108→      "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80",
+   109→    link: "/ventures",
+   110→  },
+   111→  {
+   112→    id: "capital",
+   113→    icon: Coins,
+   114→    label: "03",
+   115→    title: "Capital",
+   116→    tagline: "Aligned, from $500 to $250K+",
+   117→    description:
+   118→      "Capital that matches the realities of building in the Global South — venture funds, development finance, and a non-dilutive desk matching ventures with grants and incentives across 39+ countries. Solidarity pricing, every stage.",
+   119→    stats: [
+   120→      { value: "$500", label: "Entry point" },
+   121→      { value: "6", label: "Vehicles" },
+   122→      { value: "39+", label: "Grant markets" },
+   123→    ],
+   124→    image:
+   125→      "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80",
+   126→    link: "/capital",
+   127→  },
+   128→  {
+   129→    id: "community",
+   130→    icon: Users,
+   131→    label: "04",
+   132→    title: "Community",
+   133→    tagline: "The connective tissue",
+   134→    description:
+   135→      "The XCitizens network spans every hub — operators who run infrastructure, founders building ventures, investors deploying capital, mentors transferring knowledge. Compound network effects turn efforts into collective momentum.",
+   136→    stats: [
+   137→      { value: "100", label: "XCitizens / cohort" },
+   138→      { value: "190", label: "Hubs connected" },
+   139→      { value: "∞", label: "Compounding" },
+   140→    ],
+   141→    image:
+   142→      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80",
+   143→    link: "/community",
+   144→  },
+   145→];
+   146→
+   147→/* ══════════════════════════════════════════════════════════════════════════
+   148→   HOME
+   149→   ══════════════════════════════════════════════════════════════════════════ */
+   150→export function Home() {
+   151→  return (
+   152→    <div className="bg-white text-[#111111]">
+   153→      <Hero />
+   154→      <ThesisSection />
+   155→      <NumbersSection />
+   156→      <FourPillarsEngine />
+   157→      <VentureGallery />
+   158→      <LocationsSection />
+   159→      <UpcomingEventsSection />
+   160→      <ReviewSection title="Dispatches from the field" />
+   161→      <NewsletterSection />
+   162→    </div>
+   163→  );
+   164→}
+   165→
+   166→/* ══════════════════════════════════════════════════════════════════════════
+   167→   HERO — Cinematic, dark, kinetic headline, metric ticker
+   168→   Contained within max-w-[1400px] (adopted from Home 2, width-constrained)
+   169→   ══════════════════════════════════════════════════════════════════════════ */
+   170→function Hero() {
+   171→  const [current, setCurrent] = useState(0);
+   172→  const heroRef = useRef<HTMLDivElement>(null);
+   173→  const isInView = useInView(heroRef, { once: true, margin: "-80px" });
+   174→
+   175→  useEffect(() => {
+   176→    const interval = setInterval(() => {
+   177→      setCurrent((p) => (p + 1) % heroSlides.length);
+   178→    }, 5500);
+   179→    return () => clearInterval(interval);
+   180→  }, []);
+   181→
+   182→  const headlineWords = ["Build", "the", "next", "century."];
+   183→
+   184→  return (
+   185→    <section className="relative w-full px-6 md:px-12 lg:px-20 pt-4 md:pt-6">
+   186→      {/* Contained cinematic hero — constant width, not full-bleed */}
+   187→      <div
+   188→        ref={heroRef}
+   189→        className="relative w-full max-w-[1400px] mx-auto overflow-hidden bg-[#0A0A0A] rounded-sm"
+   190→      >
+   191→        {/* Slideshow */}
+   192→        <div className="relative h-[60vh] sm:h-[68vh] md:h-[78vh] lg:h-[82vh]">
+   193→          {heroSlides.map((img, i) => (
+   194→            <motion.div
+   195→              key={i}
+   196→              initial={false}
+   197→              animate={{
+   198→                opacity: i === current ? 1 : 0,
+   199→                scale: i === current ? 1 : 1.06,
+   200→              }}
+   201→              transition={{ duration: 1.1, ease: EASE }}
+   202→              className="absolute inset-0"
+   203→            >
+   204→              <img
+   205→                src={img.src}
+   206→                alt={img.alt}
+   207→                className="w-full h-full object-cover"
+   208→                style={{ objectPosition: img.position }}
+   209→                loading={i === 0 ? "eager" : "lazy"}
+   210→              />
+   211→            </motion.div>
+   212→          ))}
+   213→
+   214→          {/* Overlays */}
+   215→          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/55 to-[#0A0A0A]/35" />
+   216→          <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/70 via-transparent to-transparent" />
+   217→
+   218→          {/* Grid overlay */}
+   219→          <div
+   220→            className="absolute inset-0 opacity-[0.07] pointer-events-none"
+   221→            style={{
+   222→              backgroundImage:
+   223→                "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+   224→              backgroundSize: "80px 80px",
+   225→            }}
+   226→          />
+   227→
+   228→          {/* Corner labels */}
+   229→          <div className="absolute top-6 left-6 md:top-8 md:left-10 flex items-center gap-2 text-white/40 z-10">
+   230→            <span className="w-1.5 h-1.5 bg-[#FF4D00] animate-pulse" />
+   231→            <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase">xCelero Labs</span>
+   232→          </div>
+   233→          <div className="absolute top-6 right-6 md:top-8 md:right-10 text-white/40 z-10 text-[10px] font-mono tracking-[0.3em] uppercase hidden sm:block">
+   234→            Critical Technology
+   235→          </div>
+   236→
+   237→          {/* Content */}
+   238→          <div className="relative z-10 w-full h-full flex flex-col justify-end px-6 md:px-12 lg:px-16 pb-12 md:pb-16">
+   239→            <motion.span
+   240→              initial={{ opacity: 0, y: 12 }}
+   241→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   242→              transition={{ duration: 0.6, ease: EASE }}
+   243→              className="text-[10px] md:text-[11px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] mb-5 md:mb-7"
+   244→            >
+   245→              Venture platform for critical technology
+   246→            </motion.span>
+   247→
+   248→            {/* Kinetic headline */}
+   249→            <h1 className="font-display font-medium tracking-[-0.03em] leading-[0.9] text-white text-[12vw] sm:text-[10vw] md:text-[7vw] lg:text-[6vw] xl:text-[88px] mb-8 md:mb-10">
+   250→              {headlineWords.map((word, i) => (
+   251→                <span key={i} className="inline-block overflow-hidden align-bottom mr-[0.18em]">
+   252→                  <motion.span
+   253→                    initial={{ y: "110%" }}
+   254→                    animate={isInView ? { y: 0 } : {}}
+   255→                    transition={{ duration: 0.8, delay: 0.15 + i * 0.09, ease: EASE }}
+   256→                    className="inline-block"
+   257→                  >
+   258→                    {word}
+   259→                  </motion.span>
+   260→                </span>
+   261→              ))}
+   262→            </h1>
+   263→
+   264→            {/* Sub + CTAs — stacked vertically to fit constrained width */}
+   265→            <motion.p
+   266→              initial={{ opacity: 0, y: 14 }}
+   267→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   268→              transition={{ duration: 0.7, delay: 0.6, ease: EASE }}
+   269→              className="text-white/55 text-[14px] md:text-[16px] font-medium leading-[1.6] max-w-lg mb-6"
+   270→            >
+   271→              A network of 190 hubs across 39 countries, built into a single
+   272→              commercialization engine — infrastructure to build, programs to
+   273→              validate, capital to scale, and community to compound.
+   274→            </motion.p>
+   275→
+   276→            <motion.div
+   277→              initial={{ opacity: 0, y: 14 }}
+   278→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   279→              transition={{ duration: 0.7, delay: 0.75, ease: EASE }}
+   280→              className="flex flex-col sm:flex-row gap-3"
+   281→            >
+   282→              <Link
+   283→                to="/capital"
+   284→                className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#FF6A28] transition-colors"
+   285→              >
+   286→                Invest from $500
+   287→                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+   288→              </Link>
+   289→              <Link
+   290→                to="/ventures"
+   291→                className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-white/25 text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-white hover:text-[#0A0A0A] transition-colors"
+   292→              >
+   293→                <Play className="w-3.5 h-3.5" />
+   294→                Explore ventures
+   295→              </Link>
+   296→            </motion.div>
+   297→
+   298→            {/* Slide indicators + scroll cue */}
+   299→            <div className="mt-10 md:mt-12 flex items-center justify-between">
+   300→              <div className="flex gap-1.5">
+   301→                {heroSlides.map((_, i) => (
+   302→                  <button
+   303→                    key={i}
+   304→                    suppressHydrationWarning
+   305→                    onClick={() => setCurrent(i)}
+   306→                    aria-label={`Go to slide ${i + 1}`}
+   307→                    className="min-h-[32px] min-w-[32px] flex items-center"
+   308→                  >
+   309→                    <span
+   310→                      className={`block h-[2px] transition-all duration-500 ${
+   311→                        i === current ? "bg-[#FF4D00] w-12" : "bg-white/25 w-7"
+   312→                      }`}
+   313→                    />
+   314→                  </button>
+   315→                ))}
+   316→              </div>
+   317→              <motion.div
+   318→                initial={{ opacity: 0 }}
+   319→                animate={isInView ? { opacity: 1 } : {}}
+   320→                transition={{ duration: 0.6, delay: 1, ease: EASE }}
+   321→                className="hidden md:flex items-center gap-2 text-white/40 text-[10px] font-mono tracking-[0.2em] uppercase"
+   322→              >
+   323→                Scroll
+   324→                <motion.span
+   325→                  animate={{ y: [0, 5, 0] }}
+   326→                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+   327→                >
+   328→                  ↓
+   329→                </motion.span>
+   330→              </motion.div>
+   331→            </div>
+   332→          </div>
+   333→        </div>
+   334→
+   335→        {/* Metric ticker */}
+   336→        <MetricTicker />
+   337→      </div>
+   338→    </section>
+   339→  );
+   340→}
+   341→
+   342→/* ── Metric ticker (marquee) ── */
+   343→function MetricTicker() {
+   344→  const items = [...tickerMetrics, ...tickerMetrics];
+   345→  return (
+   346→    <div className="relative z-10 border-t border-white/10 bg-[#0A0A0A] overflow-hidden">
+   347→      <div className="flex w-max animate-[scroll_38s_linear_infinite] hover:[animation-play-state:paused]">
+   348→        {items.map((m, i) => (
+   349→          <div key={i} className="flex items-center gap-3 px-8 py-4 border-r border-white/8 whitespace-nowrap">
+   350→            <span className="text-[#FF4D00] text-lg md:text-xl font-display font-medium">{m.value}</span>
+   351→            <span className="text-white/40 text-[10px] md:text-[11px] font-mono tracking-[0.15em] uppercase">{m.label}</span>
+   352→          </div>
+   353→        ))}
+   354→      </div>
+   355→    </div>
+   356→  );
+   357→}
+   358→
+   359→/* ══════════════════════════════════════════════════════════════════════════
+   360→   THE THESIS — bold statement, centered (transferred from Home 2)
+   361→   ══════════════════════════════════════════════════════════════════════════ */
+   362→function ThesisSection() {
+   363→  const ref = useRef<HTMLDivElement>(null);
+   364→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   365→
+   366→  return (
+   367→    <section ref={ref} className="py-24 md:py-36 bg-[#FAFAFA]">
+   368→      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
+   369→        <motion.span
+   370→          initial={{ opacity: 0 }}
+   371→          animate={isInView ? { opacity: 1 } : {}}
+   372→          transition={{ duration: 0.6, ease: EASE }}
+   373→          className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-8"
+   374→        >
+   375→          The thesis
+   376→        </motion.span>
+   377→
+   378→        <motion.h2
+   379→          initial={{ opacity: 0, y: 20 }}
+   380→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   381→          transition={{ duration: 0.8, ease: EASE }}
+   382→          className="font-display font-medium tracking-[-0.025em] leading-[1.05] text-[30px] sm:text-[40px] md:text-[54px] lg:text-[68px] text-[#111111]"
+   383→        >
+   384→          The 21st century will be built in the markets that need its
+   385→          breakthroughs most.{" "}
+   386→          <span className="text-[#111111]/35">
+   387→            We are building the infrastructure to make that inevitable.
+   388→          </span>
+   389→        </motion.h2>
+   390→
+   391→        <motion.div
+   392→          initial={{ opacity: 0, y: 20 }}
+   393→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   394→          transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
+   395→          className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 max-w-4xl"
+   396→        >
+   397→          {[
+   398→            {
+   399→              k: "The gap",
+   400→              v: "Capital, infrastructure, and talent sit on one side; the markets that need them sit on the other.",
+   401→            },
+   402→            {
+   403→              k: "The method",
+   404→              v: "Four pillars — Infrastructure, Ventures, Capital, Community — fused into a single commercialization engine.",
+   405→            },
+   406→            {
+   407→              k: "The compounding",
+   408→              v: "Every new venture strengthens the network. Every hub compounds the reach. 5,000 companies. 200 unicorns.",
+   409→            },
+   410→          ].map((b) => (
+   411→            <div key={b.k} className="border-t border-[#111111]/15 pt-5">
+   412→              <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00] mb-3">
+   413→                {b.k}
+   414→              </p>
+   415→              <p className="text-[14px] md:text-[15px] text-[#111111]/70 font-medium leading-[1.6]">
+   416→                {b.v}
+   417→              </p>
+   418→            </div>
+   419→          ))}
+   420→        </motion.div>
+   421→      </div>
+   422→    </section>
+   423→  );
+   424→}
+   425→
+   426→
+   427→/* ══════════════════════════════════════════════════════════════════════════
+   428→   NUMBERS SECTION: Animated counting stats
+   429→   ══════════════════════════════════════════════════════════════════════════ */
+   430→function AnimatedCounter({ value, prefix, suffix, duration = 2 }: {
+   431→  value: number;
+   432→  prefix: string;
+   433→  suffix: string;
+   434→  duration?: number;
+   435→}) {
+   436→  const [count, setCount] = useState(0);
+   437→  const [hasAnimated, setHasAnimated] = useState(false);
+   438→  const ref = useRef<HTMLDivElement>(null);
+   439→
+   440→  useEffect(() => {
+   441→    const el = ref.current;
+   442→    if (!el || hasAnimated) return;
+   443→
+   444→    const observer = new IntersectionObserver(
+   445→      ([entry]) => {
+   446→        if (entry.isIntersecting && !hasAnimated) {
+   447→          setHasAnimated(true);
+   448→          observer.disconnect();
+   449→
+   450→          let startTime: number | null = null;
+   451→          let animationFrame: number;
+   452→
+   453→          const animate = (timestamp: number) => {
+   454→            if (!startTime) startTime = timestamp;
+   455→            const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+   456→            const eased = 1 - Math.pow(1 - progress, 3);
+   457→            setCount(value * eased);
+   458→
+   459→            if (progress < 1) {
+   460→              animationFrame = requestAnimationFrame(animate);
+   461→            }
+   462→          };
+   463→
+   464→          animationFrame = requestAnimationFrame(animate);
+   465→          return () => cancelAnimationFrame(animationFrame);
+   466→        }
+   467→      },
+   468→      { threshold: 0.2 }
+   469→    );
+   470→
+   471→    observer.observe(el);
+   472→    return () => observer.disconnect();
+   473→  }, [hasAnimated, value, duration]);
+   474→
+   475→  const displayValue = value % 1 === 0 ? Math.round(count) : count.toFixed(1);
+   476→
+   477→  return (
+   478→    <div ref={ref} className="tabular-nums">
+   479→      <span className="text-[36px] sm:text-[48px] md:text-[72px] lg:text-[88px] font-display font-medium tracking-[-0.03em] leading-[1]">
+   480→        {prefix}{displayValue}{suffix}
+   481→      </span>
+   482→    </div>
+   483→  );
+   484→}
+   485→
+   486→function NumbersSection() {
+   487→  const ref = useRef<HTMLDivElement>(null);
+   488→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   489→
+   490→  return (
+   491→    <section
+   492→      ref={ref}
+   493→      className="py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#111111]/10 bg-[#FAFAFA]"
+   494→    >
+   495→      <div className="w-full max-w-[1400px] mx-auto">
+   496→        <motion.div
+   497→          initial={{ opacity: 0 }}
+   498→          animate={isInView ? { opacity: 1 } : {}}
+   499→          transition={{ duration: 0.6 }}
+   500→          className="mb-16 md:mb-24"
+   501→        >
+   502→          <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#FF4D00] block mb-4">
+   503→            By the numbers
+   504→          </span>
+   505→          <span className="text-[28px] sm:text-[36px] md:text-[48px] font-display font-medium tracking-[-0.02em] text-[#111111]/80 leading-[1.1]">
+   506→            10-Year Outlook
+   507→          </span>
+   508→        </motion.div>
+   509→
+   510→        <div className="grid grid-cols-2 lg:grid-cols-4 gap-0">
+   511→          {stats.map((stat, i) => {
+   512→            const Icon = stat.icon;
+   513→            return (
+   514→              <motion.div
+   515→                key={i}
+   516→                initial={{ opacity: 0, y: 40 }}
+   517→                animate={isInView ? { opacity: 1, y: 0 } : {}}
+   518→                transition={{
+   519→                  duration: 0.7,
+   520→                  delay: i * 0.15,
+   521→                  ease: [0.22, 1, 0.36, 1],
+   522→                }}
+   523→                className={`border-t border-[#111111]/10 pt-8 pb-8 ${
+   524→                  i > 0 ? "lg:border-l lg:pl-8" : ""
+   525→                } ${i % 2 === 1 ? "pl-6 sm:pl-8" : ""}`}
+   526→              >
+   527→                <div className="flex items-center gap-2 mb-4">
+   528→                  <Icon className="w-4 h-4 text-[#FF4D00]" strokeWidth={1.5} />
+   529→                  <span className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/30">
+   530→                    {String(i + 1).padStart(2, "0")}
+   531→                  </span>
+   532→                </div>
+   533→                <AnimatedCounter
+   534→                  value={stat.value}
+   535→                  prefix={stat.prefix}
+   536→                  suffix={stat.suffix}
+   537→                />
+   538→                <div className="text-[13px] md:text-[15px] leading-[1.5] text-[#111111]/50 font-medium max-w-[200px] mt-4">
+   539→                  {stat.label}
+   540→                </div>
+   541→              </motion.div>
+   542→            );
+   543→          })}
+   544→        </div>
+   545→      </div>
+   546→    </section>
+   547→  );
+   548→}
+   549→
+   550→/* ══════════════════════════════════════════════════════════════════════════
+   551→   FOUR PILLARS, ONE ENGINE — interactive tabbed showcase (transferred from Home 2)
+   552→   ══════════════════════════════════════════════════════════════════════════ */
+   553→function FourPillarsEngine() {
+   554→  const [active, setActive] = useState(0);
+   555→  const ref = useRef<HTMLDivElement>(null);
+   556→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   557→  const pillar = showcasePillars[active];
+   558→  const Icon = pillar.icon;
+   559→
+   560→  return (
+   561→    <section ref={ref} className="py-24 md:py-32 bg-white">
+   562→      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
+   563→        {/* Header */}
+   564→        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+   565→          <div>
+   566→            <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-4">
+   567→              Four pillars, one engine
+   568→            </span>
+   569→            <h2 className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[32px] sm:text-[44px] md:text-[56px] lg:text-[64px] text-[#111111]">
+   570→              One machine,
+   571→              <br />
+   572→              <span className="text-[#111111]/35">four compounding parts.</span>
+   573→            </h2>
+   574→          </div>
+   575→          <p className="text-[14px] md:text-[15px] text-[#111111]/60 font-medium leading-[1.6] max-w-sm">
+   576→            Each pillar reinforces the others. Together they form a flywheel no
+   577→            single fund, accelerator, or government could replicate alone.
+   578→          </p>
+   579→        </div>
+   580→
+   581→        {/* Pillar selector tabs */}
+   582→        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-10 md:mb-14">
+   583→          {showcasePillars.map((p, i) => {
+   584→            const PIcon = p.icon;
+   585→            const isActive = i === active;
+   586→            return (
+   587→              <button
+   588→                key={p.id}
+   589→                onClick={() => setActive(i)}
+   590→                className={`group relative text-left p-5 md:p-6 border transition-all duration-300 ${
+   591→                  isActive
+   592→                    ? "border-[#FF4D00] bg-[#FF4D00]/5"
+   593→                    : "border-[#111111]/12 hover:border-[#111111]/40 bg-white"
+   594→                }`}
+   595→              >
+   596→                <div className="flex items-center justify-between mb-4">
+   597→                  <PIcon
+   598→                    className={`w-5 h-5 transition-colors ${
+   599→                      isActive ? "text-[#FF4D00]" : "text-[#111111]/40"
+   600→                    }`}
+   601→                    strokeWidth={1.5}
+   602→                  />
+   603→                  <span
+   604→                    className={`text-[10px] font-mono tracking-[0.2em] ${
+   605→                      isActive ? "text-[#FF4D00]" : "text-[#111111]/30"
+   606→                    }`}
+   607→                  >
+   608→                    {p.label}
+   609→                  </span>
+   610→                </div>
+   611→                <p
+   612→                  className={`font-display font-medium tracking-tight text-[18px] md:text-[20px] transition-colors ${
+   613→                    isActive ? "text-[#111111]" : "text-[#111111]/60"
+   614→                  }`}
+   615→                >
+   616→                  {p.title}
+   617→                </p>
+   618→                <p className="text-[11px] text-[#111111]/40 font-medium mt-1 hidden md:block">
+   619→                  {p.tagline}
+   620→                </p>
+   621→                {isActive && (
+   622→                  <motion.span
+   623→                    layoutId="pillar-active-bar"
+   624→                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FF4D00]"
+   625→                  />
+   626→                )}
+   627→              </button>
+   628→            );
+   629→          })}
+   630→        </div>
+   631→
+   632→        {/* Active pillar panel */}
+   633→        <AnimatePresence mode="wait">
+   634→          <motion.div
+   635→            key={pillar.id}
+   636→            initial={{ opacity: 0, y: 16 }}
+   637→            animate={{ opacity: 1, y: 0 }}
+   638→            exit={{ opacity: 0, y: -10 }}
+   639→            transition={{ duration: 0.45, ease: EASE }}
+   640→            className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch"
+   641→          >
+   642→            {/* Image */}
+   643→            <div className="relative overflow-hidden min-h-[320px] lg:min-h-[460px] bg-[#0A0A0A]">
+   644→              <img
+   645→                src={pillar.image}
+   646→                alt={pillar.title}
+   647→                className="absolute inset-0 w-full h-full object-cover"
+   648→                style={{ objectPosition: "center 40%" }}
+   649→              />
+   650→              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/70 via-transparent to-transparent" />
+   651→              <div className="absolute top-6 left-6 flex items-center gap-2 text-white">
+   652→                <Icon className="w-5 h-5 text-[#FF4D00]" strokeWidth={1.5} />
+   653→                <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase">
+   654→                  {pillar.title}
+   655→                </span>
+   656→              </div>
+   657→            </div>
+   658→
+   659→            {/* Content */}
+   660→            <div className="flex flex-col justify-between p-2 md:p-4">
+   661→              <div>
+   662→                <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00] block mb-4">
+   663→                  Pillar {pillar.label} — {pillar.tagline}
+   664→                </span>
+   665→                <p className="text-[16px] md:text-[18px] text-[#111111]/80 font-medium leading-[1.65] mb-8">
+   666→                  {pillar.description}
+   667→                </p>
+   668→
+   669→                {/* Stats */}
+   670→                <div className="grid grid-cols-3 gap-4 md:gap-6 mb-8">
+   671→                  {pillar.stats.map((s) => (
+   672→                    <div key={s.label} className="border-t border-[#111111]/15 pt-3">
+   673→                      <p className="font-display font-medium text-[26px] md:text-[34px] tracking-tight text-[#111111] leading-none">
+   674→                        {s.value}
+   675→                      </p>
+   676→                      <p className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] uppercase text-[#111111]/45 mt-2">
+   677→                        {s.label}
+   678→                      </p>
+   679→                    </div>
+   680→                  ))}
+   681→                </div>
+   682→              </div>
+   683→
+   684→              <Link
+   685→                to={pillar.link}
+   686→                className="group inline-flex items-center gap-2 self-start px-6 py-3.5 bg-[#111111] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#FF4D00] transition-colors"
+   687→              >
+   688→                Explore {pillar.title}
+   689→                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+   690→              </Link>
+   691→            </div>
+   692→          </motion.div>
+   693→        </AnimatePresence>
+   694→      </div>
+   695→    </section>
+   696→  );
+   697→}
+   698→
+   699→/* ══════════════════════════════════════════════════════════════════════════
+   700→   THE PORTFOLIO · 40+ VENTURES — filterable grid (transferred from Home 2)
+   701→   ══════════════════════════════════════════════════════════════════════════ */
+   702→function VentureGallery() {
+   703→  const ref = useRef<HTMLDivElement>(null);
+   704→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   705→
+   706→  const verticals = useMemo(() => {
+   707→    const set = new Set(venturesData.map((v) => v.vertical));
+   708→    return ["All", ...Array.from(set)];
+   709→  }, []);
+   710→  const [filter, setFilter] = useState("All");
+   711→
+   712→  const filtered = useMemo(
+   713→    () =>
+   714→      filter === "All"
+   715→        ? venturesData.slice(0, 9)
+   716→        : venturesData.filter((v) => v.vertical === filter).slice(0, 9),
+   717→    [filter]
+   718→  );
+   719→
+   720→  return (
+   721→    <section ref={ref} className="py-24 md:py-32 bg-[#FAFAFA]">
+   722→      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
+   723→        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-12">
+   724→          <div>
+   725→            <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-4">
+   726→              The portfolio · 40+ ventures
+   727→            </span>
+   728→            <h2 className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[32px] sm:text-[44px] md:text-[56px] lg:text-[64px] text-[#111111]">
+   729→              Critical technology,
+   730→              <br />
+   731→              <span className="text-[#111111]/35">for the markets that need it most.</span>
+   732→            </h2>
+   733→          </div>
+   734→          <Link
+   735→            to="/ventures"
+   736→            className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/50 hover:text-[#FF4D00] transition-colors flex-shrink-0"
+   737→          >
+   738→            All ventures
+   739→            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+   740→          </Link>
+   741→        </div>
+   742→
+   743→        {/* Filters */}
+   744→        <div className="flex flex-wrap gap-2 mb-10">
+   745→          {verticals.map((v) => (
+   746→            <button
+   747→              key={v}
+   748→              onClick={() => setFilter(v)}
+   749→              className={`px-4 py-2 text-[10px] font-mono font-bold tracking-[0.12em] uppercase border transition-colors ${
+   750→                filter === v
+   751→                  ? "bg-[#111111] text-white border-[#111111]"
+   752→                  : "bg-transparent text-[#111111]/55 border-[#111111]/15 hover:border-[#111111]/40"
+   753→              }`}
+   754→            >
+   755→              {v}
+   756→            </button>
+   757→          ))}
+   758→        </div>
+   759→
+   760→        {/* Grid — matches the Ventures page card layout */}
+   761→        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+   762→          <AnimatePresence mode="popLayout">
+   763→            {filtered.map((v, i) => (
+   764→              <motion.div
+   765→                key={v.id}
+   766→                layout
+   767→                initial={{ opacity: 0, y: 16 }}
+   768→                animate={isInView ? { opacity: 1, y: 0 } : {}}
+   769→                exit={{ opacity: 0, scale: 0.97 }}
+   770→                transition={{ duration: 0.4, delay: (i % 5) * 0.05, ease: EASE }}
+   771→              >
+   772→                <Link
+   773→                  to={`/ventures/${v.id}`}
+   774→                  className="group block text-left w-full"
+   775→                >
+   776→                  <div className="relative bg-[#111111] text-white overflow-hidden transition-all duration-200 group-hover:scale-[1.02] group-hover:brightness-110 group-hover:ring-1 group-hover:ring-[#FF4D00]">
+   777→                    {/* Top section: name + code */}
+   778→                    <div className="p-4 pb-3">
+   779→                      <div className="flex items-start justify-between gap-2">
+   780→                        <div className="min-w-0 flex-1">
+   781→                          <h3 className="text-sm font-display font-bold text-white leading-tight truncate">
+   782→                            {v.name}
+   783→                          </h3>
+   784→                          <span className="text-[10px] font-mono text-white/50 tracking-wider mt-1 block">
+   785→                            {v.code}
+   786→                          </span>
+   787→                        </div>
+   788→                      </div>
+   789→
+   790→                      {/* Vertical badge */}
+   791→                      <div className="mt-2.5">
+   792→                        <span className="inline-block px-2 py-0.5 bg-white/10 text-[9px] font-mono uppercase tracking-widest text-white/70">
+   793→                          {v.vertical}
+   794→                        </span>
+   795→                      </div>
+   796→                    </div>
+   797→
+   798→                    {/* Middle section: solution excerpt */}
+   799→                    <div className="px-4 pb-3">
+   800→                      <p className="text-[11px] text-white/70 leading-relaxed line-clamp-2">
+   801→                        {v.solution}
+   802→                      </p>
+   803→                    </div>
+   804→
+   805→                    {/* Bottom section: anchor partners */}
+   806→                    <div className="px-4 pb-4 pt-1">
+   807→                      <span className="text-[9px] font-mono uppercase tracking-widest text-white/30 block mb-0.5">
+   808→                        Anchor Partners
+   809→                      </span>
+   810→                      <span className="text-[11px] text-white/60 leading-snug line-clamp-1 block">
+   811→                        {v.anchorPartners}
+   812→                      </span>
+   813→                    </div>
+   814→
+   815→                    {/* Bottom-right orange square with first letter */}
+   816→                    <div className="absolute bottom-3 right-3 w-8 h-8 bg-[#FF4D00] flex items-center justify-center font-display font-bold text-sm text-white">
+   817→                      {v.name.charAt(0)}
+   818→                    </div>
+   819→                  </div>
+   820→                </Link>
+   821→              </motion.div>
+   822→            ))}
+   823→          </AnimatePresence>
+   824→        </div>
+   825→      </div>
+   826→    </section>
+   827→  );
+   828→}
+   829→
+   830→/* ── Upcoming Events Data ── */
+   831→const homeEvents = [
+   832→  {
+   833→    title: "Accelerator Cohort 1 Demo Day",
+   834→    date: "March 28, 2026",
+   835→    time: "10:00 AM EAT",
+   836→    location: "M1 Core Nairobi + Virtual",
+   837→    type: "Demo Day",
+   838→    description: "Ventures present validated MVPs to investors and partners. Sector deep-dives in energy, life sciences, and digital finance.",
+   839→    featured: true,
+   840→    image: "https://images.unsplash.com/photo-1762968274962-20c12e6e8ecd?auto=format&fit=crop&w=800&q=80",
+   841→  },
+   842→  {
+   843→    title: "Route Summit: Gulf of Guinea Arc",
+   844→    date: "April 12, 2026",
+   845→    time: "9:00 AM WAT",
+   846→    location: "XEmbassy Lagos",
+   847→    type: "Summit",
+   848→    description: "Operators and founders from Lagos, Accra, and Abidjan convene for cross-hub deal flow and peer mentorship.",
+   849→    featured: false,
+   850→    image: "https://images.unsplash.com/photo-1775163560631-6ff15eb2fa1f?auto=format&fit=crop&w=800&q=80",
+   851→  },
+   852→  {
+   853→    title: "Building in Life Sciences: From Lab to Market",
+   854→    date: "April 25, 2026",
+   855→    time: "2:00 PM EAT",
+   856→    location: "Virtual Masterclass",
+   857→    type: "Masterclass",
+   858→    description: "Regulatory pathways for diagnostics and therapeutics in African markets. Case studies from Refract and Allele.",
+   859→    featured: false,
+   860→    image: "https://images.unsplash.com/photo-1707944746042-e4c81c191812?auto=format&fit=crop&w=800&q=80",
+   861→  },
+   862→  {
+   863→    title: "Capital Roundtable: Thematic Fund Deep Dive",
+   864→    date: "May 15, 2026",
+   865→    time: "11:00 AM CAT",
+   866→    location: "M1 Core Cape Town + Virtual",
+   867→    type: "Investor Event",
+   868→    description: "Thematic Fund allocation strategy, portfolio construction, and co-investment opportunities for LPs.",
+   869→    featured: true,
+   870→    image: "https://images.unsplash.com/photo-1767893609884-622503897e53?auto=format&fit=crop&w=800&q=80",
+   871→  },
+   872→];
+   873→
+   874→/* ══════════════════════════════════════════════════════════════════════════
+   875→   UPCOMING EVENTS SECTION, Magazine-style editorial layout
+   876→   ══════════════════════════════════════════════════════════════════════════ */
+   877→function UpcomingEventsSection() {
+   878→  const ref = useRef<HTMLDivElement>(null);
+   879→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   880→
+   881→  const featuredEvents = homeEvents.filter((e) => e.featured);
+   882→  const otherEvents = homeEvents.filter((e) => !e.featured);
+   883→  const heroEvent = featuredEvents[0];
+   884→
+   885→  const eventTypeStyle: Record<string, string> = {
+   886→    "Demo Day": "bg-[#FF4D00] text-white",
+   887→    Summit: "bg-[#111111] text-white",
+   888→    Masterclass: "bg-[#FF4D00]/10 text-[#FF4D00]",
+   889→    "Investor Event": "bg-[#FF4D00] text-white",
+   890→  };
+   891→
+   892→  return (
+   893→    <section
+   894→      ref={ref}
+   895→      className="py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#111111]/10 bg-[#FAFAFA]"
+   896→    >
+   897→      <div className="w-full max-w-[1400px] mx-auto">
+   898→        {/* Header */}
+   899→        <motion.div
+   900→          initial={{ opacity: 0, y: 30 }}
+   901→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   902→          transition={{ duration: 0.8, ease: "easeOut" }}
+   903→          className="mb-12 md:mb-16"
+   904→        >
+   905→          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+   906→            <div>
+   907→              <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00] mb-4 block">
+   908→                Upcoming Events
+   909→              </span>
+   910→              <h2 className="text-[32px] sm:text-[44px] md:text-[56px] lg:text-[64px] font-display font-medium tracking-[-0.03em] leading-[0.95]">
+   911→                Where the network
+   912→                <br />
+   913→                <em className="italic font-serif text-[#FF4D00]">convenes</em>.
+   914→              </h2>
+   915→            </div>
+   916→            <Link
+   917→              to="/community"
+   918→              className="inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.12em] text-[#FF4D00] hover:text-[#111111] transition-colors group flex-shrink-0"
+   919→            >
+   920→              View all events
+   921→              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+   922→            </Link>
+   923→          </div>
+   924→        </motion.div>
+   925→
+   926→        {/* Magazine layout: featured hero + compact list */}
+   927→        <div className="grid lg:grid-cols-12 gap-5 md:gap-6">
+   928→          {/* Left: Featured hero event */}
+   929→          {heroEvent && (
+   930→            <motion.div
+   931→              initial={{ opacity: 0, y: 25 }}
+   932→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   933→              transition={{ duration: 0.6, ease: "easeOut" }}
+   934→              className="lg:col-span-7 group border bg-white overflow-hidden hover:shadow-md transition-all duration-300 border-[#FF4D00]/30 hover:border-[#FF4D00]/50"
+   935→            >
+   936→              {/* Tall hero image */}
+   937→              <div className="relative aspect-[4/3] lg:aspect-[3/2] overflow-hidden">
+   938→                <img
+   939→                  src={heroEvent.image}
+   940→                  alt={heroEvent.title}
+   941→                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+   942→                />
+   943→                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+   944→                {/* Type badge */}
+   945→                <div className="absolute top-4 left-4 flex items-center gap-2">
+   946→                  <span className={`text-[9px] font-mono font-bold tracking-[0.1em] uppercase px-2.5 py-1 ${eventTypeStyle[heroEvent.type] || "bg-[#111111]/10 text-[#111111]"}`}>
+   947→                    {heroEvent.type}
+   948→                  </span>
+   949→                  <span className="text-[9px] font-mono font-bold tracking-[0.1em] uppercase px-2.5 py-1 bg-[#FF4D00] text-white flex items-center gap-1">
+   950→                    <Star className="w-3 h-3" />
+   951→                    Featured
+   952→                  </span>
+   953→                </div>
+   954→                {/* Title + date overlaid on image */}
+   955→                <div className="absolute bottom-0 left-0 right-0 p-5 md:p-8">
+   956→                  <h3 className="text-[22px] sm:text-[28px] md:text-[34px] font-display font-medium tracking-tight leading-[1.1] text-white mb-3 group-hover:text-[#FF4D00] transition-colors">
+   957→                    {heroEvent.title}
+   958→                  </h3>
+   959→                  <p className="text-[13px] md:text-[15px] text-white/70 leading-[1.6] font-medium mb-4 line-clamp-2">
+   960→                    {heroEvent.description}
+   961→                  </p>
+   962→                  <div className="flex flex-wrap items-center gap-4 text-[11px] text-white/60 font-mono font-bold tracking-[0.05em] uppercase">
+   963→                    <span className="flex items-center gap-1.5">
+   964→                      <Calendar className="w-3.5 h-3.5 text-[#FF4D00]" />
+   965→                      {heroEvent.date}
+   966→                    </span>
+   967→                    <span className="flex items-center gap-1.5">
+   968→                      <Clock className="w-3.5 h-3.5 text-[#FF4D00]" />
+   969→                      {heroEvent.time}
+   970→                    </span>
+   971→                    <span className="flex items-center gap-1.5">
+   972→                      <MapPin className="w-3.5 h-3.5 text-[#FF4D00]" />
+   973→                      {heroEvent.location}
+   974→                    </span>
+   975→                  </div>
+   976→                </div>
+   977→              </div>
+   978→            </motion.div>
+   979→          )}
+   980→
+   981→          {/* Right: Compact event list */}
+   982→          <div className="lg:col-span-5 flex flex-col gap-5 md:gap-6">
+   983→            {/* Second featured event (if any) */}
+   984→            {featuredEvents[1] && (
+   985→              <motion.div
+   986→                initial={{ opacity: 0, y: 25 }}
+   987→                animate={isInView ? { opacity: 1, y: 0 } : {}}
+   988→                transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+   989→                className="group border bg-white overflow-hidden hover:shadow-md transition-all duration-300 border-[#FF4D00]/30 hover:border-[#FF4D00]/50"
+   990→              >
+   991→                <div className="relative aspect-[16/9] overflow-hidden">
+   992→                  <img
+   993→                    src={featuredEvents[1].image}
+   994→                    alt={featuredEvents[1].title}
+   995→                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+   996→                  />
+   997→                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+   998→                  <div className="absolute top-3 left-3 flex items-center gap-2">
+   999→                    <span className={`text-[9px] font-mono font-bold tracking-[0.1em] uppercase px-2 py-0.5 ${eventTypeStyle[featuredEvents[1].type] || "bg-[#111111]/10 text-[#111111]"}`}>
+  1000→                      {featuredEvents[1].type}
+  1001→                    </span>
+  1002→                    <span className="text-[9px] font-mono font-bold tracking-[0.1em] uppercase px-2 py-0.5 bg-[#FF4D00] text-white flex items-center gap-1">
+  1003→                      <Star className="w-3 h-3" />
+  1004→                      Featured
+  1005→                    </span>
+  1006→                  </div>
+  1007→                </div>
+  1008→                <div className="p-5">
+  1009→                  <h3 className="text-[18px] md:text-[20px] font-display font-medium tracking-tight leading-tight mb-2 group-hover:text-[#FF4D00] transition-colors">
+  1010→                    {featuredEvents[1].title}
+  1011→                  </h3>
+  1012→                  <p className="text-[12px] md:text-[13px] text-[#111111]/50 leading-[1.6] font-medium mb-3 line-clamp-2">
+  1013→                    {featuredEvents[1].description}
+  1014→                  </p>
+  1015→                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-[#111111]/40 font-mono font-bold tracking-[0.05em] uppercase">
+  1016→                    <span className="flex items-center gap-1">
+  1017→                      <Calendar className="w-3 h-3 text-[#FF4D00]/60" />
+  1018→                      {featuredEvents[1].date}
+  1019→                    </span>
+  1020→                    <span className="flex items-center gap-1">
+  1021→                      <MapPin className="w-3 h-3 text-[#FF4D00]/60" />
+  1022→                      {featuredEvents[1].location}
+  1023→                    </span>
+  1024→                  </div>
+  1025→                </div>
+  1026→              </motion.div>
+  1027→            )}
+  1028→
+  1029→            {/* Other events as compact rows */}
+  1030→            {otherEvents.map((event, i) => (
+  1031→              <motion.div
+  1032→                key={event.title}
+  1033→                initial={{ opacity: 0, y: 20 }}
+  1034→                animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1035→                transition={{ duration: 0.5, delay: 0.25 + i * 0.1, ease: "easeOut" }}
+  1036→                className="group border bg-white overflow-hidden hover:shadow-md transition-all duration-300 border-[#111111]/10 hover:border-[#111111]/25"
+  1037→              >
+  1038→                <div className="flex gap-4 p-4 md:p-5">
+  1039→                  {/* Date block */}
+  1040→                  <div className="flex-shrink-0 w-16 md:w-20 flex flex-col items-center justify-center border border-[#111111]/10 bg-white py-2">
+  1041→                    <span className="text-[10px] font-mono font-bold tracking-[0.1em] uppercase text-[#FF4D00]">
+  1042→                      {event.date.split(" ")[0]}
+  1043→                    </span>
+  1044→                    <span className="text-[24px] md:text-[28px] font-display font-medium leading-[1] text-[#111111]">
+  1045→                      {event.date.split(" ")[1].replace(",", "")}
+  1046→                    </span>
+  1047→                    <span className="text-[10px] font-mono font-bold tracking-[0.1em] uppercase text-[#111111]/40">
+  1048→                      {event.date.split(" ")[2]}
+  1049→                    </span>
+  1050→                  </div>
+  1051→
+  1052→                  {/* Content */}
+  1053→                  <div className="flex-1 min-w-0">
+  1054→                    <div className="flex items-center gap-2 mb-1.5">
+  1055→                      <span className={`text-[8px] font-mono font-bold tracking-[0.1em] uppercase px-1.5 py-0.5 ${eventTypeStyle[event.type] || "bg-[#111111]/10 text-[#111111]"}`}>
+  1056→                        {event.type}
+  1057→                      </span>
+  1058→                    </div>
+  1059→                    <h3 className="text-[15px] md:text-[17px] font-display font-medium tracking-tight leading-tight mb-1.5 group-hover:text-[#FF4D00] transition-colors">
+  1060→                      {event.title}
+  1061→                    </h3>
+  1062→                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-[#111111]/40 font-mono font-bold tracking-[0.05em] uppercase">
+  1063→                      <span className="flex items-center gap-1">
+  1064→                        <Clock className="w-3 h-3 text-[#FF4D00]/60" />
+  1065→                        {event.time}
+  1066→                      </span>
+  1067→                      <span className="flex items-center gap-1">
+  1068→                        <MapPin className="w-3 h-3 text-[#FF4D00]/60" />
+  1069→                        {event.location}
+  1070→                      </span>
+  1071→                    </div>
+  1072→                  </div>
+  1073→                </div>
+  1074→              </motion.div>
+  1075→            ))}
+  1076→          </div>
+  1077→        </div>
+  1078→      </div>
+  1079→    </section>
+  1080→  );
+  1081→}
+  1082→
+  1083→/* ══════════════════════════════════════════════════════════════════════════
+  1084→   ROUTE JOURNEY — 6 horizontal leg cards (adopted from Home 2, contained)
+  1085→   ══════════════════════════════════════════════════════════════════════════ */
+  1086→function RouteJourney() {
+  1087→  const rjRef = useRef<HTMLDivElement>(null);
+  1088→  const rjInView = useInView(rjRef, { once: true, margin: "-80px" });
+  1089→  const legs = routeLegs.slice(0, 6);
+  1090→
+  1091→  return (
+  1092→    <div ref={rjRef} className="mb-16 md:mb-24">
+  1093→      {/* Horizontal scroll cards */}
+  1094→      <div className="overflow-x-auto scrollbar-thin [scrollbar-color:rgba(17,17,17,0.25)_transparent]">
+  1095→        <div className="flex gap-4 md:gap-5 pb-6 w-max">
+  1096→          {legs.map((leg, i) => (
+  1097→            <motion.div
+  1098→              key={leg.id}
+  1099→              initial={{ opacity: 0, y: 24 }}
+  1100→              animate={rjInView ? { opacity: 1, y: 0 } : {}}
+  1101→              transition={{ duration: 0.5, delay: i * 0.08, ease: EASE }}
+  1102→            >
+  1103→              <Link
+  1104→                to="/routes"
+  1105→                className="group block w-[280px] md:w-[320px] border border-[#111111]/12 hover:border-[#FF4D00] bg-white hover:bg-[#FF4D00]/5 transition-colors p-6 md:p-7 h-full"
+  1106→              >
+  1107→                <div className="flex items-center justify-between mb-6">
+  1108→                  <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#FF4D00]">
+  1109→                    LEG {leg.legNumber}
+  1110→                  </span>
+  1111→                  <span className="flex items-center gap-1.5 text-[10px] font-mono tracking-[0.1em] text-[#111111]/40">
+  1112→                    <MapPin className="w-3 h-3" />
+  1113→                    {leg.hubCount} hubs
+  1114→                  </span>
+  1115→                </div>
+  1116→
+  1117→                <h4 className="font-display font-medium tracking-tight text-[22px] md:text-[24px] leading-[1.15] mb-2 group-hover:text-[#FF4D00] transition-colors">
+  1118→                  {leg.name}
+  1119→                </h4>
+  1120→                <p className="text-[12px] text-[#111111]/40 italic font-medium leading-[1.5] mb-5 line-clamp-2">
+  1121→                  &ldquo;{leg.subtitle}&rdquo;
+  1122→                </p>
+  1123→
+  1124→                <div className="border-t border-[#111111]/10 pt-4">
+  1125→                  <p className="text-[9px] font-mono tracking-[0.15em] uppercase text-[#111111]/30 mb-1.5">
+  1126→                    Primary flow
+  1127→                  </p>
+  1128→                  <p className="text-[12px] text-[#111111]/65 font-medium leading-[1.5] line-clamp-2">
+  1129→                    {leg.primaryFlow}
+  1130→                  </p>
+  1131→                </div>
+  1132→
+  1133→                <div className="mt-5 flex flex-wrap gap-1.5">
+  1134→                  {leg.countries.slice(0, 4).map((c) => (
+  1135→                    <span
+  1136→                      key={c}
+  1137→                      className="text-[9px] font-mono tracking-[0.05em] uppercase text-[#111111]/50 border border-[#111111]/12 px-2 py-1"
+  1138→                    >
+  1139→                      {c}
+  1140→                    </span>
+  1141→                  ))}
+  1142→                </div>
+  1143→
+  1144→                <div className="mt-6 flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/30 group-hover:text-[#FF4D00] transition-colors">
+  1145→                  Enter leg
+  1146→                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+  1147→                </div>
+  1148→              </Link>
+  1149→            </motion.div>
+  1150→          ))}
+  1151→        </div>
+  1152→      </div>
+  1153→    </div>
+  1154→  );
+  1155→}
+  1156→
+  1157→/* ══════════════════════════════════════════════════════════════════════════
+  1158→   LOCATIONS SECTION, Interactive Blueprint Map with leg filters
+  1159→   ══════════════════════════════════════════════════════════════════════════ */
+  1160→function LocationsSection() {
+  1161→  const ref = useRef<HTMLDivElement>(null);
+  1162→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  1163→  const [activeLeg, setActiveLeg] = useState<string | null>(null);
+  1164→
+  1165→  return (
+  1166→    <section
+  1167→      ref={ref}
+  1168→      className="py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#111111]/10 bg-white"
+  1169→    >
+  1170→      <div className="w-full max-w-[1400px] mx-auto">
+  1171→        {/* Header, centered, NEWLAB style */}
+  1172→        <motion.div
+  1173→          initial={{ opacity: 0, y: 30 }}
+  1174→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1175→          transition={{ duration: 0.8, ease: "easeOut" }}
+  1176→          className="text-center mb-12 md:mb-16"
+  1177→        >
+  1178→          <h2 className="text-[36px] sm:text-[56px] md:text-[80px] lg:text-[110px] font-display font-medium tracking-[-0.03em] leading-[0.9] mb-4 uppercase">
+  1179→            The Route
+  1180→          </h2>
+  1181→          <p className="text-[14px] md:text-[16px] text-[#111111]/40 font-medium tracking-[0.1em] uppercase max-w-2xl mx-auto">
+  1182→            Global hubs in geographies prioritizing reindustrialization
+  1183→          </p>
+  1184→        </motion.div>
+  1185→
+  1186→        {/* Leg filter buttons */}
+  1187→        <motion.div
+  1188→          initial={{ opacity: 0, y: 20 }}
+  1189→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1190→          transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+  1191→          className="flex flex-wrap justify-center gap-2 mb-8 md:mb-12"
+  1192→        >
+  1193→          <button
+  1194→            onClick={() => setActiveLeg(null)}
+  1195→            className={`px-3 py-1.5 text-[11px] font-mono font-bold tracking-widest uppercase border transition-colors ${
+  1196→              activeLeg === null
+  1197→                ? "bg-[#111111] text-white border-[#111111]"
+  1198→                : "bg-white text-[#111111]/50 border-[#111111]/15 hover:border-[#111111]/30"
+  1199→            }`}
+  1200→          >
+  1201→            All Legs
+  1202→          </button>
+  1203→          {routeLegs.map((leg) => (
+  1204→            <button
+  1205→              key={leg.id}
+  1206→              onClick={() => setActiveLeg(activeLeg === leg.id ? null : leg.id)}
+  1207→              className={`px-3 py-1.5 text-[11px] font-mono font-bold tracking-widest uppercase border transition-colors ${
+  1208→                activeLeg === leg.id
+  1209→                  ? "text-white border-transparent"
+  1210→                  : "bg-white text-[#111111]/50 border-[#111111]/15 hover:border-[#111111]/30"
+  1211→              }`}
+  1212→              style={activeLeg === leg.id ? { backgroundColor: leg.color, borderColor: leg.color } : {}}
+  1213→            >
+  1214→              {leg.legNumber}. {leg.name.split(" ")[0]}
+  1215→            </button>
+  1216→          ))}
+  1217→        </motion.div>
+  1218→
+  1219→        {/* Blueprint Map */}
+  1220→        <motion.div
+  1221→          initial={{ opacity: 0, y: 30 }}
+  1222→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1223→          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+  1224→          className="relative w-full mb-8 md:mb-12"
+  1225→        >
+  1226→          <BlueprintMap activeLeg={activeLeg} />
+  1227→        </motion.div>
+  1228→
+  1229→        {/* Legend */}
+  1230→        <motion.div
+  1231→          initial={{ opacity: 0 }}
+  1232→          animate={isInView ? { opacity: 1 } : {}}
+  1233→          transition={{ duration: 0.6, delay: 0.4 }}
+  1234→          className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-[10px] font-mono text-[#111111]/40 mb-8 md:mb-12"
+  1235→        >
+  1236→          {routeLegs.map((leg) => (
+  1237→            <button
+  1238→              key={leg.id}
+  1239→              onClick={() => setActiveLeg(activeLeg === leg.id ? null : leg.id)}
+  1240→              className="flex items-center gap-2 hover:text-[#111111]/70 transition-colors"
+  1241→            >
+  1242→              <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: leg.color }} />
+  1243→              <span>
+  1244→                Leg {leg.legNumber}: {leg.name}
+  1245→              </span>
+  1246→            </button>
+  1247→          ))}
+  1248→        </motion.div>
+  1249→
+  1250→        {/* View Full Route Map link */}
+  1251→        <div className="text-center mb-16 md:mb-24">
+  1252→          <Link
+  1253→            to="/routes"
+  1254→            className="inline-flex items-center gap-3 px-8 py-4 bg-[#111111] text-white text-[12px] uppercase tracking-[0.12em] font-bold hover:bg-[#FF4D00] transition-colors duration-300 group"
+  1255→          >
+  1256→            View Full Route Map
+  1257→            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+  1258→          </Link>
+  1259→        </div>
+  1260→
+  1261→        {/* Route Journey — 6 leg cards (adopted from Home 2, contained) */}
+  1262→        <RouteJourney />
+  1263→      </div>
+  1264→    </section>
+  1265→  );
+  1266→}
+  1267→
+  1268→/* ── Blueprint Map, Newlab topographic map with color-coded pin markers ── */
+  1269→function BlueprintMap({ activeLeg }: { activeLeg: string | null }) {
+  1270→  const isAnyActive = activeLeg !== null;
+  1271→
+  1272→  const visibleLocations = useMemo(
+  1273→    () => (isAnyActive ? MAP_LOCATIONS.filter((l) => l.legId === activeLeg) : MAP_LOCATIONS),
+  1274→    [isAnyActive, activeLeg]
+  1275→  );
+  1276→
+  1277→  return (
+  1278→    <div className="w-full relative">
+  1279→      <div className="relative w-full overflow-hidden bg-white">
+  1280→        {/* World map image, Newlab topographic map */}
+  1281→        <img
+  1282→          alt="World Map showing xCelero Routes"
+  1283→          className="w-full h-auto pointer-events-none select-none opacity-80"
+  1284→          src="/routes/newlab-map.avif"
+  1285→        />
+  1286→
+  1287→        {/* Pin markers with always-visible labels */}
+  1288→        {visibleLocations.map((loc, index) => (
+  1289→          <Link
+  1290→            key={loc.id}
+  1291→            to="/routes"
+  1292→            className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10"
+  1293→            style={{ left: `${loc.x}%`, top: `${loc.y}%` }}
+  1294→          >
+  1295→            <motion.div
+  1296→              initial={{ scale: 0, opacity: 0 }}
+  1297→              animate={{ scale: 1, opacity: 1 }}
+  1298→              transition={{ type: "spring", stiffness: 350, damping: 25, delay: index * 0.03 }}
+  1299→              className="relative flex items-center justify-center"
+  1300→            >
+  1301→              {/* Colored marker dot */}
+  1302→              <span
+  1303→                className="relative w-3.5 h-3.5 md:w-4 md:h-4 rounded-full shrink-0 cursor-pointer transition-all duration-200 border-[2.5px] border-transparent hover:border-black/20 hover:scale-110"
+  1304→                style={{ backgroundColor: loc.legColor }}
+  1305→                aria-label={`View ${loc.name} on Routes page`}
+  1306→              />
+  1307→
+  1308→              {/* Always-visible label */}
+  1309→              <div
+  1310→                className={`absolute bg-[#111111] text-white font-mono text-[8px] md:text-[10px] font-bold tracking-[0.15em] px-2 py-1 md:px-3 md:py-1.5 whitespace-nowrap top-1/2 -translate-y-1/2 pointer-events-none shadow-sm ${
+  1311→                  loc.labelPos === "left" ? "right-full mr-2 md:mr-3" : "left-full ml-2 md:ml-3"
+  1312→                }`}
+  1313→              >
+  1314→                {loc.name}
+  1315→              </div>
+  1316→            </motion.div>
+  1317→          </Link>
+  1318→        ))}
+  1319→      </div>
+  1320→    </div>
+  1321→  );
+  1322→}
+  1323→
+  1324→/* ══════════════════════════════════════════════════════════════════════════
+  1325→   NEWSLETTER SECTION, Two-column: heading + form
+  1326→   ══════════════════════════════════════════════════════════════════════════ */
+  1327→function NewsletterSection() {
+  1328→  const ref = useRef<HTMLDivElement>(null);
+  1329→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  1330→  const [submitted, setSubmitted] = useState(false);
+  1331→  const [firstName, setFirstName] = useState("");
+  1332→  const [lastName, setLastName] = useState("");
+  1333→  const [email, setEmail] = useState("");
+  1334→  const [isSubmitting, setIsSubmitting] = useState(false);
+  1335→  const [submitError, setSubmitError] = useState("");
+  1336→
+  1337→  const handleReturnToSite = useCallback(() => {
+  1338→    window.scrollTo({ top: 0, behavior: "smooth" });
+  1339→  }, []);
+  1340→
+  1341→  return (
+  1342→    <section
+  1343→      ref={ref}
+  1344→      className="border-t border-[#111111]/10 relative overflow-hidden"
+  1345→    >
+  1346→      {/* Subtle dot-grid background pattern */}
+  1347→      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "radial-gradient(#FF4D00 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+  1348→      <div className="py-20 md:py-32 px-6 md:px-12 lg:px-20 bg-white relative z-10">
+  1349→        <div className="w-full max-w-[1400px] mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20">
+  1350→          {/* Left: Heading */}
+  1351→          <motion.div
+  1352→            initial={{ opacity: 0, y: 30 }}
+  1353→            animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1354→            transition={{ duration: 0.8, ease: "easeOut" }}
+  1355→          >
+  1356→            <h2 className="text-[28px] sm:text-[40px] md:text-[56px] font-display font-medium tracking-[-0.03em] leading-[0.95] uppercase mb-6">
+  1357→              Subscribe to the
+  1358→              <br />
+  1359→              xCelero Letter
+  1360→            </h2>
+  1361→            <p className="text-[15px] md:text-[17px] text-[#111111]/50 font-medium leading-[1.6] max-w-md">
+  1362→              Quarterly dispatches on critical technology commercialization,
+  1363→              Route Deal insights, and venture infrastructure across the Global South.
+  1364→            </p>
+  1365→          </motion.div>
+  1366→
+  1367→          {/* Right: Form or Confirmation */}
+  1368→          <motion.div
+  1369→            initial={{ opacity: 0, y: 30 }}
+  1370→            animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1371→            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+  1372→            className="flex flex-col justify-center"
+  1373→          >
+  1374→            {submitted ? (
+  1375→              <motion.div
+  1376→                initial={{ opacity: 0, y: 20 }}
+  1377→                animate={{ opacity: 1, y: 0 }}
+  1378→                transition={{ duration: 0.6, ease: "easeOut" }}
+  1379→                className="space-y-6"
+  1380→              >
+  1381→                {/* Checkmark icon */}
+  1382→                <div className="w-16 h-16 rounded-full border-2 border-[#FF4D00] flex items-center justify-center">
+  1383→                  <Check className="w-7 h-7 text-[#FF4D00]" strokeWidth={2.5} />
+  1384→                </div>
+  1385→
+  1386→                {/* Confirmation heading */}
+  1387→                <h3 className="text-[28px] sm:text-[36px] md:text-[44px] font-display font-medium tracking-[-0.02em] leading-[0.95]">
+  1388→                  Check your inbox
+  1389→                </h3>
+  1390→
+  1391→                {/* Confirmation body */}
+  1392→                <p className="text-[15px] md:text-[17px] text-[#111111]/50 font-medium leading-[1.6] max-w-md">
+  1393→                  You&apos;re now subscribed to the xCelero Letter. Look for our quarterly dispatch on critical technology commercialization.
+  1394→                </p>
+  1395→
+  1396→                {/* Return to site link */}
+  1397→                <button
+  1398→                  onClick={handleReturnToSite}
+  1399→                  className="inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.12em] text-[#FF4D00] hover:text-[#111111] transition-colors group"
+  1400→                >
+  1401→                  Return to site
+  1402→                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+  1403→                </button>
+  1404→              </motion.div>
+  1405→            ) : (
+  1406→              <form
+  1407→                onSubmit={async (e) => {
+  1408→                  e.preventDefault();
+  1409→                  setSubmitError("");
+  1410→                  setIsSubmitting(true);
+  1411→                  try {
+  1412→                    const res = await fetch("/api/capital/subscribe", {
+  1413→                      method: "POST",
+  1414→                      headers: { "Content-Type": "application/json" },
+  1415→                      body: JSON.stringify({ email, firstName, lastName, consent: true, source: "newsletter_home" }),
+  1416→                    });
+  1417→                    if (!res.ok) {
+  1418→                      const data = await res.json().catch(() => ({}));
+  1419→                      throw new Error(data.error || "Subscription failed");
+  1420→                    }
+  1421→                    setSubmitted(true);
+  1422→                  } catch (err) {
+  1423→                    setSubmitError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+  1424→                  } finally {
+  1425→                    setIsSubmitting(false);
+  1426→                  }
+  1427→                }}
+  1428→                className="space-y-6"
+  1429→              >
+  1430→                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+  1431→                  <div>
+  1432→                    <label className="block text-[10px] font-mono tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+  1433→                      First Name *
+  1434→                    </label>
+  1435→                    <input
+  1436→                      suppressHydrationWarning
+  1437→                      type="text"
+  1438→                      required
+  1439→                      value={firstName}
+  1440→                      onChange={(e) => setFirstName(e.target.value)}
+  1441→                      className="w-full border-b border-[#111111]/20 bg-transparent py-3 text-[15px] font-medium focus:border-[#FF4D00] focus:outline-none transition-colors placeholder:text-[#111111]/20"
+  1442→                      placeholder="First name"
+  1443→                    />
+  1444→                  </div>
+  1445→                  <div>
+  1446→                    <label className="block text-[10px] font-mono tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+  1447→                      Last Name *
+  1448→                    </label>
+  1449→                    <input
+  1450→                      suppressHydrationWarning
+  1451→                      type="text"
+  1452→                      required
+  1453→                      value={lastName}
+  1454→                      onChange={(e) => setLastName(e.target.value)}
+  1455→                      className="w-full border-b border-[#111111]/20 bg-transparent py-3 text-[15px] font-medium focus:border-[#FF4D00] focus:outline-none transition-colors placeholder:text-[#111111]/20"
+  1456→                      placeholder="Last name"
+  1457→                    />
+  1458→                  </div>
+  1459→                </div>
+  1460→                <div>
+  1461→                  <label className="block text-[10px] font-mono tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+  1462→                    Email *
+  1463→                  </label>
+  1464→                  <input
+  1465→                    suppressHydrationWarning
+  1466→                    type="email"
+  1467→                    required
+  1468→                    value={email}
+  1469→                    onChange={(e) => setEmail(e.target.value)}
+  1470→                    className="w-full border-b border-[#111111]/20 bg-transparent py-3 text-[15px] font-medium focus:border-[#FF4D00] focus:outline-none transition-colors placeholder:text-[#111111]/20"
+  1471→                    placeholder="you@email.com"
+  1472→                  />
+  1473→                </div>
+  1474→                <p className="text-[11px] text-[#111111]/30 leading-[1.5]">
+  1475→                  By subscribing you agree to our{" "}
+  1476→                  <span className="text-[#2563EB] underline cursor-pointer">Privacy Policy</span>.
+  1477→                  We respect your data. Unsubscribe anytime.
+  1478→                </p>
+  1479→                {submitError && (
+  1480→                  <p className="text-[13px] text-red-600 font-medium">{submitError}</p>
+  1481→                )}
+  1482→                <button
+  1483→                  suppressHydrationWarning
+  1484→                  type="submit"
+  1485→                  disabled={isSubmitting}
+  1486→                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-4 min-h-[44px] bg-[#FF4D00] text-white text-[12px] uppercase tracking-[0.12em] font-bold hover:bg-[#FF4D00]/90 transition-colors duration-300 shadow-lg shadow-[#FF4D00]/20 disabled:opacity-60 disabled:cursor-not-allowed"
+  1487→                >
+  1488→                  {isSubmitting ? "Subscribing…" : "Subscribe Now"}
+  1489→                  {!isSubmitting && <ArrowRight className="w-4 h-4" />}
+  1490→                </button>
+  1491→                <p className="text-[10px] text-[#111111]/25 leading-[1.5] mt-3 max-w-sm">
+  1492→                  We never share your email with third parties. You can unsubscribe at any time. Read our Privacy Policy for details.
+  1493→                </p>
+  1494→              </form>
+  1495→            )}
+  1496→          </motion.div>
+  1497→        </div>
+  1498→      </div>
+  1499→    </section>
+  1500→  );
+  1501→}
+  1502→

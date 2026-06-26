@@ -1,0 +1,2002 @@
+     1→"use client";
+     2→
+     3→import { useRef, useState } from "react";
+     4→import { motion, useInView, AnimatePresence } from "framer-motion";
+     5→import { Link } from "@/artemis/router";
+     6→import { venturesData } from "@/artemis/data/ventures";
+     7→import {
+     8→  ArrowRight,
+     9→  ChevronDown,
+    10→  Shield,
+    11→  Check,
+    12→  X,
+    13→  Loader2,
+    14→  Zap,
+    15→  Building2,
+    16→  HandCoins,
+    17→  Landmark,
+    18→  Mail,
+    19→  PiggyBank,
+    20→  Banknote,
+    21→  CircleDollarSign,
+    22→  Clock,
+    23→  Layers,
+    24→} from "lucide-react";
+    25→
+    26→/* ── Derived Data ── */
+    27→
+    28→const totalVentures = venturesData.length;
+    29→const totalCountries = 39;
+    30→const totalHubs = 190;
+    31→const capitalTarget = "$4B";
+    32→
+    33→/* ── Investment Vehicles ── */
+    34→const investmentVehicles = [
+    35→  {
+    36→    id: "xcelero-fund",
+    37→    name: "xCelero Fund",
+    38→    shortName: "The Fund",
+    39→    icon: CircleDollarSign,
+    40→    tagline: "Continuous capital. Broad exposure. Open access.",
+    41→    description:
+    42→      "An open-ended, evergreen commingled fund that deploys across the full xCelero venture portfolio. The Fund offers quarterly liquidity windows, transparent NAV reporting, and entry from $500: making institutional-grade venture accessible to everyone.",
+    43→    details: [
+    44→      { label: "Structure", value: "Open-ended evergreen fund" },
+    45→      { label: "Min entry", value: "$500" },
+    46→      { label: "Mgmt fee", value: "1.0%" },
+    47→      { label: "Carry", value: "None" },
+    48→      { label: "Liquidity", value: "Quarterly (up to 5% NAV)" },
+    49→      { label: "Reporting", value: "Quarterly NAV + updates" },
+    50→    ],
+    51→    bestFor: "First-time venture investors, portfolio diversification, passive exposure to critical tech",
+    52→    color: "#FF4D00",
+    53→    howItWorks: [
+    54→      "Open your account online with $500 minimum and complete KYC verification",
+    55→      "Capital is deployed across the full xCelero venture portfolio automatically",
+    56→      "Receive quarterly NAV reports, portfolio updates, and capital call notices",
+    57→      "Request redemptions during quarterly liquidity windows (up to 5% of NAV)",
+    58→      "Reinvest returns or withdraw as your strategy evolves",
+    59→    ],
+    60→    keyFeatures: [
+    61→      "Zero carry: investors keep 100% of returns above management fee",
+    62→      "Quarterly liquidity windows provide regular redemption access",
+    63→      "Broad diversification across energy, food, defense, manufacturing, digital finance",
+    64→      "Transparent NAV reporting with independent annual audit",
+    65→      "Mobile money and local agent deposit options in select African jurisdictions",
+    66→    ],
+    67→    riskNote: "Venture investments are illiquid and involve substantial risk of loss. The Fund's quarterly liquidity windows are subject to gate provisions and may be suspended in market stress events. All vehicle structures are subject to regulatory approval and may differ from what is described here. This is not an offer to sell securities.",
+    68→  },
+    69→  {
+    70→    id: "spv-syndicates",
+    71→    name: "SPV Syndicates",
+    72→    shortName: "SPV",
+    73→    icon: Layers,
+    74→    tagline: "Co-invest alongside institutions on breakout deals.",
+    75→    description:
+    76→      "Purpose-built Special Purpose Vehicles for individual follow-on investments in high-conviction ventures. Each SPV is a single-asset vehicle with defined economics: you know exactly what you're investing in, with side-by-side GP economics and institutional-grade deal terms.",
+    77→    details: [
+    78→      { label: "Structure", value: "Single-asset SPV per deal" },
+    79→      { label: "Min entry", value: "$5,000" },
+    80→      { label: "Mgmt fee", value: "1.0%" },
+    81→      { label: "Carry", value: "10% above hurdle" },
+    82→      { label: "Liquidity", value: "Illiquid until exit" },
+    83→      { label: "Reporting", value: "Quarterly + ad-hoc" },
+    84→    ],
+    85→    bestFor: "Experienced investors seeking deal-level selection, co-investment rights with institutional partners",
+    86→    color: "#FF4D00",
+    87→    howItWorks: [
+    88→      "Review deal memos for breakout ventures in the xCelero portfolio",
+    89→      "Select individual SPV opportunities aligned with your conviction",
+    90→      "Invest with full transparency: valuation, cap table, use of proceeds disclosed upfront",
+    91→      "Hold alongside institutional co-investors with identical economic terms",
+    92→      "Receive proceeds at exit event (acquisition, IPO, secondary sale)",
+    93→    ],
+    94→    keyFeatures: [
+    95→      "Single-asset transparency: know exactly where every dollar is deployed",
+    96→      "Side-by-side economics with institutional lead investors",
+    97→      "Deal-level selection: invest only in ventures that match your thesis",
+    98→      "Defined carry structure with hurdle rate protection",
+    99→      "Access to xCelero deal flow typically reserved for institutional allocators",
+   100→    ],
+   101→    riskNote: "SPV investments are illiquid until exit event. Single-asset concentration increases idiosyncratic risk. Carry applies to returns above the preferred return hurdle. All vehicle structures are subject to regulatory approval and may differ from what is described here. This is not an offer to sell securities.",
+   102→  },
+   103→  {
+   104→    id: "thematic-funds",
+   105→    name: "Thematic Funds",
+   106→    shortName: "Thematic",
+   107→    icon: PiggyBank,
+   108→    tagline: "Concentrated bets on critical technology verticals.",
+   109→    description:
+   110→      "Commingled closed-end funds targeting specific verticals: Energy, Food Systems, Critical Tech, Digital Finance. Each fund concentrates capital in 8 to 15 ventures within a single domain, giving investors targeted exposure to the sectors they believe in most.",
+   111→    details: [
+   112→      { label: "Structure", value: "7-year closed-end fund" },
+   113→      { label: "Min entry", value: "$50,000" },
+   114→      { label: "Mgmt fee", value: "1.5%" },
+   115→      { label: "Carry", value: "20% above 8% hurdle" },
+   116→      { label: "Liquidity", value: "Semi-annual tender offers" },
+   117→      { label: "Reporting", value: "Monthly + custom" },
+   118→    ],
+   119→    bestFor: "Institutional allocators, family offices, sector-conviction investors, impact-mandated capital",
+   120→    color: "#FF4D00",
+   121→    howItWorks: [
+   122→      "Select your vertical: Energy, Food Systems, Critical Tech, or Digital Finance",
+   123→      "Capital is deployed across 8 to 15 ventures within that single domain",
+   124→      "Monthly reporting with custom data room access for deeper due diligence",
+   125→      "Semi-annual tender offers provide structured liquidity opportunities",
+   126→      "At fund maturity (7 years), remaining positions are distributed or liquidated",
+   127→    ],
+   128→    keyFeatures: [
+   129→      "Concentrated portfolio: 8 to 15 ventures per fund for high-conviction exposure",
+   130→      "Four verticals aligned with xCelero's core thesis of critical technology",
+   131→      "20% carry above 8% hurdle aligns GP and LP incentives",
+   132→      "Impact reporting meets institutional mandates for measurable outcomes",
+   133→      "Board observer seats available for Anchor-tier allocations",
+   134→    ],
+   135→    riskNote: "Closed-end funds are subject to J-curve dynamics with early negative returns typical. Sector concentration amplifies market-specific risks. Semi-annual tender offers are at Board discretion and not guaranteed. All vehicle structures are subject to regulatory approval and may differ from what is described here. This is not an offer to sell securities.",
+   136→  },
+   137→  {
+   138→    id: "catalyst-notes",
+   139→    name: "Catalyst Notes",
+   140→    shortName: "Catalyst",
+   141→    icon: Banknote,
+   142→    tagline: "Revenue-linked returns. Venture velocity without equity dilution.",
+   143→    description:
+   144→      "Revenue-based financing instruments for portfolio ventures that have reached revenue milestones. Investors receive a fixed return multiple tied to venture revenue performance: no equity dilution, no valuation negotiations. Capital that moves at the speed of the business.",
+   145→    details: [
+   146→      { label: "Structure", value: "Revenue-linked note" },
+   147→      { label: "Min entry", value: "$10,000" },
+   148→      { label: "Return target", value: "1.5 to 2.5x multiple" },
+   149→      { label: "Duration", value: "24 to 48 months" },
+   150→      { label: "Security", value: "Revenue assignment" },
+   151→      { label: "Reporting", value: "Monthly revenue reports" },
+   152→    ],
+   153→    bestFor: "Yield-oriented investors, revenue-stage venture exposure, non-dilutive capital supporters",
+   154→    color: "#111111",
+   155→    howItWorks: [
+   156→      "Select revenue-stage ventures from the xCelero portfolio with proven traction",
+   157→      "Invest via a revenue-linked note with a defined return multiple (1.5 to 2.5x)",
+   158→      "Venture remits a percentage of monthly revenue until the return cap is reached",
+   159→      "Monthly revenue reports provide real-time visibility into repayment progress",
+   160→      "At maturity, note is retired regardless of whether the return cap was achieved",
+   161→    ],
+   162→    keyFeatures: [
+   163→      "No equity dilution for founders: capital that preserves ownership",
+   164→      "Defined return target: no valuation negotiations or exit dependency",
+   165→      "Revenue-linked: returns accelerate when the venture grows faster",
+   166→      "Monthly reporting with real-time repayment tracking",
+   167→      "Shorter duration (24 to 48 months) vs. traditional venture timelines",
+   168→    ],
+   169→    riskNote: "Revenue-linked notes depend on venture revenue performance. If the venture's revenue declines, repayment slows and the full return target may not be achieved. No equity upside beyond the defined return multiple. All vehicle structures are subject to regulatory approval and may differ from what is described here. This is not an offer to sell securities.",
+   170→  },
+   171→  {
+   172→    id: "non-dilutive-desk",
+   173→    name: "Non-Dilutive Desk",
+   174→    shortName: "Non-Dilutive",
+   175→    icon: Shield,
+   176→    tagline: "Unlock grants, prizes, and government incentives across 39 countries.",
+   177→    description:
+   178→      "Not a fund: a service. Our Non-Dilutive Capital Desk matches ventures with grants, prizes, government incentives, and development finance across every country on the Route. Average non-dilutive raise per venture: $180K. This is capital that doesn't cost equity.",
+   179→    details: [
+   180→      { label: "Structure", value: "Advisory + placement" },
+   181→      { label: "Min entry", value: "N/A (venture-side)" },
+   182→      { label: "Fee", value: "8 to 12% success fee" },
+   183→      { label: "Avg raise", value: "$180K per venture" },
+   184→      { label: "Pipeline", value: "2,400+ active programs" },
+   185→      { label: "Geographies", value: "39 countries" },
+   186→    ],
+   187→    bestFor: "Ventures seeking working capital without dilution; grant-mandated organizations seeking pipeline",
+   188→    color: "#111111",
+   189→    howItWorks: [
+   190→      "xcelero assesses your venture against 2,400+ active grant and incentive programs",
+   191→      "We match your technology, geography, and stage to the highest-probability opportunities",
+   192→      "Our team writes and submits applications on your behalf",
+   193→      "We manage compliance, reporting, and milestone documentation post-award",
+   194→      "Success fee is charged only on capital secured: no win, no fee",
+   195→    ],
+   196→    keyFeatures: [
+   197→      "2,400+ active programs across 39 countries on the Route",
+   198→      "Average $180K raised per venture with zero equity cost",
+   199→      "Full-service: application, compliance, and post-award management",
+   200→      "Success-fee only model: aligned incentives with founders",
+   201→      "Deep relationships with DFIs, government agencies, and development finance institutions",
+   202→    ],
+   203→    riskNote: "Grant timelines are subject to government and institutional review cycles. Success fees apply only to awarded capital. This is an advisory service, not an investment vehicle. All services are subject to availability and may differ from what is described here.",
+   204→  },
+   205→  {
+   206→    id: "anchor-mandate",
+   207→    name: "Anchor Mandate",
+   208→    shortName: "Anchor",
+   209→    icon: Landmark,
+   210→    tagline: "Custom portfolio construction for institutional-scale allocators.",
+   211→    description:
+   212→      "For investors deploying $250K+, Anchor Mandates offer bespoke portfolio construction with advisory board participation, direct venture selection input, custom SPV formation, GP carry participation, and real-time dashboard access. This is venture investing on your terms.",
+   213→    details: [
+   214→      { label: "Structure", value: "Custom mandate / SMA" },
+   215→      { label: "Min entry", value: "$250,000" },
+   216→      { label: "Mgmt fee", value: "Negotiated" },
+   217→      { label: "Carry", value: "Negotiated carry participation" },
+   218→      { label: "Liquidity", value: "Custom terms" },
+   219→      { label: "Reporting", value: "Real-time dashboard" },
+   220→    ],
+   221→    bestFor: "National development funds, DFIs, endowments, ultra-high-net-worth, family offices with strategic mandates",
+   222→    color: "#111111",
+   223→    howItWorks: [
+   224→      "Collaborate with xCelero's investment team to define your strategic priorities and constraints",
+   225→      "We construct a bespoke portfolio across vehicles, sectors, and geographies",
+   226→      "Advisory board participation gives you direct input on venture selection",
+   227→      "Custom SPVs are formed for your targeted co-investment opportunities",
+   228→      "Real-time dashboard provides live portfolio analytics and reporting",
+   229→    ],
+   230→    keyFeatures: [
+   231→      "Bespoke portfolio construction with sector, geography, and stage allocation",
+   232→      "Advisory board seat with direct venture selection input",
+   233→      "Custom SPV formation for targeted co-investment",
+   234→      "GP carry participation: share in the economics of the fund management",
+   235→      "Real-time dashboard with live NAV, cash flow projections, and impact metrics",
+   236→    ],
+   237→    riskNote: "Anchor Mandates are fully customizable and subject to negotiated terms. Minimum commitment of $250K. Investment terms, fees, and carry are determined through direct negotiation. All vehicle structures are subject to regulatory approval and may differ from what is described here. This is not an offer to sell securities.",
+   238→  },
+   239→];
+   240→
+   241→/* ── Investment Tiers ── */
+   242→const investmentTiers = [
+   243→  {
+   244→    id: "scout",
+   245→    name: "Scout",
+   246→    min: 500,
+   247→    max: 4999,
+   248→    icon: Zap,
+   249→    color: "#FF4D00",
+   250→    tagline: "Start building your position",
+   251→    benefits: [
+   252→      "Access to xCelero Fund (Continuous Capital Flow)",
+   253→      "Quarterly portfolio updates & NAV reports",
+   254→      "Route Deal Flow pipeline visibility",
+   255→      "Community investor network access",
+   256→    ],
+   257→    vehicle: "xCelero Fund",
+   258→    holdPeriod: "Open-ended",
+   259→    reporting: "Quarterly",
+   260→  },
+   261→  {
+   262→    id: "syndicate",
+   263→    name: "Syndicate",
+   264→    min: 5000,
+   265→    max: 49999,
+   266→    icon: HandCoins,
+   267→    color: "#FF4D00",
+   268→    tagline: "Co-invest alongside institutions",
+   269→    benefits: [
+   270→      "All Scout benefits",
+   271→      "SPV co-investment rights",
+   272→      "Side-by-side GP economics",
+   273→      "Annual LP meeting invitation",
+   274→      "Dedicated investor relations contact",
+   275→    ],
+   276→    vehicle: "SPV Syndicates",
+   277→    holdPeriod: "3\u20135 years",
+   278→    reporting: "Quarterly + ad-hoc",
+   279→  },
+   280→  {
+   281→    id: "partner",
+   282→    name: "Partner",
+   283→    min: 50000,
+   284→    max: 249999,
+   285→    icon: Building2,
+   286→    color: "#FF4D00",
+   287→    tagline: "Institutional-grade allocation",
+   288→    benefits: [
+   289→      "All Syndicate benefits",
+   290→      "Thematic Fund allocation",
+   291→      "Board observer seats (select ventures)",
+   292→      "Co-investment first-look rights",
+   293→      "Custom reporting & data room access",
+   294→      "Annual strategy summit attendance",
+   295→    ],
+   296→    vehicle: "Thematic Funds",
+   297→    holdPeriod: "7-year fund life",
+   298→    reporting: "Monthly + custom",
+   299→  },
+   300→  {
+   301→    id: "anchor",
+   302→    name: "Anchor",
+   303→    min: 250000,
+   304→    max: null,
+   305→    icon: Landmark,
+   306→    color: "#111111",
+   307→    tagline: "Shape the portfolio",
+   308→    benefits: [
+   309→      "All Partner benefits",
+   310→      "Advisory board participation",
+   311→      "Direct venture selection input",
+   312→      "Custom SPV formation",
+   313→      "GP carry participation",
+   314→      "Portfolio construction rights",
+   315→    ],
+   316→    vehicle: "Anchor Mandate",
+   317→    holdPeriod: "Custom",
+   318→    reporting: "Real-time dashboard",
+   319→  },
+   320→];
+   321→
+   322→/* ── FAQ ── */
+   323→const faqItems = [
+   324→  {
+   325→    q: "Who can invest?",
+   326→    a: "Individual investors from $500 via the xCelero Fund. No accreditation required. SPV Syndicates and Thematic Funds require qualified investor status depending on jurisdiction. Anchor Mandates are for institutional investors and family offices.",
+   327→  },
+   328→  {
+   329→    q: "How does xCelero deploy capital?",
+   330→    a: "We deploy across five vehicles: (1) xCelero Fund, broad exposure across the full portfolio; (2) SPV Syndicates, single-deal co-investments alongside institutions; (3) Thematic Funds, concentrated sector bets in energy, food, independent tech; (4) Catalyst Notes, revenue-linked returns for revenue-stage ventures; (5) Non-Dilutive Desk, grants and incentives matching across 39 countries.",
+   331→  },
+   332→  {
+   333→    q: "What are the fees?",
+   334→    a: "xCelero Fund: 1% management fee, no carry. SPV Syndicates: 1% management + 10% carry above hurdle. Thematic Funds: 1.5% management + 20% carry above 8% hurdle. Catalyst Notes: no management fee, return target 1.5–2.5x. No sales load on any vehicle. See offering documents for full expense ratios. All fees are projected and subject to change upon fund formation.",
+   335→  },
+   336→  {
+   337→    q: "How does liquidity work?",
+   338→    a: "The xCelero Fund offers quarterly redemption windows (up to 5% of NAV per quarter). SPV positions are illiquid until exit event. Thematic Funds may offer semi-annual tender offers at Board discretion. Catalyst Notes have a defined 24–48 month duration. Consider all positions illiquid and invest only capital you can commit. All liquidity terms are subject to final fund documentation.",
+   339→  },
+   340→  {
+   341→    q: "Is this a fund-of-funds?",
+   342→    a: "No. xCelero Capital originates and builds ventures directly. We are a venture studio that deploys capital into our own creations, not a passive allocator. When we co-invest through SPVs, it's alongside institutional partners we've selected, not into blind pools.",
+   343→  },
+   344→  {
+   345→    q: "What's the investment thesis?",
+   346→    a: "Critical technology, energy, food, water, defense, manufacturing, not SaaS arbitrage. Global South-first markets where infrastructure gaps are the opportunity. Revenue-adjacent ventures with working prototypes and pilot customers, not slide decks. Route-connected companies that leverage the 190-hub network for scale. Self-sustaining by design technology that enables self-determination, not dependency.",
+   347→  },
+   348→  {
+   349→    q: "Can international investors participate?",
+   350→    a: "Yes. xCelero Capital structures investments through Mauritius HoldCos and UAE Free Zone entities to accept global capital. US investors access vehicles via Reg D offerings. African investors can participate through mobile money rails and local agent networks in select jurisdictions.",
+   351→  },
+   352→  {
+   353→    q: "How is NAV calculated?",
+   354→    a: "Portfolio valuations follow ASC 820 fair value measurement. Early-stage ventures are valued at cost until a material financing event. Revenue-generating ventures use a mix of revenue multiples, comparable transactions, and discounted cash flows. The fund is audited annually by an independent registered public accounting firm. Valuation methodology is projected and subject to final fund documentation.",
+   355→  },
+   356→];
+   357→
+   358→/* ══════════════════════════════════════════════════════════════════════════
+   359→   CAPITAL PAGE
+   360→   ══════════════════════════════════════════════════════════════════════════ */
+   361→export function Capital() {
+   362→  const [showSubscribe, setShowSubscribe] = useState(false);
+   363→
+   364→  return (
+   365→    <div className="bg-white text-[#111111]">
+   366→      <Hero onSubscribe={() => setShowSubscribe(true)} />
+   367→      <CapitalBridge />
+   368→      <InvestmentVehicles />
+   369→      <CapitalMedia />
+   370→      <InvestmentTiers />
+   371→      <FAQSection />
+   372→      <SubscribeModal
+   373→        isOpen={showSubscribe}
+   374→        onClose={() => setShowSubscribe(false)}
+   375→      />
+   376→    </div>
+   377→  );
+   378→}
+   379→
+   380→/* ══════════════════════════════════════════════════════════════════════════
+   381→   HERO, Editorial centered with serif accent
+   382→   ══════════════════════════════════════════════════════════════════════════ */
+   383→function Hero({ onSubscribe }: { onSubscribe: () => void }) {
+   384→  const ref = useRef<HTMLDivElement>(null);
+   385→  const isInView = useInView(ref, { once: true, margin: "-50px" });
+   386→
+   387→  const heroStats = [
+   388→    { value: capitalTarget, label: "Capital target" },
+   389→    { value: String(totalVentures), label: "Projected ventures" },
+   390→    { value: `${totalCountries}+`, label: "Countries" },
+   391→    { value: "6", label: "Investment vehicles" },
+   392→    { value: String(totalHubs), label: "Route hubs" },
+   393→  ];
+   394→
+   395→  return (
+   396→    <section className="relative bg-white text-[#111111] pt-24 pb-16 sm:pt-32 sm:pb-20 md:pt-44 md:pb-28 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10">
+   397→      <div ref={ref} className="w-full max-w-4xl mx-auto text-center">
+   398→        <motion.div
+   399→          initial={{ opacity: 0, y: 30 }}
+   400→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   401→          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+   402→          className="flex flex-col items-center"
+   403→        >
+   404→          {/* Small label */}
+   405→          <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00] mb-8 md:mb-12">
+   406→            xCelero Capital
+   407→          </span>
+   408→
+   409→          <h1 className="text-[36px] sm:text-[48px] md:text-[60px] lg:text-[72px] leading-[1.05] font-display font-medium tracking-[-0.02em] mb-8 md:mb-10">
+   410→            Invest in{" "}
+   411→            <em className="italic font-serif text-[#FF4D00]">critical</em>{" "}
+   412→            technology from $500*
+   413→          </h1>
+   414→
+   415→          <p className="text-base sm:text-lg md:text-xl lg:text-[22px] leading-[1.6] text-[#111111]/50 font-medium max-w-2xl mb-10 sm:mb-14 md:mb-20">
+   416→            Six investment vehicles being structured. One thesis: the technology that defines
+   417→            the next century will be built in the markets that need it most.
+   418→            xCelero is designed to give you access to that pipeline.
+   419→          </p>
+   420→
+   421→          {/* Stats metrics row, matching Route page style */}
+   422→          <div className="flex flex-wrap justify-center gap-x-6 gap-y-5 sm:gap-x-10 md:gap-x-16 mb-10 sm:mb-14 md:mb-20">
+   423→            {heroStats.map((stat, i) => (
+   424→              <motion.div
+   425→                key={stat.label}
+   426→                initial={{ opacity: 0, y: 10 }}
+   427→                animate={isInView ? { opacity: 1, y: 0 } : {}}
+   428→                transition={{ duration: 0.5, delay: 0.4 + i * 0.08, ease: "easeOut" }}
+   429→                className="text-center min-w-[60px]"
+   430→              >
+   431→                <div className="text-[26px] sm:text-[32px] md:text-[40px] font-display font-medium tracking-[-0.02em] text-[#111111]">
+   432→                  {stat.value}
+   433→                </div>
+   434→                <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/35 mt-1">
+   435→                  {stat.label}
+   436→                </div>
+   437→              </motion.div>
+   438→            ))}
+   439→          </div>
+   440→
+   441→          <div className="flex flex-wrap gap-4 items-center justify-center">
+   442→            <Link
+   443→              to="#invest-tiers"
+   444→              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+   445→                e.preventDefault();
+   446→                document
+   447→                  .getElementById("invest-tiers")
+   448→                  ?.scrollIntoView({ behavior: "smooth" });
+   449→              }}
+   450→              className="inline-flex items-center gap-2 px-8 py-4 bg-[#111111] text-white text-[12px] font-bold uppercase tracking-[0.12em] hover:bg-[#FF4D00] transition-colors"
+   451→            >
+   452→              Invest Now
+   453→              <ArrowRight className="w-4 h-4" />
+   454→            </Link>
+   455→            <button
+   456→              onClick={onSubscribe}
+   457→              className="inline-flex items-center gap-2 px-8 py-4 border border-[#111111]/20 text-[12px] font-bold uppercase tracking-[0.12em] hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-all bg-white"
+   458→            >
+   459→              Get Updates
+   460→              <Mail className="w-4 h-4" />
+   461→            </button>
+   462→          </div>
+   463→        </motion.div>
+   464→      </div>
+   465→    </section>
+   466→  );
+   467→}
+   468→
+   469→/* ══════════════════════════════════════════════════════════════════════════
+   470→   CAPITAL BRIDGE: Image strip + two-column capital thesis with dotted map
+   471→   ══════════════════════════════════════════════════════════════════════════ */
+   472→
+   473→const capitalBridgeImages = [
+   474→  {
+   475→    src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+   476→    alt: "Financial analytics",
+   477→  },
+   478→  {
+   479→    src: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=800&q=80",
+   480→    alt: "Collaborative workspace",
+   481→  },
+   482→  {
+   483→    src: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+   484→    alt: "Global network",
+   485→  },
+   486→];
+   487→
+   488→/* Dot-matrix world map for Capital page */
+   489→const capitalWorldDots = (() => {
+   490→  const rows = [
+   491→    ".......##..........###.............#####..####..............",
+   492→    "......####.........####............######.######............",
+   493→    ".....######........#####...........########.######..........",
+   494→    ".....#######.......#####..........#########..######.........",
+   495→    "....#########......######.........#########...######........",
+   496→    "....##########.....#######........#########....#####........",
+   497→    "...############....########.......########.....#####........",
+   498→    "...############....########.......########......####........",
+   499→    "....###########....#########......#######.......####........",
+   500→    "....##########.....##########.....######........###.........",
+   501→    ".....#########.....##########.....######........###.........",
+   502→    "......########.....###########....#####.........##..........",
+   503→    ".......#######.....###########....#####.........##..........",
+   504→    "........######.....############...######.........#..........",
+   505→    ".........#####.....####.#####....########...................",
+   506→    "..........####.....####..####...#########...................",
+   507→    "...........###.....####...####..#########...................",
+   508→    "............##.....####....###..########....................",
+   509→    ".............#......###....###..#######.....................",
+   510→    "....................###.....##...######.....................",
+   511→    ".....................##.....##...#####......................",
+   512→    "......................##.....#...####.......................",
+   513→    ".......................#.........###........................",
+   514→    "................................##.........................",
+   515→    "................................#..........................",
+   516→    "............................................................",
+   517→    "............................................................",
+   518→    "............................................................",
+   519→    "............................................................",
+   520→    "............................................................",
+   521→  ];
+   522→  const dots: { row: number; col: number }[] = [];
+   523→  rows.forEach((row, r) => {
+   524→    [...row].forEach((ch, c) => {
+   525→      if (ch === "#") dots.push({ row: r, col: c });
+   526→    });
+   527→  });
+   528→  return dots;
+   529→})();
+   530→
+   531→function CapitalBridge() {
+   532→  const ref = useRef<HTMLDivElement>(null);
+   533→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   534→
+   535→  return (
+   536→    <section ref={ref} className="px-6 md:px-12 lg:px-20 pb-16 md:pb-24">
+   537→      <div className="w-full max-w-[1400px] mx-auto">
+   538→        {/* Image strip: three overlapping images */}
+   539→        <motion.div
+   540→          initial={{ opacity: 0, y: 30 }}
+   541→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   542→          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+   543→          className="relative flex items-end justify-start gap-0 mb-16 md:mb-24"
+   544→        >
+   545→          {capitalBridgeImages.map((img, i) => (
+   546→            <motion.div
+   547→              key={i}
+   548→              initial={{ opacity: 0, y: 20 }}
+   549→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   550→              transition={{ duration: 0.6, delay: 0.1 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+   551→              className={`relative overflow-hidden bg-[#F5F5F5] shadow-lg ${
+   552→                i === 0
+   553→                  ? "w-[36%] md:w-[32%] aspect-[4/3] z-10"
+   554→                  : i === 1
+   555→                  ? "w-[44%] md:w-[40%] aspect-[4/3] z-30 -mt-3 -ml-[8%] md:-ml-[4%]"
+   556→                  : "w-[36%] md:w-[32%] aspect-[4/3] z-10 -ml-[8%] md:-ml-[4%]"
+   557→              }`}
+   558→            >
+   559→              <img
+   560→                src={img.src}
+   561→                alt={img.alt}
+   562→                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+   563→              />
+   564→            </motion.div>
+   565→          ))}
+   566→        </motion.div>
+   567→
+   568→        {/* Two-column layout: text left, dotted map right */}
+   569→        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+   570→          {/* Left: Capital thesis text */}
+   571→          <motion.div
+   572→            initial={{ opacity: 0, y: 30 }}
+   573→            animate={isInView ? { opacity: 1, y: 0 } : {}}
+   574→            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+   575→            className="lg:col-span-6"
+   576→          >
+   577→            <p className="text-[22px] sm:text-[28px] md:text-[34px] leading-[1.25] font-display font-medium tracking-[-0.02em] text-[#111111] mb-6 md:mb-8">
+   578→              Capital designed to understand the terrain, not just the <span className="text-[#FF4D00]">return profile</span>.
+   579→            </p>
+   580→            <p className="text-[15px] md:text-[17px] leading-[1.7] text-[#111111]/60 font-medium max-w-xl">
+   581→              Traditional venture capital flows where returns are proven. xCelero is designed to deploy capital where the technology is most needed, in the geographies building the next century&apos;s infrastructure. Six vehicles, one thesis: <span className="text-[#111111] font-semibold">critical technology in the markets that need it most</span>.
+   582→            </p>
+   583→          </motion.div>
+   584→
+   585→          {/* Right: Dotted world map */}
+   586→          <motion.div
+   587→            initial={{ opacity: 0, y: 30 }}
+   588→            animate={isInView ? { opacity: 1, y: 0 } : {}}
+   589→            transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+   590→            className="lg:col-span-6 flex items-center justify-center"
+   591→          >
+   592→            <div className="relative w-full max-w-lg">
+   593→              <svg
+   594→                viewBox="0 0 60 30"
+   595→                className="w-full h-auto"
+   596→                style={{ imageRendering: "auto" }}
+   597→              >
+   598→                {/* All land dots in dark color */}
+   599→                {capitalWorldDots.map((dot, i) => (
+   600→                  <circle
+   601→                    key={i}
+   602→                    cx={dot.col * 1}
+   603→                    cy={dot.row * 1}
+   604→                    r="0.35"
+   605→                    className="fill-[#111111]/70"
+   606→                  />
+   607→                ))}
+   608→                {/* Africa highlighted region: cols 23-33, rows 3-21 */}
+   609→                {capitalWorldDots
+   610→                  .filter(
+   611→                    (d) =>
+   612→                      d.col >= 23 && d.col <= 33 && d.row >= 3 && d.row <= 21
+   613→                  )
+   614→                  .map((dot, i) => (
+   615→                    <circle
+   616→                      key={`af-${i}`}
+   617→                      cx={dot.col * 1}
+   618→                      cy={dot.row * 1}
+   619→                      r="0.4"
+   620→                      className="fill-[#FF4D00]"
+   621→                    />
+   622→                  ))}
+   623→              </svg>
+   624→              {/* Label */}
+   625→              <div className="absolute bottom-2 right-4 text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]">
+   626→                $4B Target · 6 Vehicles Planned
+   627→              </div>
+   628→            </div>
+   629→          </motion.div>
+   630→        </div>
+   631→      </div>
+   632→    </section>
+   633→  );
+   634→}
+   635→
+   636→/* ══════════════════════════════════════════════════════════════════════════
+   637→   STATS BAR, Horizontal ticker
+   638→   ══════════════════════════════════════════════════════════════════════════ */
+   639→function StatsBar() {
+   640→  const ref = useRef<HTMLDivElement>(null);
+   641→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   642→
+   643→  const stats = [
+   644→    { value: capitalTarget, label: "Capital target" },
+   645→    { value: String(totalVentures), label: "Active ventures" },
+   646→    { value: `${totalCountries}+`, label: "Countries" },
+   647→    { value: "6", label: "Investment vehicles" },
+   648→    { value: String(totalHubs), label: "Route hubs" },
+   649→  ];
+   650→
+   651→  return (
+   652→    <section
+   653→      ref={ref}
+   654→      className="py-8 md:py-10 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10 bg-white"
+   655→    >
+   656→      <div className="w-full max-w-[1400px] mx-auto">
+   657→        <div className="flex flex-wrap justify-between gap-6 md:gap-8">
+   658→          {stats.map((stat, i) => (
+   659→            <motion.div
+   660→              key={i}
+   661→              initial={{ opacity: 0, y: 10 }}
+   662→              animate={isInView ? { opacity: 1, y: 0 } : {}}
+   663→              transition={{ duration: 0.4, delay: i * 0.08 }}
+   664→              className="text-center flex-1 min-w-[100px]"
+   665→            >
+   666→              <span className="block text-[28px] md:text-[36px] font-display font-medium tracking-[-0.03em] leading-[1]">
+   667→                {stat.value}
+   668→              </span>
+   669→              <span className="block text-[11px] md:text-[12px] text-[#111111]/40 font-medium tracking-[0.05em] uppercase mt-1">
+   670→                {stat.label}
+   671→              </span>
+   672→            </motion.div>
+   673→          ))}
+   674→        </div>
+   675→      </div>
+   676→    </section>
+   677→  );
+   678→}
+   679→
+   680→/* ══════════════════════════════════════════════════════════════════════════
+   681→   INVESTMENT VEHICLES, Tabbed editorial layout
+   682→   ══════════════════════════════════════════════════════════════════════════ */
+   683→function InvestmentVehicles() {
+   684→  const ref = useRef<HTMLDivElement>(null);
+   685→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   686→  const [activeId, setActiveId] = useState<string>(investmentVehicles[0].id);
+   687→  const activeVehicle = investmentVehicles.find((v) => v.id === activeId)!;
+   688→
+   689→  return (
+   690→    <section
+   691→      ref={ref}
+   692→      id="investment-vehicles"
+   693→      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10"
+   694→    >
+   695→      <div className="w-full max-w-[1400px] mx-auto">
+   696→        {/* Header */}
+   697→        <motion.div
+   698→          initial={{ opacity: 0, y: 20 }}
+   699→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   700→          transition={{ duration: 0.6, ease: "easeOut" }}
+   701→          className="mb-10 md:mb-14"
+   702→        >
+   703→          <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00]">
+   704→            Investment Vehicles
+   705→          </span>
+   706→          <h2 className="text-[32px] md:text-[48px] lg:text-[64px] font-display font-medium tracking-[-0.03em] leading-[0.9] mt-3">
+   707→            Six ways to deploy{" "}
+   708→            <em className="font-serif italic text-[#FF4D00]">capital</em>
+   709→          </h2>
+   710→          <p className="text-[15px] md:text-[17px] text-[#111111]/50 font-medium leading-[1.7] max-w-xl mt-4">
+   711→            From $500 in the xCelero Fund to custom Anchor Mandates at $250K+,
+   712→            every vehicle is being designed for the same thesis: critical technology in
+   713→            the markets that need it most.
+   714→          </p>
+   715→        </motion.div>
+   716→
+   717→        <div className="grid lg:grid-cols-12 gap-0 border border-[#111111]/10">
+   718→          {/* Left: Vertical tab nav */}
+   719→          <div className="lg:col-span-4 xl:col-span-3 border-b lg:border-b-0 lg:border-r border-[#111111]/10">
+   720→            {/* Mobile: horizontal scroll */}
+   721→            <div className="flex lg:flex-col overflow-x-auto lg:overflow-visible">
+   722→              {investmentVehicles.map((vehicle, i) => {
+   723→                const Icon = vehicle.icon;
+   724→                const isActive = activeId === vehicle.id;
+   725→                return (
+   726→                  <motion.button
+   727→                    key={vehicle.id}
+   728→                    initial={{ opacity: 0, x: -10 }}
+   729→                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+   730→                    transition={{ duration: 0.4, delay: i * 0.06 }}
+   731→                    onClick={() => setActiveId(vehicle.id)}
+   732→                    className={`flex items-center gap-3 px-5 py-4 lg:py-5 lg:px-6 text-left transition-all shrink-0 lg:shrink border-b lg:border-b lg:border-b-0 lg:border-r-0 border-[#111111]/5 whitespace-nowrap lg:whitespace-normal ${
+   733→                      isActive
+   734→                        ? "bg-[#FF4D00]/[0.04] border-l-2 border-l-[#FF4D00] lg:border-l-2"
+   735→                        : "border-l-2 border-l-transparent hover:bg-[#111111]/[0.02] hover:border-l-[#111111]/10"
+   736→                    }`}
+   737→                  >
+   738→                    <div
+   739→                      className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+   740→                        isActive ? "bg-[#FF4D00]" : "border border-[#111111]/10"
+   741→                      }`}
+   742→                    >
+   743→                      <Icon
+   744→                        className={`w-3.5 h-3.5 transition-colors ${
+   745→                          isActive ? "text-white" : "text-[#FF4D00]"
+   746→                        }`}
+   747→                        strokeWidth={1.5}
+   748→                      />
+   749→                    </div>
+   750→                    <div className="min-w-0">
+   751→                      <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-[#111111]/25 block">
+   752→                        {vehicle.shortName}
+   753→                      </span>
+   754→                      <span
+   755→                        className={`text-[13px] md:text-[14px] font-medium leading-tight block truncate ${
+   756→                          isActive ? "text-[#111111]" : "text-[#111111]/50"
+   757→                        }`}
+   758→                      >
+   759→                        {vehicle.name}
+   760→                      </span>
+   761→                    </div>
+   762→                  </motion.button>
+   763→                );
+   764→              })}
+   765→            </div>
+   766→          </div>
+   767→
+   768→          {/* Right: Active vehicle detail */}
+   769→          <div className="lg:col-span-8 xl:col-span-9 bg-white">
+   770→            <AnimatePresence mode="wait">
+   771→              <motion.div
+   772→                key={activeVehicle.id}
+   773→                initial={{ opacity: 0, y: 12 }}
+   774→                animate={{ opacity: 1, y: 0 }}
+   775→                exit={{ opacity: 0, y: -12 }}
+   776→                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+   777→                className="p-6 md:p-8 lg:p-10"
+   778→              >
+   779→                {/* Vehicle header */}
+   780→                <div className="mb-6">
+   781→                  <div className="flex items-center gap-3 mb-3">
+   782→                    <div className="w-10 h-10 rounded-full bg-[#FF4D00] flex items-center justify-center">
+   783→                      <activeVehicle.icon className="w-5 h-5 text-white" strokeWidth={1.5} />
+   784→                    </div>
+   785→                    <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/25">
+   786→                      {activeVehicle.shortName}
+   787→                    </span>
+   788→                  </div>
+   789→                  <h3 className="text-[24px] md:text-[30px] font-display font-medium tracking-tight mb-2">
+   790→                    {activeVehicle.name}
+   791→                  </h3>
+   792→                  <p className="text-[14px] md:text-[15px] text-[#FF4D00] font-medium leading-[1.5] mb-4">
+   793→                    {activeVehicle.tagline}
+   794→                  </p>
+   795→                  <p className="text-[14px] md:text-[15px] text-[#111111]/55 font-medium leading-[1.7] max-w-2xl">
+   796→                    {activeVehicle.description}
+   797→                  </p>
+   798→                </div>
+   799→
+   800→                {/* Key terms bar */}
+   801→                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8 border-t border-b border-[#111111]/5 py-5">
+   802→                  {activeVehicle.details.map((detail, i) => (
+   803→                    <div key={i}>
+   804→                      <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-[#111111]/25 block mb-1">
+   805→                        {detail.label}
+   806→                      </span>
+   807→                      <span className="text-[13px] md:text-[14px] font-medium text-[#111111]/70 leading-[1.3]">
+   808→                        {detail.value}
+   809→                      </span>
+   810→                    </div>
+   811→                  ))}
+   812→                </div>
+   813→
+   814→                <div className="grid lg:grid-cols-12 gap-8 lg:gap-10">
+   815→                  {/* How It Works timeline */}
+   816→                  <div className="lg:col-span-7">
+   817→                    <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00] block mb-5">
+   818→                      <Clock className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
+   819→                      How It Works
+   820→                    </span>
+   821→                    <div className="relative ml-1">
+   822→                      {activeVehicle.howItWorks.map((step, si) => (
+   823→                        <div key={si} className="flex gap-4 relative pb-5 last:pb-0">
+   824→                          {si < activeVehicle.howItWorks.length - 1 && (
+   825→                            <div className="absolute left-[15px] top-[34px] w-[2px] bottom-0 bg-[#FF4D00]/12" />
+   826→                          )}
+   827→                          <div className="shrink-0 w-8 h-8 rounded-full bg-[#FF4D00] flex items-center justify-center text-[11px] font-mono font-bold text-white z-10">
+   828→                            {String(si + 1).padStart(2, "0")}
+   829→                          </div>
+   830→                          <p className="text-[13px] md:text-[14px] text-[#111111]/55 font-medium leading-[1.6] pt-1">
+   831→                            {step}
+   832→                          </p>
+   833→                        </div>
+   834→                      ))}
+   835→                    </div>
+   836→                  </div>
+   837→
+   838→                  {/* Key Features + Best For + Risk */}
+   839→                  <div className="lg:col-span-5">
+   840→                    <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00] block mb-4">
+   841→                      Key Features
+   842→                    </span>
+   843→                    <ul className="space-y-2.5 mb-6">
+   844→                      {activeVehicle.keyFeatures.map((feature, fi) => (
+   845→                        <li key={fi} className="flex items-start gap-2.5">
+   846→                          <Check className="w-3.5 h-3.5 text-[#FF4D00] shrink-0 mt-0.5" strokeWidth={2} />
+   847→                          <span className="text-[12px] md:text-[13px] text-[#111111]/55 font-medium leading-[1.5]">
+   848→                            {feature}
+   849→                          </span>
+   850→                        </li>
+   851→                      ))}
+   852→                    </ul>
+   853→
+   854→                    <div className="border-t border-[#111111]/5 pt-4 mb-5">
+   855→                      <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-[#111111]/25 block mb-2">
+   856→                        Best For
+   857→                      </span>
+   858→                      <p className="text-[12px] md:text-[13px] text-[#111111]/45 font-medium leading-[1.6]">
+   859→                        {activeVehicle.bestFor}
+   860→                      </p>
+   861→                    </div>
+   862→
+   863→                    <div className="border-l-2 border-[#FF4D00]/15 pl-4">
+   864→                      <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-[#111111]/20 block mb-1.5">
+   865→                        Risk
+   866→                      </span>
+   867→                      <p className="text-[11px] text-[#111111]/35 font-medium leading-[1.6] italic">
+   868→                        {activeVehicle.riskNote}
+   869→                      </p>
+   870→                    </div>
+   871→                  </div>
+   872→                </div>
+   873→              </motion.div>
+   874→            </AnimatePresence>
+   875→          </div>
+   876→        </div>
+   877→      </div>
+   878→    </section>
+   879→  );
+   880→}
+   881→
+   882→/* ══════════════════════════════════════════════════════════════════════════
+   883→   CAPITAL MEDIA: Full-width image/video panel
+   884→   ══════════════════════════════════════════════════════════════════════════ */
+   885→function CapitalMedia() {
+   886→  const ref = useRef<HTMLDivElement>(null);
+   887→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   888→
+   889→  return (
+   890→    <section
+   891→      ref={ref}
+   892→      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-t border-[#111111]/10"
+   893→    >
+   894→      <div className="w-full max-w-[1400px] mx-auto">
+   895→        <motion.div
+   896→          initial={{ opacity: 0, y: 30 }}
+   897→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+   898→          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+   899→          className="relative overflow-hidden bg-[#F5F5F5] shadow-lg"
+   900→        >
+   901→          <img
+   902→            src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&q=80"
+   903→            alt="Infrastructure development across Africa: investment, technology, and connectivity hubs"
+   904→            className="w-full h-auto object-cover grayscale hover:grayscale-0 transition-all duration-700"
+   905→          />
+   906→          {/* Overlay label */}
+   907→          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#111111]/60 to-transparent p-6 md:p-8">
+   908→            <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-white/60 block mb-2">
+   909→              xCelero Capital
+   910→            </span>
+   911→            <p className="text-[16px] md:text-[20px] font-display font-medium text-white leading-[1.3]">
+   912→              Building infrastructure where it&apos;s needed{" "}
+   913→              <em className="font-serif italic text-[#FF4D00]">most</em>
+   914→            </p>
+   915→          </div>
+   916→        </motion.div>
+   917→      </div>
+   918→    </section>
+   919→  );
+   920→}
+   921→
+   922→/* ══════════════════════════════════════════════════════════════════════════
+   923→   INVESTMENT TIERS, Multi-step wizard flow
+   924→   ══════════════════════════════════════════════════════════════════════════ */
+   925→
+   926→/* Map each tier to its matching vehicle for howItWorks data */
+   927→const tierVehicleMap: Record<string, typeof investmentVehicles[number] | undefined> = {
+   928→  scout: investmentVehicles.find((v) => v.id === "xcelero-fund"),
+   929→  syndicate: investmentVehicles.find((v) => v.id === "spv-syndicates"),
+   930→  partner: investmentVehicles.find((v) => v.id === "thematic-funds"),
+   931→  anchor: investmentVehicles.find((v) => v.id === "anchor-mandate"),
+   932→};
+   933→
+   934→type WizardStep = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+   935→
+   936→const stepLabels = [
+   937→  { step: 1 as WizardStep, label: "Choose Tier", shortLabel: "Tier" },
+   938→  { step: 2 as WizardStep, label: "Your Vehicle", shortLabel: "Vehicle" },
+   939→  { step: 3 as WizardStep, label: "Benefits", shortLabel: "Benefits" },
+   940→  { step: 4 as WizardStep, label: "Get Started", shortLabel: "Start" },
+   941→  { step: 5 as WizardStep, label: "Fund", shortLabel: "Fund" },
+   942→  { step: 6 as WizardStep, label: "Details", shortLabel: "Details" },
+   943→  { step: 7 as WizardStep, label: "Confirmed", shortLabel: "Done" },
+   944→];
+   945→
+   946→/* ── Payment Methods ── */
+   947→const paymentMethods = [
+   948→  {
+   949→    id: "bank-transfer",
+   950→    name: "Bank Transfer",
+   951→    description: "Direct wire or ACH from your bank. Largest amounts, lowest fees. Settlement in 1–3 business days.",
+   952→    details: ["No transaction limits", "1–3 business day settlement", "USD, EUR, GBP, AED, KES, ZAR, NGN", "No processing fee"],
+   953→    icon: "🏦",
+   954→    bestFor: "Anchor & Partner tier investors, large allocations",
+   955→    speed: "1–3 days",
+   956→    fee: "None",
+   957→  },
+   958→  {
+   959→    id: "card",
+   960→    name: "Card Payment",
+   961→    description: "Visa or Mastercard for fast entry. Instant confirmation, higher processing fees apply.",
+   962→    details: ["Instant confirmation", "$50,000 per transaction limit", "Visa & Mastercard accepted", "2.5% processing fee"],
+   963→    icon: "💳",
+   964→    bestFor: "Scout & Syndicate tier, quick initial deposits",
+   965→    speed: "Instant",
+   966→    fee: "2.5%",
+   967→  },
+   968→  {
+   969→    id: "crypto",
+   970→    name: "Crypto Transfer",
+   971→    description: "USDC, USDT, or BTC via our partnered custodian. On-chain confirmation, converted to USD at point of deposit.",
+   972→    details: ["USDC, USDT, BTC supported", "On-chain confirmation", "Converted to USD at deposit", "0.5% conversion fee"],
+   973→    icon: "₿",
+   974→    bestFor: "Global investors seeking speed and jurisdiction flexibility",
+   975→    speed: "Minutes",
+   976→    fee: "0.5%",
+   977→  },
+   978→  {
+   979→    id: "mobile-money",
+   980→    name: "Mobile Money",
+   981→    description: "M-Pesa, Airtel Money, MTN Mobile Money. Built for African investors who move capital through mobile rails.",
+   982→    details: ["M-Pesa, Airtel, MTN supported", "Local agent deposit options", "KES, UGX, TZS, GHS, NGN", "No processing fee"],
+   983→    icon: "📱",
+   984→    bestFor: "East & West African investors, Scout tier entry",
+   985→    speed: "Instant",
+   986→    fee: "None",
+   987→  },
+   988→];
+   989→
+   990→function InvestmentTiers() {
+   991→  const ref = useRef<HTMLDivElement>(null);
+   992→  const isInView = useInView(ref, { once: true, margin: "-80px" });
+   993→  const [currentStep, setCurrentStep] = useState<WizardStep>(1);
+   994→  const [selectedTierId, setSelectedTierId] = useState<string>("scout");
+   995→
+   996→  const selectedTier = investmentTiers.find((t) => t.id === selectedTierId)!;
+   997→  const selectedVehicle = tierVehicleMap[selectedTierId];
+   998→  const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(null);
+   999→  const [isProcessing, setIsProcessing] = useState(false);
+  1000→  const [paymentError, setPaymentError] = useState<string | null>(null);
+  1001→  const confirmationRef = useRef<string>(`XCL-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
+  1002→
+  1003→  const [direction, setDirection] = useState<1 | -1>(1);
+  1004→
+  1005→  /* ── Investor info state ── */
+  1006→  const [investorName, setInvestorName] = useState("");
+  1007→  const [investorEmail, setInvestorEmail] = useState("");
+  1008→  const [accredited, setAccredited] = useState(false);
+  1009→
+  1010→  /* ── Payment form state ── */
+  1011→  const [cardNumber, setCardNumber] = useState("");
+  1012→  const [cardExpiry, setCardExpiry] = useState("");
+  1013→  const [cardCvv, setCardCvv] = useState("");
+  1014→  const [cardName, setCardName] = useState("");
+  1015→
+  1016→  const [bankName, setBankName] = useState("");
+  1017→  const [accountHolder, setAccountHolder] = useState("");
+  1018→  const [accountNumber, setAccountNumber] = useState("");
+  1019→  const [swiftCode, setSwiftCode] = useState("");
+  1020→
+  1021→  const [cryptoNetwork, setCryptoNetwork] = useState("USDC");
+  1022→  const [walletAddress, setWalletAddress] = useState("");
+  1023→  const [cryptoAmount, setCryptoAmount] = useState("");
+  1024→
+  1025→  const [mobileProvider, setMobileProvider] = useState("M-Pesa");
+  1026→  const [mobilePhone, setMobilePhone] = useState("");
+  1027→  const [mobileAmount, setMobileAmount] = useState("");
+  1028→
+  1029→  const resetPaymentForm = () => {
+  1030→    setCardNumber(""); setCardExpiry(""); setCardCvv(""); setCardName("");
+  1031→    setBankName(""); setAccountHolder(""); setAccountNumber(""); setSwiftCode("");
+  1032→    setCryptoNetwork("USDC"); setWalletAddress(""); setCryptoAmount("");
+  1033→    setMobileProvider("M-Pesa"); setMobilePhone(""); setMobileAmount("");
+  1034→  };
+  1035→
+  1036→  const isFormValid = (() => {
+  1037→    if (!selectedPaymentId) return false;
+  1038→    switch (selectedPaymentId) {
+  1039→      case "card":
+  1040→        return cardNumber.replace(/\s/g, "").length >= 15 && cardExpiry.length >= 4 && cardCvv.length >= 3 && cardName.trim().length > 0;
+  1041→      case "bank-transfer":
+  1042→        return bankName.trim().length > 0 && accountHolder.trim().length > 0 && accountNumber.trim().length > 0 && swiftCode.trim().length > 0;
+  1043→      case "crypto":
+  1044→        return walletAddress.trim().length > 0 && cryptoAmount.trim().length > 0;
+  1045→      case "mobile-money":
+  1046→        return mobilePhone.trim().length >= 8 && mobileAmount.trim().length > 0;
+  1047→      default: return false;
+  1048→    }
+  1049→  })();
+  1050→
+  1051→  const handleConfirmPayment = async () => {
+  1052→    if (!selectedPaymentId || !isFormValid) return;
+  1053→    setIsProcessing(true);
+  1054→    setPaymentError(null);
+  1055→    try {
+  1056→      const res = await fetch("/api/capital/invest", {
+  1057→        method: "POST",
+  1058→        headers: { "Content-Type": "application/json" },
+  1059→        body: JSON.stringify({
+  1060→          name: investorName.trim() || "Investor",
+  1061→          email: investorEmail.trim(),
+  1062→          amount: selectedTier.min,
+  1063→          tier: selectedTierId,
+  1064→          accredited,
+  1065→          consent: true,
+  1066→        }),
+  1067→      });
+  1068→
+  1069→      if (!res.ok) {
+  1070→        const data = await res.json().catch(() => ({}));
+  1071→        throw new Error(data.error || "Submission failed. Please try again.");
+  1072→      }
+  1073→
+  1074→      goNext(); // go to step 7
+  1075→    } catch (err) {
+  1076→      setPaymentError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+  1077→    } finally {
+  1078→      setIsProcessing(false);
+  1079→    }
+  1080→  };
+  1081→
+  1082→  const goToStep = (step: WizardStep) => {
+  1083→    setDirection(step > currentStep ? 1 : -1);
+  1084→    setCurrentStep(step);
+  1085→  };
+  1086→  const goNext = () => {
+  1087→    if (currentStep < 7) {
+  1088→      setDirection(1);
+  1089→      setCurrentStep((currentStep + 1) as WizardStep);
+  1090→    }
+  1091→  };
+  1092→  const goBack = () => {
+  1093→    if (currentStep > 1) {
+  1094→      setDirection(-1);
+  1095→      setCurrentStep((currentStep - 1) as WizardStep);
+  1096→    }
+  1097→  };
+  1098→
+  1099→  return (
+  1100→    <section
+  1101→      ref={ref}
+  1102→      id="invest-tiers"
+  1103→      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 bg-[#FAFAFA] border-t border-[#111111]/10"
+  1104→    >
+  1105→      <div className="w-full max-w-[1400px] mx-auto">
+  1106→        {/* Header */}
+  1107→        <motion.div
+  1108→          initial={{ opacity: 0, y: 20 }}
+  1109→          animate={isInView ? { opacity: 1, y: 0 } : {}}
+  1110→          transition={{ duration: 0.6, ease: "easeOut" }}
+  1111→          className="mb-10 md:mb-14"
+  1112→        >
+  1113→          <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00]">
+  1114→            Invest Now
+  1115→          </span>
+  1116→          <h2 className="text-[32px] md:text-[48px] lg:text-[64px] font-display font-medium tracking-[-0.03em] leading-[0.9] mt-3">
+  1117→            Your investment{" "}
+  1118→            <em className="font-serif italic text-[#FF4D00]">journey</em>
+  1119→          </h2>
+  1120→          <p className="text-[15px] md:text-[17px] text-[#111111]/50 font-medium leading-[1.7] max-w-xl mt-4">
+  1121→            Seven steps from curiosity to commitment. Choose your tier, understand
+  1122→            your vehicle, see what you unlock, learn the process, select funding,
+  1123→            enter details, and confirm.
+  1124→          </p>
+  1125→        </motion.div>
+  1126→
+  1127→        {/* ── Step Progress Bar ── */}
+  1128→        <div className="mb-10 md:mb-14">
+  1129→          <div className="flex items-center gap-0">
+  1130→            {stepLabels.map((s, i) => {
+  1131→              const isActive = currentStep === s.step;
+  1132→              const isCompleted = currentStep > s.step;
+  1133→              const isLast = i === stepLabels.length - 1;
+  1134→              return (
+  1135→                <div key={s.step} className="flex items-center flex-1 last:flex-none">
+  1136→                  {/* Step circle + label */}
+  1137→                  <button
+  1138→                    onClick={() => {
+  1139→                      if (isCompleted || isActive) goToStep(s.step);
+  1140→                    }}
+  1141→                    className={`flex items-center gap-2.5 group transition-all ${
+  1142→                      isCompleted || isActive ? "cursor-pointer" : "cursor-default"
+  1143→                    }`}
+  1144→                  >
+  1145→                    <div
+  1146→                      className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-[11px] font-mono font-bold transition-all duration-300 ${
+  1147→                        isActive
+  1148→                          ? "bg-[#FF4D00] text-white scale-110"
+  1149→                          : isCompleted
+  1150→                          ? "bg-[#FF4D00] text-white"
+  1151→                          : "bg-[#111111]/8 text-[#111111]/30"
+  1152→                      }`}
+  1153→                    >
+  1154→                      {isCompleted ? (
+  1155→                        <Check className="w-4 h-4" strokeWidth={2.5} />
+  1156→                      ) : (
+  1157→                        String(s.step).padStart(2, "0")
+  1158→                      )}
+  1159→                    </div>
+  1160→                    <span
+  1161→                      className={`text-[11px] font-mono font-bold tracking-widest uppercase hidden sm:inline transition-colors ${
+  1162→                        isActive
+  1163→                          ? "text-[#FF4D00]"
+  1164→                          : isCompleted
+  1165→                          ? "text-[#111111]/60"
+  1166→                          : "text-[#111111]/25"
+  1167→                      }`}
+  1168→                    >
+  1169→                      {s.label}
+  1170→                    </span>
+  1171→                  </button>
+  1172→                  {/* Connecting line */}
+  1173→                  {!isLast && (
+  1174→                    <div className="flex-1 mx-3 md:mx-4 h-[2px] bg-[#111111]/8 relative overflow-hidden">
+  1175→                      <motion.div
+  1176→                        className="absolute inset-y-0 left-0 bg-[#FF4D00]"
+  1177→                        initial={{ width: "0%" }}
+  1178→                        animate={{
+  1179→                          width: isCompleted ? "100%" : isActive ? "50%" : "0%",
+  1180→                        }}
+  1181→                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  1182→                      />
+  1183→                    </div>
+  1184→                  )}
+  1185→                </div>
+  1186→              );
+  1187→            })}
+  1188→          </div>
+  1189→        </div>
+  1190→
+  1191→        {/* ── Step Content ── */}
+  1192→        <div className="min-h-[420px]">
+  1193→          <AnimatePresence mode="wait">
+  1194→            {/* STEP 1: Choose Your Tier */}
+  1195→            {currentStep === 1 && (
+  1196→              <motion.div
+  1197→                key="step-1"
+  1198→                initial={{ opacity: 0, x: 40 * direction }}
+  1199→                animate={{ opacity: 1, x: 0 }}
+  1200→                exit={{ opacity: 0, x: -40 * direction }}
+  1201→                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  1202→              >
+  1203→                <div className="mb-6">
+  1204→                  <h3 className="text-[20px] md:text-[26px] font-display font-medium tracking-tight mb-2">
+  1205→                    Choose your tier
+  1206→                  </h3>
+  1207→                  <p className="text-[14px] md:text-[15px] text-[#111111]/50 font-medium leading-[1.6]">
+  1208→                    Every tier builds on the one before. Start where you are. Upgrade anytime.
+  1209→                  </p>
+  1210→                </div>
+  1211→
+  1212→                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+  1213→                  {investmentTiers.map((tier, i) => {
+  1214→                    const Icon = tier.icon;
+  1215→                    const isSelected = selectedTierId === tier.id;
+  1216→                    return (
+  1217→                      <motion.button
+  1218→                        key={tier.id}
+  1219→                        initial={{ opacity: 0, y: 20 }}
+  1220→                        animate={{ opacity: 1, y: 0 }}
+  1221→                        transition={{ duration: 0.4, delay: i * 0.08 }}
+  1222→                        onClick={() => setSelectedTierId(tier.id)}
+  1223→                        className={`text-left border bg-white transition-all p-5 md:p-6 ${
+  1224→                          isSelected
+  1225→                            ? "border-[#FF4D00] ring-1 ring-[#FF4D00]/20 shadow-md"
+  1226→                            : "border-[#111111]/10 hover:border-[#FF4D00]/30 hover:shadow-sm"
+  1227→                        }`}
+  1228→                      >
+  1229→                        {/* Top accent */}
+  1230→                        <div
+  1231→                          className={`h-1 w-10 mb-4 transition-colors ${
+  1232→                            isSelected ? "bg-[#FF4D00]" : "bg-[#111111]/10"
+  1233→                          }`}
+  1234→                        />
+  1235→
+  1236→                        <div className="flex items-center gap-3 mb-3">
+  1237→                          <div
+  1238→                            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+  1239→                              isSelected ? "bg-[#FF4D00]" : "border border-[#111111]/10"
+  1240→                            }`}
+  1241→                          >
+  1242→                            <Icon
+  1243→                              className={`w-4 h-4 transition-colors ${
+  1244→                                isSelected ? "text-white" : "text-[#FF4D00]"
+  1245→                              }`}
+  1246→                              strokeWidth={1.5}
+  1247→                            />
+  1248→                          </div>
+  1249→                          <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-[#111111]/25">
+  1250→                            {tier.vehicle}
+  1251→                          </span>
+  1252→                        </div>
+  1253→
+  1254→                        <h4 className="text-[20px] md:text-[24px] font-display font-medium tracking-tight mb-1">
+  1255→                          {tier.name}
+  1256→                        </h4>
+  1257→                        <div className="mb-2">
+  1258→                          <span className="text-[24px] md:text-[30px] font-display font-medium tracking-[-0.02em] leading-[1]">
+  1259→                            ${tier.min.toLocaleString()}
+  1260→                          </span>
+  1261→                          <span className="text-[12px] text-[#111111]/35 font-medium ml-1">
+  1262→                            {tier.max ? `– $${tier.max.toLocaleString()}` : "+"}
+  1263→                          </span>
+  1264→                        </div>
+  1265→                        <p className="text-[12px] text-[#FF4D00] font-medium">
+  1266→                          {tier.tagline}
+  1267→                        </p>
+  1268→
+  1269→                        {/* Selected indicator */}
+  1270→                        {isSelected && (
+  1271→                          <motion.div
+  1272→                            initial={{ opacity: 0, scale: 0.8 }}
+  1273→                            animate={{ opacity: 1, scale: 1 }}
+  1274→                            className="mt-4 pt-3 border-t border-[#FF4D00]/10 flex items-center gap-2 text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00]"
+  1275→                          >
+  1276→                            <Check className="w-3 h-3" strokeWidth={2.5} />
+  1277→                            Selected
+  1278→                          </motion.div>
+  1279→                        )}
+  1280→                      </motion.button>
+  1281→                    );
+  1282→                  })}
+  1283→                </div>
+  1284→
+  1285→                {/* Next button */}
+  1286→                <div className="mt-8 flex justify-end">
+  1287→                  <button
+  1288→                    onClick={goNext}
+  1289→                    className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#111111] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#FF4D00] transition-colors"
+  1290→                  >
+  1291→                    Continue to your vehicle
+  1292→                    <ArrowRight className="w-4 h-4" />
+  1293→                  </button>
+  1294→                </div>
+  1295→              </motion.div>
+  1296→            )}
+  1297→
+  1298→            {/* STEP 2: Your Vehicle */}
+  1299→            {currentStep === 2 && selectedVehicle && (
+  1300→              <motion.div
+  1301→                key="step-2"
+  1302→                initial={{ opacity: 0, x: 40 * direction }}
+  1303→                animate={{ opacity: 1, x: 0 }}
+  1304→                exit={{ opacity: 0, x: -40 * direction }}
+  1305→                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  1306→              >
+  1307→                <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
+  1308→                  {/* Left: Vehicle details */}
+  1309→                  <div className="lg:col-span-7">
+  1310→                    <div className="mb-6">
+  1311→                      <div className="flex items-center gap-3 mb-3">
+  1312→                        <div className="w-10 h-10 rounded-full bg-[#FF4D00] flex items-center justify-center">
+  1313→                          <selectedVehicle.icon className="w-5 h-5 text-white" strokeWidth={1.5} />
+  1314→                        </div>
+  1315→                        <div>
+  1316→                          <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30">
+  1317→                            {selectedTier.name} Tier
+  1318→                          </span>
+  1319→                          <h3 className="text-[22px] md:text-[28px] font-display font-medium tracking-tight">
+  1320→                            {selectedVehicle.name}
+  1321→                          </h3>
+  1322→                        </div>
+  1323→                      </div>
+  1324→                      <p className="text-[13px] text-[#FF4D00] font-medium mb-3">
+  1325→                        {selectedVehicle.tagline}
+  1326→                      </p>
+  1327→                      <p className="text-[14px] md:text-[15px] text-[#111111]/55 font-medium leading-[1.7]">
+  1328→                        {selectedVehicle.description}
+  1329→                      </p>
+  1330→                    </div>
+  1331→
+  1332→                    {/* Key terms grid */}
+  1333→                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6 border-t border-[#111111]/5 pt-6">
+  1334→                      {selectedVehicle.details.map((detail, i) => (
+  1335→                        <div key={i}>
+  1336→                          <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-[#111111]/30 block mb-1">
+  1337→                            {detail.label}
+  1338→                          </span>
+  1339→                          <span className="text-[14px] md:text-[15px] font-medium text-[#111111]/80 leading-[1.4]">
+  1340→                            {detail.value}
+  1341→                          </span>
+  1342→                        </div>
+  1343→                      ))}
+  1344→                    </div>
+  1345→
+  1346→                    {/* Risk note */}
+  1347→                    <div className="bg-[#111111]/[0.03] border border-[#111111]/5 p-4">
+  1348→                      <p className="text-[11px] text-[#111111]/40 font-medium leading-[1.6]">
+  1349→                        <span className="font-bold uppercase tracking-wider text-[#111111]/50">Risk note:</span>{" "}
+  1350→                        {selectedVehicle.riskNote}
+  1351→                      </p>
+  1352→                    </div>
+  1353→                  </div>
+  1354→
+  1355→                  {/* Right: Key features */}
+  1356→                  <div className="lg:col-span-5">
+  1357→                    <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00] block mb-5">
+  1358→                      Key Features
+  1359→                    </span>
+  1360→                    <ul className="space-y-3 mb-6">
+  1361→                      {selectedVehicle.keyFeatures.map((feature, i) => (
+  1362→                        <li key={i} className="flex items-start gap-3">
+  1363→                          <div className="w-5 h-5 rounded-full bg-[#FF4D00]/10 flex items-center justify-center shrink-0 mt-0.5">
+  1364→                            <Check className="w-3 h-3 text-[#FF4D00]" strokeWidth={2.5} />
+  1365→                          </div>
+  1366→                          <span className="text-[13px] md:text-[14px] text-[#111111]/60 font-medium leading-[1.5]">
+  1367→                            {feature}
+  1368→                          </span>
+  1369→                        </li>
+  1370→                      ))}
+  1371→                    </ul>
+  1372→
+  1373→                    <div className="border-t border-[#111111]/5 pt-5">
+  1374→                      <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-[#111111]/25 block mb-2">
+  1375→                        Best For
+  1376→                      </span>
+  1377→                      <p className="text-[13px] text-[#111111]/50 font-medium leading-[1.6]">
+  1378→                        {selectedVehicle.bestFor}
+  1379→                      </p>
+  1380→                    </div>
+  1381→                  </div>
+  1382→                </div>
+  1383→
+  1384→                {/* Navigation */}
+  1385→                <div className="mt-10 flex items-center justify-between border-t border-[#111111]/5 pt-6">
+  1386→                  <button
+  1387→                    onClick={goBack}
+  1388→                    className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#111111]/10 text-[11px] font-bold uppercase tracking-[0.1em] text-[#111111]/40 hover:border-[#111111] hover:text-[#111111] transition-all"
+  1389→                  >
+  1390→                    <ArrowRight className="w-3.5 h-3.5 rotate-180" />
+  1391→                    Back
+  1392→                  </button>
+  1393→                  <button
+  1394→                    onClick={goNext}
+  1395→                    className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#111111] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#FF4D00] transition-colors"
+  1396→                  >
+  1397→                    See your benefits
+  1398→                    <ArrowRight className="w-4 h-4" />
+  1399→                  </button>
+  1400→                </div>
+  1401→              </motion.div>
+  1402→            )}
+  1403→
+  1404→            {/* STEP 3: Benefits Unlocked */}
+  1405→            {currentStep === 3 && (
+  1406→              <motion.div
+  1407→                key="step-3"
+  1408→                initial={{ opacity: 0, x: 40 * direction }}
+  1409→                animate={{ opacity: 1, x: 0 }}
+  1410→                exit={{ opacity: 0, x: -40 * direction }}
+  1411→                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  1412→              >
+  1413→                <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
+  1414→                  {/* Left: Tier summary */}
+  1415→                  <div className="lg:col-span-4">
+  1416→                    <div className="border border-[#FF4D00] bg-white p-6 md:p-8">
+  1417→                      <div className="flex items-center gap-3 mb-4">
+  1418→                        <div className="w-10 h-10 rounded-full bg-[#FF4D00] flex items-center justify-center">
+  1419→                          <selectedTier.icon className="w-5 h-5 text-white" strokeWidth={1.5} />
+  1420→                        </div>
+  1421→                        <div>
+  1422→                          <h3 className="text-[22px] md:text-[28px] font-display font-medium tracking-tight">
+  1423→                            {selectedTier.name}
+  1424→                          </h3>
+  1425→                          <p className="text-[12px] text-[#FF4D00] font-medium">
+  1426→                            {selectedTier.tagline}
+  1427→                          </p>
+  1428→                        </div>
+  1429→                      </div>
+  1430→
+  1431→                      <div className="border-t border-[#111111]/5 pt-4 space-y-3">
+  1432→                        <div className="flex justify-between">
+  1433→                          <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30">Investment</span>
+  1434→                          <span className="text-[13px] font-medium">
+  1435→                            ${selectedTier.min.toLocaleString()}
+  1436→                            {selectedTier.max ? ` – $${selectedTier.max.toLocaleString()}` : "+"}
+  1437→                          </span>
+  1438→                        </div>
+  1439→                        <div className="flex justify-between">
+  1440→                          <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30">Vehicle</span>
+  1441→                          <span className="text-[13px] font-medium">{selectedTier.vehicle}</span>
+  1442→                        </div>
+  1443→                        <div className="flex justify-between">
+  1444→                          <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30">Hold period</span>
+  1445→                          <span className="text-[13px] font-medium">{selectedTier.holdPeriod}</span>
+  1446→                        </div>
+  1447→                        <div className="flex justify-between">
+  1448→                          <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30">Reporting</span>
+  1449→                          <span className="text-[13px] font-medium">{selectedTier.reporting}</span>
+  1450→                        </div>
+  1451→                      </div>
+  1452→                    </div>
+  1453→                  </div>
+  1454→
+  1455→                  {/* Right: Cumulative benefits */}
+  1456→                  <div className="lg:col-span-8">
+  1457→                    <h3 className="text-[20px] md:text-[26px] font-display font-medium tracking-tight mb-2">
+  1458→                      What you unlock
+  1459→                    </h3>
+  1460→                    <p className="text-[14px] md:text-[15px] text-[#111111]/50 font-medium leading-[1.6] mb-8">
+  1461→                      Every tier includes the benefits of all tiers below it. Here&apos;s everything the{" "}
+  1462→                      <span className="text-[#FF4D00] font-semibold">{selectedTier.name}</span> tier unlocks.
+  1463→                    </p>
+  1464→
+  1465→                    {/* Show all cumulative benefits from this tier and all below */}
+  1466→                    {(() => {
+  1467→                      const tierIndex = investmentTiers.findIndex((t) => t.id === selectedTierId);
+  1468→                      const allBenefits = investmentTiers.slice(0, tierIndex + 1);
+  1469→                      return (
+  1470→                        <div className="space-y-6">
+  1471→                          {allBenefits.map((t, tIdx) => {
+  1472→                            const TierIcon = t.icon;
+  1473→                            const isCurrentTier = t.id === selectedTierId;
+  1474→                            return (
+  1475→                              <div key={t.id}>
+  1476→                                {/* Tier header */}
+  1477→                                <div className="flex items-center gap-2.5 mb-3">
+  1478→                                  <TierIcon
+  1479→                                    className={`w-4 h-4 ${isCurrentTier ? "text-[#FF4D00]" : "text-[#111111]/25"}`}
+  1480→                                    strokeWidth={1.5}
+  1481→                                  />
+  1482→                                  <span
+  1483→                                    className={`text-[10px] font-mono font-bold tracking-widest uppercase ${
+  1484→                                      isCurrentTier ? "text-[#FF4D00]" : "text-[#111111]/25"
+  1485→                                    }`}
+  1486→                                  >
+  1487→                                    {t.name}
+  1488→                                  </span>
+  1489→                                  {isCurrentTier && (
+  1490→                                    <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-[#FF4D00] bg-[#FF4D00]/10 px-2 py-0.5">
+  1491→                                      Your tier
+  1492→                                    </span>
+  1493→                                  )}
+  1494→                                </div>
+  1495→                                {/* Benefits list */}
+  1496→                                <ul className="space-y-2.5 ml-6">
+  1497→                                  {t.benefits.map((benefit, bIdx) => (
+  1498→                                    <motion.li
+  1499→                                      key={bIdx}
+  1500→                                      initial={{ opacity: 0, x: -10 }}
+  1501→                                      animate={{ opacity: 1, x: 0 }}
+  1502→                                      transition={{
+  1503→                                        duration: 0.3,
+  1504→                                        delay: tIdx * 0.1 + bIdx * 0.06,
+  1505→                                      }}
+  1506→                                      className="flex items-start gap-3"
+  1507→                                    >
+  1508→                                      <Check
+  1509→                                        className={`w-4 h-4 mt-0.5 shrink-0 ${
+  1510→                                          isCurrentTier ? "text-[#FF4D00]" : "text-[#111111]/20"
+  1511→                                        }`}
+  1512→                                        strokeWidth={2}
+  1513→                                      />
+  1514→                                      <span
+  1515→                                        className={`text-[13px] md:text-[14px] font-medium leading-[1.5] ${
+  1516→                                          isCurrentTier ? "text-[#111111]/70" : "text-[#111111]/40"
+  1517→                                        }`}
+  1518→                                      >
+  1519→                                        {benefit}
+  1520→                                        {!isCurrentTier && (
+  1521→                                          <span className="text-[#111111]/20 ml-1 text-[10px] font-mono uppercase tracking-wider">
+  1522→                                            ({t.name})
+  1523→                                          </span>
+  1524→                                        )}
+  1525→                                      </span>
+  1526→                                    </motion.li>
+  1527→                                  ))}
+  1528→                                </ul>
+  1529→                              </div>
+  1530→                            );
+  1531→                          })}
+  1532→                        </div>
+  1533→                      );
+  1534→                    })()}
+  1535→                  </div>
+  1536→                </div>
+  1537→
+  1538→                {/* Navigation */}
+  1539→                <div className="mt-10 flex items-center justify-between border-t border-[#111111]/5 pt-6">
+  1540→                  <button
+  1541→                    onClick={goBack}
+  1542→                    className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#111111]/10 text-[11px] font-bold uppercase tracking-[0.1em] text-[#111111]/40 hover:border-[#111111] hover:text-[#111111] transition-all"
+  1543→                  >
+  1544→                    <ArrowRight className="w-3.5 h-3.5 rotate-180" />
+  1545→                    Back
+  1546→                  </button>
+  1547→                  <button
+  1548→                    onClick={goNext}
+  1549→                    className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#111111] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#FF4D00] transition-colors"
+  1550→                  >
+  1551→                    How to get started
+  1552→                    <ArrowRight className="w-4 h-4" />
+  1553→                  </button>
+  1554→                </div>
+  1555→              </motion.div>
+  1556→            )}
+  1557→
+  1558→            {/* STEP 4: Get Started: How it works timeline + CTA */}
+  1559→            {currentStep === 4 && selectedVehicle && (
+  1560→              <motion.div
+  1561→                key="step-4"
+  1562→                initial={{ opacity: 0, x: 40 * direction }}
+  1563→                animate={{ opacity: 1, x: 0 }}
+  1564→                exit={{ opacity: 0, x: -40 * direction }}
+  1565→                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  1566→              >
+  1567→                <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
+  1568→                  {/* Left: How it works timeline */}
+  1569→                  <div className="lg:col-span-7">
+  1570→                    <div className="mb-8">
+  1571→                      <h3 className="text-[20px] md:text-[26px] font-display font-medium tracking-tight mb-2">
+  1572→                        How to get started
+  1573→                      </h3>
+  1574→                      <p className="text-[14px] md:text-[15px] text-[#111111]/50 font-medium leading-[1.6]">
+  1575→                        Your path from here to invested. {selectedVehicle.howItWorks.length} steps, zero friction.
+  1576→                      </p>
+  1577→                    </div>
+  1578→
+  1579→                    <div className="relative">
+  1580→                      {/* Vertical line */}
+  1581→                      <div className="absolute left-[19px] top-0 bottom-0 w-[2px] bg-[#FF4D00]/10" />
+  1582→
+  1583→                      {selectedVehicle.howItWorks.map((step, i) => (
+  1584→                        <motion.div
+  1585→                          key={i}
+  1586→                          initial={{ opacity: 0, y: 20 }}
+  1587→                          animate={{ opacity: 1, y: 0 }}
+  1588→                          transition={{ duration: 0.4, delay: i * 0.1 }}
+  1589→                          className="flex gap-5 relative pb-8 last:pb-0"
+  1590→                        >
+  1591→                          {/* Step node */}
+  1592→                          <div className="relative z-10">
+  1593→                            <div className="w-10 h-10 rounded-full bg-[#FF4D00] flex items-center justify-center text-[12px] font-mono font-bold text-white shadow-lg shadow-[#FF4D00]/20">
+  1594→                              {String(i + 1).padStart(2, "0")}
+  1595→                            </div>
+  1596→                          </div>
+  1597→                          {/* Step content */}
+  1598→                          <div className="pt-1.5">
+  1599→                            <p className="text-[15px] md:text-[16px] text-[#111111]/70 font-medium leading-[1.6]">
+  1600→                              {step}
+  1601→                            </p>
+  1602→                          </div>
+  1603→                        </motion.div>
+  1604→                      ))}
+  1605→                    </div>
+  1606→                  </div>
+  1607→
+  1608→                  {/* Right: Summary + CTA */}
+  1609→                  <div className="lg:col-span-5">
+  1610→                    <div className="border border-[#FF4D00] bg-white p-6 md:p-8 mb-6">
+  1611→                      <h4 className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00] mb-4">
+  1612→                        Investment Summary
+  1613→                      </h4>
+  1614→
+  1615→                      <div className="space-y-3 mb-6">
+  1616→                        <div className="flex items-center gap-3">
+  1617→                          <div className="w-8 h-8 rounded-full bg-[#FF4D00] flex items-center justify-center">
+  1618→                            <selectedTier.icon className="w-4 h-4 text-white" strokeWidth={1.5} />
+  1619→                          </div>
+  1620→                          <div>
+  1621→                            <span className="text-[16px] font-display font-medium">{selectedTier.name} Tier</span>
+  1622→                            <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30 ml-2">
+  1623→                              via {selectedVehicle.shortName}
+  1624→                            </span>
+  1625→                          </div>
+  1626→                        </div>
+  1627→
+  1628→                        <div className="border-t border-[#111111]/5 pt-3 space-y-2">
+  1629→                          <div className="flex justify-between">
+  1630→                            <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30">Entry</span>
+  1631→                            <span className="text-[13px] font-medium">${selectedTier.min.toLocaleString()}{selectedTier.max ? ` – $${selectedTier.max.toLocaleString()}` : "+"}</span>
+  1632→                          </div>
+  1633→                          <div className="flex justify-between">
+  1634→                            <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30">Structure</span>
+  1635→                            <span className="text-[13px] font-medium">{selectedVehicle.details[0]?.value}</span>
+  1636→                          </div>
+  1637→                          <div className="flex justify-between">
+  1638→                            <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30">Mgmt fee</span>
+  1639→                            <span className="text-[13px] font-medium">{selectedVehicle.details[2]?.value}</span>
+  1640→                          </div>
+  1641→                          <div className="flex justify-between">
+  1642→                            <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30">Hold</span>
+  1643→                            <span className="text-[13px] font-medium">{selectedTier.holdPeriod}</span>
+  1644→                          </div>
+  1645→                        </div>
+  1646→                      </div>
+  1647→
+  1648→                      {/* Investor info fields */}
+  1649→                      <div className="border-t border-[#111111]/5 pt-4 space-y-4 mb-6">
+  1650→                        <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/30 block">
+  1651→                          Your Details
+  1652→                        </span>
+  1653→                        <div>
+  1654→                          <label className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/40 block mb-1.5">
+  1655→                            Full Name
+  1656→                          </label>
+  1657→                          <input
+  1658→                            type="text"
+  1659→                            value={investorName}
+  1660→                            onChange={(e) => setInvestorName(e.target.value)}
+  1661→                            placeholder="Your full name"
+  1662→                            className="w-full border border-[#111111]/10 px-3 py-2.5 text-[13px] font-medium text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00]/20 transition-all bg-white"
+  1663→                          />
+  1664→                        </div>
+  1665→                        <div>
+  1666→                          <label className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/40 block mb-1.5">
+  1667→                            Email Address
+  1668→                          </label>
+  1669→                          <input
+  1670→                            type="email"
+  1671→                            value={investorEmail}
+  1672→                            onChange={(e) => setInvestorEmail(e.target.value)}
+  1673→                            placeholder="your@email.com"
+  1674→                            className="w-full border border-[#111111]/10 px-3 py-2.5 text-[13px] font-medium text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00]/20 transition-all bg-white"
+  1675→                          />
+  1676→                        </div>
+  1677→                        <label className="flex items-start gap-3 cursor-pointer group">
+  1678→                          <input
+  1679→                            type="checkbox"
+  1680→                            checked={accredited}
+  1681→                            onChange={(e) => setAccredited(e.target.checked)}
+  1682→                            className="mt-0.5 w-4 h-4 rounded border-[#111111]/20 text-[#FF4D00] focus:ring-[#FF4D00]/20 accent-[#FF4D00]"
+  1683→                          />
+  1684→                          <span className="text-[11px] text-[#111111]/50 font-medium leading-[1.5] group-hover:text-[#111111]/70 transition-colors">
+  1685→                            I am an accredited investor (qualified under applicable jurisdiction)
+  1686→                          </span>
+  1687→                        </label>
+  1688→                      </div>
+  1689→
+  1690→                      <button
+  1691→                        onClick={goNext}
+  1692→                        className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-[#FF4D00] text-white text-[12px] font-bold uppercase tracking-[0.12em] hover:bg-[#111111] transition-colors"
+  1693→                      >
+  1694→                        Continue to funding
+  1695→                        <ArrowRight className="w-4 h-4" />
+  1696→                      </button>
+  1697→                    </div>
+  1698→
+  1699→                    {/* Quick actions */}
+  1700→                    <div className="flex flex-col gap-3 mt-4">
+  1701→                      <button
+  1702→                        onClick={() => { goToStep(1); setSelectedTierId("scout"); }}
+  1703→                        className="text-[11px] font-mono font-bold tracking-widest uppercase text-[#111111]/30 hover:text-[#FF4D00] transition-colors text-left"
+  1704→                      >
+  1705→                        ← Start over with a different tier
+  1706→                      </button>
+  1707→                    </div>
+  1708→                  </div>
+  1709→                </div>
+  1710→
+  1711→                {/* Navigation */}
+  1712→                <div className="mt-10 flex items-center justify-between border-t border-[#111111]/5 pt-6">
+  1713→                  <button
+  1714→                    onClick={goBack}
+  1715→                    className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#111111]/10 text-[11px] font-bold uppercase tracking-[0.1em] text-[#111111]/40 hover:border-[#111111] hover:text-[#111111] transition-all"
+  1716→                  >
+  1717→                    <ArrowRight className="w-3.5 h-3.5 rotate-180" />
+  1718→                    Back to benefits
+  1719→                  </button>
+  1720→                  <button
+  1721→                    onClick={goNext}
+  1722→                    className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#111111] transition-colors"
+  1723→                  >
+  1724→                    Fund your investment
+  1725→                    <ArrowRight className="w-4 h-4" />
+  1726→                  </button>
+  1727→                </div>
+  1728→              </motion.div>
+  1729→            )}
+  1730→
+  1731→            {/* STEP 5: Fund Your Investment: Payment methods */}
+  1732→            {currentStep === 5 && selectedVehicle && (
+  1733→              <motion.div
+  1734→                key="step-5"
+  1735→                initial={{ opacity: 0, x: 40 * direction }}
+  1736→                animate={{ opacity: 1, x: 0 }}
+  1737→                exit={{ opacity: 0, x: -40 * direction }}
+  1738→                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  1739→              >
+  1740→                <div className="mb-6">
+  1741→                  <h3 className="text-[20px] md:text-[26px] font-display font-medium tracking-tight mb-2">
+  1742→                    Fund your investment
+  1743→                  </h3>
+  1744→                  <p className="text-[14px] md:text-[15px] text-[#111111]/50 font-medium leading-[1.6] max-w-2xl">
+  1745→                    Choose how you move capital into your{" "}
+  1746→                    <span className="text-[#FF4D00] font-semibold">{selectedTier.name}</span>{" "}
+  1747→                    allocation. Select a payment method to continue.
+  1748→                  </p>
+  1749→                </div>
+  1750→
+  1751→                {/* Payment method cards: selectable */}
+  1752→                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+  1753→                  {paymentMethods.map((method, i) => {
+  1754→                    const isSelected = selectedPaymentId === method.id;
+  1755→                    return (
+  1756→                      <motion.button
+  1757→                        key={method.id}
+  1758→                        initial={{ opacity: 0, y: 20 }}
+  1759→                        animate={{ opacity: 1, y: 0 }}
+  1760→                        transition={{ duration: 0.4, delay: i * 0.08 }}
+  1761→                        onClick={() => setSelectedPaymentId(method.id)}
+  1762→                        className={`text-left border bg-white transition-all group ${
+  1763→                          isSelected
+  1764→                            ? "border-[#FF4D00] ring-1 ring-[#FF4D00]/20 shadow-md"
+  1765→                            : "border-[#111111]/10 hover:border-[#FF4D00]/30"
+  1766→                        }`}
+  1767→                      >
+  1768→                        <div className="p-5 md:p-6">
+  1769→                          {/* Selection indicator */}
+  1770→                          {isSelected && (
+  1771→                            <motion.div
+  1772→                              initial={{ opacity: 0, scale: 0.8 }}
+  1773→                              animate={{ opacity: 1, scale: 1 }}
+  1774→                              className="flex items-center gap-2 mb-3 text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00]"
+  1775→                            >
+  1776→                              <Check className="w-3 h-3" strokeWidth={2.5} />
+  1777→                              Selected
+  1778→                            </motion.div>
+  1779→                          )}
+  1780→
+  1781→                          <div className="flex items-center justify-between mb-3">
+  1782→                            <div className="flex items-center gap-3">
+  1783→                              <span className="text-[24px] leading-none">{method.icon}</span>
+  1784→                              <h4 className="text-[16px] md:text-[18px] font-display font-medium tracking-tight">
+  1785→                                {method.name}
+  1786→                              </h4>
+  1787→                            </div>
+  1788→                            <div className="flex items-center gap-3">
+  1789→                              <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/20">
+  1790→                                {method.speed}
+  1791→                              </span>
+  1792→                              <span className={`text-[10px] font-mono font-bold tracking-widest uppercase px-2 py-0.5 ${
+  1793→                                method.fee === "None"
+  1794→                                  ? "text-[#FF4D00] bg-[#FF4D00]/10"
+  1795→                                  : "text-[#111111]/40 bg-[#111111]/5"
+  1796→                              }`}>
+  1797→                                {method.fee === "None" ? "No fee" : method.fee + " fee"}
+  1798→                              </span>
+  1799→                            </div>
+  1800→                          </div>
+  1801→
+  1802→                          <p className="text-[13px] text-[#111111]/50 font-medium leading-[1.6] mb-4">
+  1803→                            {method.description}
+  1804→                          </p>
+  1805→
+  1806→                          <ul className="space-y-1.5 mb-4">
+  1807→                            {method.details.map((detail, di) => (
+  1808→                              <li key={di} className="flex items-start gap-2">
+  1809→                                <Check className={`w-3 h-3 shrink-0 mt-0.5 ${isSelected ? "text-[#FF4D00]" : "text-[#111111]/15"}`} strokeWidth={2} />
+  1810→                                <span className="text-[11px] md:text-[12px] text-[#111111]/45 font-medium leading-[1.5]">
+  1811→                                  {detail}
+  1812→                                </span>
+  1813→                              </li>
+  1814→                            ))}
+  1815→                          </ul>
+  1816→
+  1817→                          <div className="border-t border-[#111111]/5 pt-3">
+  1818→                            <span className="text-[9px] font-mono font-bold tracking-widest uppercase text-[#111111]/20">
+  1819→                              Best for
+  1820→                            </span>
+  1821→                            <p className="text-[11px] text-[#111111]/35 font-medium leading-[1.5]">
+  1822→                              {method.bestFor}
+  1823→                            </p>
+  1824→                          </div>
+  1825→                        </div>
+  1826→                      </motion.button>
+  1827→                    );
+  1828→                  })}
+  1829→                </div>
+  1830→
+  1831→                {/* Continue CTA: only visible when method selected */}
+  1832→                <AnimatePresence>
+  1833→                  {selectedPaymentId && (
+  1834→                    <motion.div
+  1835→                      initial={{ opacity: 0, y: 20 }}
+  1836→                      animate={{ opacity: 1, y: 0 }}
+  1837→                      exit={{ opacity: 0, y: -10 }}
+  1838→                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  1839→                      className="border border-[#FF4D00] bg-white"
+  1840→                    >
+  1841→                      <div className="p-6 md:p-8 flex flex-col sm:flex-row items-center gap-6">
+  1842→                        <div className="flex-1 text-center sm:text-left">
+  1843→                          <h4 className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00] mb-2">
+  1844→                            {paymentMethods.find((m) => m.id === selectedPaymentId)?.name} selected
+  1845→                          </h4>
+  1846→                          <p className="text-[13px] text-[#111111]/50 font-medium leading-[1.6]">
+  1847→                            You&apos;ll enter your {selectedPaymentId === "card" ? "card details" : selectedPaymentId === "bank-transfer" ? "bank account information" : selectedPaymentId === "crypto" ? "wallet and transfer details" : "mobile money details"} on the next step.
+  1848→                          </p>
+  1849→                        </div>
+  1850→                        <button
+  1851→                          onClick={goNext}
+  1852→                          className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#111111] transition-colors shrink-0"
+  1853→                        >
+  1854→                          Enter payment details
+  1855→                          <ArrowRight className="w-4 h-4" />
+  1856→                        </button>
+  1857→                      </div>
+  1858→                    </motion.div>
+  1859→                  )}
+  1860→                </AnimatePresence>
+  1861→
+  1862→                {!selectedPaymentId && (
+  1863→                  <div className="border border-dashed border-[#111111]/15 bg-[#111111]/[0.02] p-8 text-center">
+  1864→                    <p className="text-[13px] text-[#111111]/30 font-medium">
+  1865→                      Select a payment method above to continue
+  1866→                    </p>
+  1867→                  </div>
+  1868→                )}
+  1869→
+  1870→                {/* Navigation */}
+  1871→                <div className="mt-10 flex items-center justify-between border-t border-[#111111]/5 pt-6">
+  1872→                  <button
+  1873→                    onClick={goBack}
+  1874→                    className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#111111]/10 text-[11px] font-bold uppercase tracking-[0.1em] text-[#111111]/40 hover:border-[#111111] hover:text-[#111111] transition-all"
+  1875→                  >
+  1876→                    <ArrowRight className="w-3.5 h-3.5 rotate-180" />
+  1877→                    Back
+  1878→                  </button>
+  1879→                  <button
+  1880→                    onClick={() => { goToStep(1 as WizardStep); setSelectedTierId("scout"); setSelectedPaymentId(null); resetPaymentForm(); }}
+  1881→                    className="text-[11px] font-mono font-bold tracking-widest uppercase text-[#111111]/25 hover:text-[#FF4D00] transition-colors"
+  1882→                  >
+  1883→                    ← Start over
+  1884→                  </button>
+  1885→                </div>
+  1886→              </motion.div>
+  1887→            )}
+  1888→
+  1889→            {/* STEP 6: Payment Details: Method-specific form */}
+  1890→            {currentStep === 6 && selectedVehicle && selectedPaymentId && (
+  1891→              <motion.div
+  1892→                key="step-6"
+  1893→                initial={{ opacity: 0, x: 40 * direction }}
+  1894→                animate={{ opacity: 1, x: 0 }}
+  1895→                exit={{ opacity: 0, x: -40 * direction }}
+  1896→                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+  1897→              >
+  1898→                <div className="mb-6">
+  1899→                  <h3 className="text-[20px] md:text-[26px] font-display font-medium tracking-tight mb-2">
+  1900→                    Enter your{" "}
+  1901→                    <span className="text-[#FF4D00]">{paymentMethods.find((m) => m.id === selectedPaymentId)?.name}</span>{" "}
+  1902→                    details
+  1903→                  </h3>
+  1904→                  <p className="text-[14px] md:text-[15px] text-[#111111]/50 font-medium leading-[1.6] max-w-2xl">
+  1905→                    All data is encrypted and processed securely. Your capital is not committed until you confirm the transaction.
+  1906→                  </p>
+  1907→                </div>
+  1908→
+  1909→                <div className="grid lg:grid-cols-12 gap-8">
+  1910→                  {/* Left: Form fields */}
+  1911→                  <div className="lg:col-span-7">
+  1912→                    <div className="border border-[#111111]/10 bg-white p-6 md:p-8">
+  1913→                      {/* Card Payment Form */}
+  1914→                      {selectedPaymentId === "card" && (
+  1915→                        <div className="space-y-5">
+  1916→                          <div>
+  1917→                            <label className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/40 block mb-2">
+  1918→                              Cardholder Name
+  1919→                            </label>
+  1920→                            <input
+  1921→                              type="text"
+  1922→                              value={cardName}
+  1923→                              onChange={(e) => setCardName(e.target.value)}
+  1924→                              placeholder="Full name on card"
+  1925→                              className="w-full border border-[#111111]/10 px-4 py-3 text-[14px] font-medium text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00]/20 transition-all bg-white"
+  1926→                            />
+  1927→                          </div>
+  1928→                          <div>
+  1929→                            <label className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/40 block mb-2">
+  1930→                              Card Number
+  1931→                            </label>
+  1932→                            <input
+  1933→                              type="text"
+  1934→                              value={cardNumber}
+  1935→                              onChange={(e) => {
+  1936→                                const raw = e.target.value.replace(/\D/g, "").slice(0, 16);
+  1937→                                const formatted = raw.replace(/(\d{4})(?=\d)/g, "$1 ");
+  1938→                                setCardNumber(formatted);
+  1939→                              }}
+  1940→                              placeholder="0000 0000 0000 0000"
+  1941→                              className="w-full border border-[#111111]/10 px-4 py-3 text-[14px] font-mono font-medium text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00]/20 transition-all bg-white"
+  1942→                            />
+  1943→                          </div>
+  1944→                          <div className="grid grid-cols-2 gap-4">
+  1945→                            <div>
+  1946→                              <label className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/40 block mb-2">
+  1947→                                Expiry Date
+  1948→                              </label>
+  1949→                              <input
+  1950→                                type="text"
+  1951→                                value={cardExpiry}
+  1952→                                onChange={(e) => {
+  1953→                                  let v = e.target.value.replace(/\D/g, "").slice(0, 4);
+  1954→                                  if (v.length >= 3) v = v.slice(0, 2) + "/" + v.slice(2);
+  1955→                                  setCardExpiry(v);
+  1956→                                }}
+  1957→                                placeholder="MM/YY"
+  1958→                                className="w-full border border-[#111111]/10 px-4 py-3 text-[14px] font-mono font-medium text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00]/20 transition-all bg-white"
+  1959→                              />
+  1960→                            </div>
+  1961→                            <div>
+  1962→                              <label className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/40 block mb-2">
+  1963→                                CVV
+  1964→                              </label>
+  1965→                              <input
+  1966→                                type="password"
+  1967→                                value={cardCvv}
+  1968→                                onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 4))}
+  1969→                                placeholder="•••"
+  1970→                                maxLength={4}
+  1971→                                className="w-full border border-[#111111]/10 px-4 py-3 text-[14px] font-mono font-medium text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00]/20 transition-all bg-white"
+  1972→                              />
+  1973→                            </div>
+  1974→                          </div>
+  1975→                          <div className="border-t border-[#111111]/5 pt-4 mt-2">
+  1976→                            <div className="flex items-center gap-2 text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/20">
+  1977→                              <Shield className="w-3.5 h-3.5" />
+  1978→                              256-bit SSL encrypted · Visa & Mastercard accepted
+  1979→                            </div>
+  1980→                          </div>
+  1981→                        </div>
+  1982→                      )}
+  1983→
+  1984→                      {/* Bank Transfer Form */}
+  1985→                      {selectedPaymentId === "bank-transfer" && (
+  1986→                        <div className="space-y-5">
+  1987→                          <div>
+  1988→                            <label className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/40 block mb-2">
+  1989→                              Bank Name
+  1990→                            </label>
+  1991→                            <input
+  1992→                              type="text"
+  1993→                              value={bankName}
+  1994→                              onChange={(e) => setBankName(e.target.value)}
+  1995→                              placeholder="e.g. Standard Bank, KCB Bank"
+  1996→                              className="w-full border border-[#111111]/10 px-4 py-3 text-[14px] font-medium text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00]/20 transition-all bg-white"
+  1997→                            />
+  1998→                          </div>
+  1999→                          <div>
+  2000→                            <label className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#111111]/40 block mb-2">
+
+[showing lines 1-2000 of 2609; use offset=2001 with limit to continue reading]
