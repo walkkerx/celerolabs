@@ -110,18 +110,18 @@ export const programsData: ProgramDetail[] = [
       { label: "Success Rate", value: "75%" }
     ],
     ideas: [
-      { partner: "Director Hansa", title: "WaterX", desc: "Decentralized atmospheric water generation for arid zones using modular thermal units. Deployed across the Sahel with 99.7% uptime. [Water Systems]", partnerImage: "https://i.pravatar.cc/100?img=10" },
-      { partner: "Strategic Lead", title: "PowerGrid", desc: "Peer-to-peer energy sharing for micro-grids in sub-Saharan Africa. Enables surplus solar redistribution between adjacent settlements. [Energy Systems]", partnerImage: "https://i.pravatar.cc/100?img=11" },
-      { partner: "Command Tech", title: "MediLink", desc: "Cold-chain infrastructure for last-mile pharmaceutical delivery via autonomous ground vehicles. Active in 12 rural districts. [Health/Mobility]", partnerImage: "https://i.pravatar.cc/100?img=12" },
-      { partner: "Field Ops Lead", title: "AgriVault", desc: "Blockchain-verified seed bank and crop insurance for smallholder farmers. Micro-premiums auto-deducted at harvest. [Food & Agriculture]", partnerImage: "https://i.pravatar.cc/100?img=19" },
-      { partner: "Infrastructure Dir.", title: "CivicMesh", desc: "Decentralized mesh networking for off-grid communication in disaster zones. Zero internet dependency. [Data & Intelligence]", partnerImage: "https://i.pravatar.cc/100?img=20" },
-      { partner: "Ops Commander", title: "EduForge", desc: "Deployable maker-space containers with CNC, 3D printing, and electronics labs for rapid prototyping in underserved regions. 90-day deployment cycle. [Education & Human Capital]", partnerImage: "https://i.pravatar.cc/100?img=27" }
+      { partner: "Alumni Founder", title: "WaterX", desc: "Decentralized atmospheric water generation for arid zones using modular thermal units. Deployed across the Sahel with 99.7% uptime. [Water Systems]" },
+      { partner: "Alumni Founder", title: "PowerGrid", desc: "Peer-to-peer energy sharing for micro-grids in sub-Saharan Africa. Enables surplus solar redistribution between adjacent settlements. [Energy Systems]" },
+      { partner: "Alumni Founder", title: "MediLink", desc: "Cold-chain infrastructure for last-mile pharmaceutical delivery via autonomous ground vehicles. Active in 12 rural districts. [Health/Mobility]" },
+      { partner: "Alumni Founder", title: "AgriVault", desc: "Blockchain-verified seed bank and crop insurance for smallholder farmers. Micro-premiums auto-deducted at harvest. [Food & Agriculture]" },
+      { partner: "Alumni Founder", title: "CivicMesh", desc: "Decentralized mesh networking for off-grid communication in disaster zones. Zero internet dependency. [Data & Intelligence]" },
+      { partner: "Alumni Founder", title: "EduForge", desc: "Deployable maker-space containers with CNC, 3D printing, and electronics labs for rapid prototyping in underserved regions. 90-day deployment cycle. [Education & Human Capital]" }
     ],
     testimonial: {
       quote: "The Hansa model is fundamentally a military-grade knowledge-deployment pipeline. It's the only way to build infrastructure at the scale required for 171 African nations.",
       author: "XHansa Director",
       role: "Strategic Command",
-      image: "https://i.pravatar.cc/100?img=1"
+      image: ""
     },
     companies: [
       { name: "Nebula", desc: "the decentralized protocol for planetary-scale logistics.", focus: "Logistics Protocol", field: "Mobility", funding: "$2M Pre-Seed", teamSize: "10-25", categories: "Logistics / Protocol", location: "Lagos" },
@@ -225,17 +225,17 @@ export const programsData: ProgramDetail[] = [
       { label: "Total Mult", value: "10x" }
     ],
     ideas: [
-      { partner: "Venture Partner", title: "FinFlow", desc: "Cross-border settlement layer for SMEs using liquidity pools and AI risk modeling. Reduces settlement time from 5 days to 4 hours.", partnerImage: "https://i.pravatar.cc/100?img=13" },
-      { partner: "Investment Director", title: "HealthSync", desc: "Remote diagnostics platform connecting rural clinics to specialist hubs via satellite link. Active in 3 countries, 200+ clinics.", partnerImage: "https://i.pravatar.cc/100?img=14" },
-      { partner: "Syndicate Lead", title: "EduBridge", desc: "Adaptive learning infrastructure for refugee and displaced populations. Offline-first with mesh sync capabilities.", partnerImage: "https://i.pravatar.cc/100?img=21" },
-      { partner: "Portfolio Lead", title: "LogiChain", desc: "Predictive logistics orchestration for emerging market supply chains. AI-driven route optimization reducing spoilage by 40%.", partnerImage: "https://i.pravatar.cc/100?img=22" },
-      { partner: "Capital Partner", title: "GreenLedger", desc: "Carbon credit verification platform using satellite imagery and IoT sensors for emerging market offset projects. Real-time MRV at 80% lower cost.", partnerImage: "https://i.pravatar.cc/100?img=28" }
+      { partner: "Alumni Founder", title: "FinFlow", desc: "Cross-border settlement layer for SMEs using liquidity pools and AI risk modeling. Reduces settlement time from 5 days to 4 hours." },
+      { partner: "Alumni Founder", title: "HealthSync", desc: "Remote diagnostics platform connecting rural clinics to specialist hubs via satellite link. Active in 3 countries, 200+ clinics." },
+      { partner: "Alumni Founder", title: "EduBridge", desc: "Adaptive learning infrastructure for refugee and displaced populations. Offline-first with mesh sync capabilities." },
+      { partner: "Alumni Founder", title: "LogiChain", desc: "Predictive logistics orchestration for emerging market supply chains. AI-driven route optimization reducing spoilage by 40%." },
+      { partner: "Alumni Founder", title: "GreenLedger", desc: "Carbon credit verification platform using satellite imagery and IoT sensors for emerging market offset projects. Real-time MRV at 80% lower cost." }
     ],
     testimonial: {
       quote: "xCelero isn't just an accelerator; it's a partnership. They provided the capital and mentorship we needed to go from a prototype to a category leader in record time.",
       author: "Alumni Founder",
       role: "Class of '25",
-      image: "https://i.pravatar.cc/100?img=2"
+      image: ""
     },
     companies: [
       { name: "EkoHeat", desc: "the next-gen geothermal system for sustainable urban heating.", focus: "Geothermal", field: "Energy", funding: "$5M Series A", teamSize: "30-60", categories: "Energy / Infra", location: "Cairo" },
@@ -329,17 +329,17 @@ export const programsData: ProgramDetail[] = [
       { label: "Jobs Created", value: "20k" }
     ],
     ideas: [
-      { partner: "Studio Lead", title: "CivicID v2", desc: "Next-gen zero-knowledge identity protocol for independent governance. Enables privacy-preserving citizen verification at national scale.", partnerImage: "https://i.pravatar.cc/100?img=15" },
-      { partner: "Gov Partner", title: "TaxStack", desc: "Automated VAT collection and reconciliation for digital-first emerging economies. Reduces leakage by 60% in pilot markets.", partnerImage: "https://i.pravatar.cc/100?img=16" },
-      { partner: "Enterprise Lead", title: "GridOS", desc: "AI-powered grid management platform for national utilities. Predictive load balancing reducing outages by 35%.", partnerImage: "https://i.pravatar.cc/100?img=23" },
-      { partner: "Research Dir.", title: "MedForge", desc: "Decentralized pharmaceutical manufacturing platform for essential medicines. Certified GMP micro-factories deployable in 90 days.", partnerImage: "https://i.pravatar.cc/100?img=24" },
-      { partner: "Venture Architect", title: "TradeRoute", desc: "Digital trade corridor platform connecting African SMEs to EU procurement pipelines. Compliance-as-a-service for cross-border B2B transactions.", partnerImage: "https://i.pravatar.cc/100?img=29" }
+      { partner: "Alumni Founder", title: "CivicID v2", desc: "Next-gen zero-knowledge identity protocol for independent governance. Enables privacy-preserving citizen verification at national scale." },
+      { partner: "Alumni Founder", title: "TaxStack", desc: "Automated VAT collection and reconciliation for digital-first emerging economies. Reduces leakage by 60% in pilot markets." },
+      { partner: "Alumni Founder", title: "GridOS", desc: "AI-powered grid management platform for national utilities. Predictive load balancing reducing outages by 35%." },
+      { partner: "Alumni Founder", title: "MedForge", desc: "Decentralized pharmaceutical manufacturing platform for essential medicines. Certified GMP micro-factories deployable in 90 days." },
+      { partner: "Alumni Founder", title: "TradeRoute", desc: "Digital trade corridor platform connecting African SMEs to EU procurement pipelines. Compliance-as-a-service for cross-border B2B transactions." }
     ],
     testimonial: {
       quote: "The Studio model effectively mitigates early-stage risks. It's about becoming a high-velocity company creation machine.",
       author: "Hansa Scientist",
       role: "Lead Researcher",
-      image: "https://i.pravatar.cc/100?img=3"
+      image: ""
     },
     companies: [
       { name: "CivicID", desc: "the biometric framework for secure digital identity in emerging markets.", focus: "Identity", field: "Data & Int", funding: "$3M Seed", teamSize: "15-40", categories: "GovTech / Identity", location: "Cape Town" }
@@ -365,7 +365,7 @@ export const programsData: ProgramDetail[] = [
     id: "quest-fellowship",
     title: "Quest Fellowship",
     tagline: "From Ideas to Impact, Powered by Queen's University.",
-    desc: "A semester-long initiative developed by AirDrop Labs in collaboration with the Dunin-Deshpande Queen's Innovation Centre (DDQIC) at Queen's University, equipping young minds with the tools to transform ideas, technologies, or passions into impactful ventures.",
+    desc: "A semester-long initiative developed by xCelero Labs in collaboration with the Dunin-Deshpande Queen's Innovation Centre (DDQIC) at Queen's University, equipping young minds with the tools to transform ideas, technologies, or passions into impactful ventures.",
     longDesc: "More than just a conventional entrepreneurship program, Quest Fellowship is a global movement tailored for unconventional thinkers and ecosystem amplifiers from around the world. It is designed for those who aspire to address challenges on both global and local scales through innovation-driven entrepreneurship, fostering a sense of purpose and impact (#Ikigai) while integrating into the worldwide workforce. Quest transcends traditional boundaries, offering a comprehensive blend of education, mentorship, and support: curated lectures by acclaimed faculty members from Queen's University and hands-on boot camps held in diverse locations, providing an immersive learning experience like no other. The program focuses on emerging markets because therein lies the greatest potential for impact: tackling real-world problems, generating employment opportunities, and driving sustainable growth through innovative solutions that uplift communities and leave a lasting legacy.",
     details: [
       { label: "Partner", value: "DDQIC / Queen's" },
@@ -419,7 +419,7 @@ export const programsData: ProgramDetail[] = [
       "You want access to Queen's University faculty, mentorship, and global boot camp experiences."
     ],
     faqs: [
-      { q: "What is the Quest Fellowship?", a: "Quest Fellowship is a semester-long initiative developed by AirDrop Labs in collaboration with the Dunin-Deshpande Queen's Innovation Centre (DDQIC) at Queen's University. It equips young minds with the tools to transform ideas, technologies, or passions into impactful ventures that contribute to shaping the future." },
+      { q: "What is the Quest Fellowship?", a: "Quest Fellowship is a semester-long initiative developed by xCelero Labs in collaboration with the Dunin-Deshpande Queen's Innovation Centre (DDQIC) at Queen's University. It equips young minds with the tools to transform ideas, technologies, or passions into impactful ventures that contribute to shaping the future." },
       { q: "How does the three-stage structure work?", a: "The program revolves around three stages: Explore, Ignite, and Launch. Advancement through stages hinges on your commitment and dedication: completing assignments, attending lectures, engaging in quizzes, and actively participating in biweekly office hours. Each stage unlocks new opportunities and resources, from mentorship to seed funding and market access." },
       { q: "What curriculum does Quest use?", a: "The curriculum draws inspiration from the systematic approach outlined in Disciplined Entrepreneurship: 24 Steps to a Successful Startup by Bill Aulet, developed at the Martin Trust Center for MIT Entrepreneurship. This is delivered through bite-sized video lectures curated by Queen's University faculty." },
       { q: "Why does Quest focus on emerging markets?", a: "Because therein lies the greatest potential for impact. Quest is dedicated to tackling real-world problems, generating employment opportunities, and driving sustainable growth through innovative solutions that uplift communities and leave a lasting legacy." },
@@ -432,17 +432,17 @@ export const programsData: ProgramDetail[] = [
       { label: "Active Cohort", value: "Cohort 2" }
     ],
     ideas: [
-      { partner: "Program Director", title: "AquaReach", desc: "Low-cost water purification systems for rural communities in East Africa. Solar-powered, modular, and deployable within 48 hours. [Water Systems]", partnerImage: "https://i.pravatar.cc/100?img=17" },
-      { partner: "Fellow Lead", title: "SkillBridge", desc: "Digital apprenticeship platform connecting informal economy workers to certified training and formal employment pathways across West Africa. [Education & Human Capital]", partnerImage: "https://i.pravatar.cc/100?img=18" },
-      { partner: "Venture Mentor", title: "CropWise", desc: "AI-powered crop advisory for smallholder farmers using satellite imagery and local weather data. Increases yields by 30% in pilot regions. [Food & Agriculture]", partnerImage: "https://i.pravatar.cc/100?img=25" },
-      { partner: "Queen's Faculty", title: "MedConnect", desc: "Telemedicine platform for underserved communities with offline-capable diagnostics and AI-assisted triage. Active in 5 countries. [Health & Mobility]", partnerImage: "https://i.pravatar.cc/100?img=26" },
-      { partner: "DDQIC Lead", title: "GreenGrid", desc: "Decentralized renewable energy marketplace enabling peer-to-peer solar trading in urban informal settlements. [Energy Systems]", partnerImage: "https://i.pravatar.cc/100?img=30" }
+      { partner: "Alumni Founder", title: "AquaReach", desc: "Low-cost water purification systems for rural communities in East Africa. Solar-powered, modular, and deployable within 48 hours. [Water Systems]" },
+      { partner: "Alumni Founder", title: "SkillBridge", desc: "Digital apprenticeship platform connecting informal economy workers to certified training and formal employment pathways across West Africa. [Education & Human Capital]" },
+      { partner: "Alumni Founder", title: "CropWise", desc: "AI-powered crop advisory for smallholder farmers using satellite imagery and local weather data. Increases yields by 30% in pilot regions. [Food & Agriculture]" },
+      { partner: "Queen's Faculty", title: "MedConnect", desc: "Telemedicine platform for underserved communities with offline-capable diagnostics and AI-assisted triage. Active in 5 countries. [Health & Mobility]" },
+      { partner: "DDQIC Lead", title: "GreenGrid", desc: "Decentralized renewable energy marketplace enabling peer-to-peer solar trading in urban informal settlements. [Energy Systems]" }
     ],
     testimonial: {
       quote: "Quest Fellowship isn't just about building companies; it's about finding your Ikigai and creating lasting impact in the communities that need it most.",
       author: "Quest Fellow",
       role: "Cohort 1 Graduate",
-      image: "https://i.pravatar.cc/100?img=4"
+      image: ""
     },
     companies: [
       { name: "AquaReach", desc: "low-cost water purification for rural East Africa.", focus: "Water Purification", field: "Water Systems", funding: "$500k Seed", teamSize: "5-10", categories: "Water / Infra", location: "Kampala" }

@@ -539,12 +539,8 @@ export function ProgramDetail() {
                           </p>
                         </div>
                         <div className="flex items-center gap-4 pt-4 border-t border-[#1B1C1E]/10">
-                          <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 shrink-0">
-                            <img
-                              src={program.testimonial.image}
-                              alt={program.testimonial.author}
-                              className="w-full h-full object-cover"
-                            />
+                          <div className="w-10 h-10 rounded-full shrink-0 bg-[#FF4D00]/10 flex items-center justify-center">
+                            <span className="text-[#FF4D00] font-display font-bold text-xs">AF</span>
                           </div>
                           <div>
                             <div className="font-medium text-sm text-[#1B1C1E]">{program.testimonial.author}</div>
@@ -596,12 +592,12 @@ export function ProgramDetail() {
               {program.ideas.map((idea, i) => (
                  <div key={i} className="p-6 sm:p-8 border-r border-b border-[#1B1C1E]/10 flex flex-col transition-colors duration-300 cursor-pointer group min-h-[280px] sm:min-h-[400px] hover:bg-white hover:shadow-xl relative z-10 bg-[#FAFAFA]">
                     <div className="flex items-center gap-4 mb-24">
-                       <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 shrink-0 border border-[#1B1C1E]/10">
-                          <img src={idea.partnerImage || `https://i.pravatar.cc/100?img=${i+10}`} alt={idea.partner} className="w-full h-full object-cover" />
+                       <div className="w-12 h-12 rounded-full shrink-0 border border-[#1B1C1E]/10 bg-[#FF4D00]/10 flex items-center justify-center">
+                          <span className="text-[#FF4D00] font-display font-bold text-sm">AF</span>
                        </div>
                        <div>
-                          <div className="font-medium text-[#1B1C1E]">{idea.partner}</div>
-                          <div className="text-sm text-[#1B1C1E]/60">Partner</div>
+                          <div className="font-medium text-[#1B1C1E]">Alumni Founder</div>
+                          <div className="text-sm text-[#1B1C1E]/60">xCelero Network</div>
                        </div>
                     </div>
                     <div className="mt-auto">
