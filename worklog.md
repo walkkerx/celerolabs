@@ -525,3 +525,31 @@ Stage Summary:
 - Capital hero reverted to original centered layout
 - Full mobile responsiveness verified across 6 key pages — no issues found
 - Lint clean, pushed to github.com/walkkerx/celerolabs
+
+---
+Task ID: restore-townsquare-reddit
+Agent: main
+Task: Restore the original Reddit-style Town Square (with multimodal posting etc), make sure sign-in process works
+
+Work Log:
+- Found the original Reddit-style TownSquare.tsx in git history: commit 7b23b1d (2518 lines, created 20:41). The scale rebuild at commit 08d4528 cut it to 1186 lines, removing the Reddit-style features.
+- Restored the original 2518-line version via `git show 7b23b1d:src/artemis/pages/TownSquare.tsx > src/artemis/pages/TownSquare.tsx`
+- Ran `bun run lint` → clean (0 errors/warnings)
+- Verified forum data exists: GET /api/forum/posts returns 6 posts (seeded by the /api/forum/init route from the scale rebuild — database is populated)
+- Agent Browser verified full sign-in flow end-to-end:
+  1. Cleared localStorage → onboarding "Welcome to Town Square" appears ✓
+  2. Clicked GET STARTED → step 1 "Your Details" (name, email, role, bio, location) ✓
+  3. Filled name "Test Restore" + email "test.restore@example.com" + selected FOUNDER role → Continue enabled ✓
+  4. Step 2 "Profile Picture" (avatar upload/color) → Continue ✓
+  5. Step 3 "Choose Your Communities" (6 communities) → selected "Energy & Infrastructure" → "ENTER TOWN SQUARE" ✓
+  6. User created via POST /api/forum/users, userId stored in localStorage (cmqv3alq20017q0uzs0q) ✓
+  7. Forum loaded: 6 articles visible, Reddit-style sidebar (Home/Popular/Explore/Network) present ✓
+  8. Upvote buttons (svg.lucide-arrow-up) confirmed present ✓
+- Backend compatibility confirmed: the original frontend refetches the full post list after every vote/heart/comment action. The backend PATCH route now returns a lightweight {upvotes, hearts, userVote, userHearted} response instead of the full post, but since the frontend ignores the PATCH response and refetches via GET /api/forum/posts, this is harmless.
+- Committed + pushed to GitHub (commit 1bb0e4b)
+
+Stage Summary:
+- Original Reddit-style Town Square restored (2518 lines with full features: sidebar, communities, upvote/downvote, hearts, threaded comments, compose, member profiles, trending)
+- Sign-in process verified working end-to-end (onboarding → user creation → forum loads with posts)
+- Backend improvements from the scale rebuild remain compatible
+- Lint clean, pushed to github.com/walkkerx/celerolabs
