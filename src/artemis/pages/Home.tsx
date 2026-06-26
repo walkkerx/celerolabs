@@ -559,19 +559,16 @@ function OperatingBeliefsSection() {
 
   const beliefs = [
     {
-      contrarian: "Most people think breakthroughs drive progress. We believe they're the cheap part.",
       tenet: "Infrastructure before innovation.",
       body: "A lab in Kigali that can't manufacture, ship, or get paid isn't innovation — it's waste. The substrate that lets breakthroughs compound is the scarce thing. We build that.",
       tag: "Sect I",
     },
     {
-      contrarian: "Most people chase the best idea. We chase the best network.",
       tenet: "Connected mediocrity beats isolated genius.",
       body: "A B+ venture wired into 190 hubs compounds past an A+ venture trapped in one. The network is the moat. The idea is a commodity. We build the connections, not the unicorns.",
       tag: "Sect II",
     },
     {
-      contrarian: "Most people think capital is what emerging markets lack. We believe it's the connective tissue.",
       tenet: "Money exists. Connection doesn't.",
       body: "Capital flows to returns. What's missing is the commercialization rail that turns capital into compounding infrastructure. Solidarity pricing isn't charity — it's the strategy that lets the market form before it's squeezed.",
       tag: "Sect III",
@@ -605,7 +602,7 @@ function OperatingBeliefsSection() {
               transition={{ duration: 0.6, ease: EASE }}
               className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-6"
             >
-              What we believe that most people don&apos;t
+              The sects xCelero is built on
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -634,11 +631,6 @@ function OperatingBeliefsSection() {
                   <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#FF4D00]">{b.tag}</span>
                   <div className="flex-1 h-px bg-white/10" />
                 </div>
-
-                {/* The contrarian claim */}
-                <p className="text-[13px] md:text-[14px] text-white/45 font-medium leading-[1.5] mb-5 italic">
-                  {b.contrarian}
-                </p>
 
                 {/* The tenet (bold) */}
                 <blockquote className="text-[19px] md:text-[21px] lg:text-[23px] font-display font-medium tracking-tight leading-[1.3] text-white mb-5">
