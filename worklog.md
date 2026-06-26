@@ -379,3 +379,24 @@ Stage Summary:
 - All wired to routes + nav (labeled "· Alt 1/2/3"), current pages untouched
 - Dark "Operating Beliefs" section added to homepage with 3 pull quotes + manifesto CTA
 - Lint clean, all routes 200, browser-verified, mobile responsive
+
+---
+Task ID: beliefs-thiel-contained
+Agent: main
+Task: Make Operating Beliefs section (1) sound more Peter Thiel-style contrarian ("what do you believe that most people disagree with you on" / sects xCelero is built on), (2) follow the page width rule — contained, not full-width
+
+Work Log:
+- Rewrote the beliefs content as 3 contrarian tenets (Thiel-style "sects"):
+  - Sect I: "Most people think breakthroughs drive progress. We believe they're the cheap part." → Tenet: "Infrastructure before innovation." + body about Kigali lab / substrate being the scarce thing
+  - Sect II: "Most people chase the best idea. We chase the best network." → Tenet: "Connected mediocrity beats isolated genius." + body about B+ venture in 190 hubs beating A+ trapped in one
+  - Sect III: "Most people think capital is what emerging markets lack. We believe it's the connective tissue." → Tenet: "Money exists. Connection doesn't." + body about commercialization rail / solidarity pricing as strategy
+- Each belief card now has 3 layers: (1) italic contrarian claim, (2) bold tenet, (3) body explanation
+- Header changed from "What we hold to be true" → "The sects xCelero is built on" with label "What we believe that most people don't"
+- Width fix: moved the dark bg from full-bleed `<section>` to a contained inner `<div className="max-w-[1400px] mx-auto bg-[#0A0A0A] rounded-sm">`. The outer `<section>` now only provides page padding (px-6 md:px-12 lg:px-20), matching the hero's contained pattern. Grid overlay + radial glow now contained inside the dark block.
+- Ran `bun run lint` → clean
+- Agent Browser verified: all 3 tenets + contrarian claims present, dark block contained (left:80, right:1200 at 1280px viewport, isContained:true — not full-bleed)
+
+Stage Summary:
+- Operating Beliefs rewritten as Thiel-style contrarian sects (3 tenets with "most people think X / we believe Y" framing)
+- Section width fixed: dark block now contained within max-w-[1400px] with rounded corners, matching the site's contained-width rule
+- Lint clean, browser-verified

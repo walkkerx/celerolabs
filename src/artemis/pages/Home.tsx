@@ -551,7 +551,7 @@ function NumbersSection() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   OPERATING BELIEFS — dark themed section with editorial pull quotes
+   OPERATING BELIEFS — dark contained section, contrarian tenets (Thiel-style)
    ══════════════════════════════════════════════════════════════════════════ */
 function OperatingBeliefsSection() {
   const ref = useRef<HTMLDivElement>(null);
@@ -559,102 +559,119 @@ function OperatingBeliefsSection() {
 
   const beliefs = [
     {
-      quote: "A breakthrough in isolation is a tragedy. On the Route, it becomes a flywheel.",
-      source: "Operating Belief",
-      tag: "01",
+      contrarian: "Most people think breakthroughs drive progress. We believe they're the cheap part.",
+      tenet: "Infrastructure before innovation.",
+      body: "A lab in Kigali that can't manufacture, ship, or get paid isn't innovation — it's waste. The substrate that lets breakthroughs compound is the scarce thing. We build that.",
+      tag: "Sect I",
     },
     {
-      quote: "We are building the infrastructure that lets the next 5,000 companies deploy faster and compound across borders.",
-      source: "Platform Mandate",
-      tag: "02",
+      contrarian: "Most people chase the best idea. We chase the best network.",
+      tenet: "Connected mediocrity beats isolated genius.",
+      body: "A B+ venture wired into 190 hubs compounds past an A+ venture trapped in one. The network is the moat. The idea is a commodity. We build the connections, not the unicorns.",
+      tag: "Sect II",
     },
     {
-      quote: "The 21st century will be built in the markets that need its breakthroughs most. We are building the infrastructure to make that inevitable.",
-      source: "The Thesis",
-      tag: "03",
+      contrarian: "Most people think capital is what emerging markets lack. We believe it's the connective tissue.",
+      tenet: "Money exists. Connection doesn't.",
+      body: "Capital flows to returns. What's missing is the commercialization rail that turns capital into compounding infrastructure. Solidarity pricing isn't charity — it's the strategy that lets the market form before it's squeezed.",
+      tag: "Sect III",
     },
   ];
 
   return (
-    <section ref={ref} className="relative py-24 md:py-36 bg-[#0A0A0A] text-white overflow-hidden">
-      {/* Decorative grid */}
+    <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28">
       <div
-        className="absolute inset-0 opacity-[0.04] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
-      {/* Radial glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#FF4D00]/8 rounded-full blur-[120px] pointer-events-none" />
+        ref={ref}
+        className="relative w-full max-w-[1400px] mx-auto bg-[#0A0A0A] text-white overflow-hidden rounded-sm"
+      >
+        {/* Decorative grid */}
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
+          }}
+        />
+        {/* Radial glow */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#FF4D00]/8 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="relative w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
-        {/* Header */}
-        <div className="mb-14 md:mb-20 max-w-3xl">
-          <motion.span
+        <div className="relative px-6 md:px-12 lg:px-16 py-16 md:py-24">
+          {/* Header */}
+          <div className="mb-12 md:mb-16 max-w-3xl">
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-6"
+            >
+              What we believe that most people don&apos;t
+            </motion.span>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, ease: EASE }}
+              className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[28px] sm:text-[40px] md:text-[52px] lg:text-[60px]"
+            >
+              The sects xCelero
+              <br />
+              <span className="text-white/30">is built on.</span>
+            </motion.h2>
+          </div>
+
+          {/* Contrarian beliefs */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/8 border border-white/8">
+            {beliefs.map((b, i) => (
+              <motion.figure
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: i * 0.12, ease: EASE }}
+                className="bg-[#0A0A0A] p-7 md:p-9 flex flex-col"
+              >
+                {/* Sect tag */}
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#FF4D00]">{b.tag}</span>
+                  <div className="flex-1 h-px bg-white/10" />
+                </div>
+
+                {/* The contrarian claim */}
+                <p className="text-[13px] md:text-[14px] text-white/45 font-medium leading-[1.5] mb-5 italic">
+                  {b.contrarian}
+                </p>
+
+                {/* The tenet (bold) */}
+                <blockquote className="text-[19px] md:text-[21px] lg:text-[23px] font-display font-medium tracking-tight leading-[1.3] text-white mb-5">
+                  {b.tenet}
+                </blockquote>
+
+                {/* The body */}
+                <p className="text-[13px] md:text-[14px] text-white/55 leading-[1.6] flex-1">
+                  {b.body}
+                </p>
+              </motion.figure>
+            ))}
+          </div>
+
+          {/* CTA row */}
+          <motion.div
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6, ease: EASE }}
-            className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-6"
+            transition={{ duration: 0.8, delay: 0.5, ease: EASE }}
+            className="mt-10 md:mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-6 border-t border-white/10"
           >
-            Operating beliefs
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, ease: EASE }}
-            className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[32px] sm:text-[44px] md:text-[56px] lg:text-[64px]"
-          >
-            What we hold
-            <br />
-            <span className="text-white/30">to be true.</span>
-          </motion.h2>
-        </div>
-
-        {/* Pull quotes */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/8 border border-white/8">
-          {beliefs.map((b, i) => (
-            <motion.figure
-              key={i}
-              initial={{ opacity: 0, y: 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.12, ease: EASE }}
-              className="bg-[#0A0A0A] p-8 md:p-10 lg:p-12 flex flex-col"
+            <p className="text-[13px] md:text-[14px] text-white/50 font-medium leading-[1.6] max-w-md">
+              These aren&apos;t aspirations. They&apos;re the constraints every pillar, program, and venture is designed around.
+            </p>
+            <Link
+              to="/manifesto"
+              className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-white/40 hover:text-[#FF4D00] transition-colors flex-shrink-0"
             >
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#FF4D00]">{b.tag}</span>
-                <div className="flex-1 h-px bg-white/10" />
-              </div>
-              <span className="font-display text-[#FF4D00] text-6xl leading-none mb-4">&ldquo;</span>
-              <blockquote className="text-[18px] md:text-[20px] lg:text-[22px] font-display font-medium tracking-tight leading-[1.35] text-white mb-8 flex-1">
-                {b.quote}
-              </blockquote>
-              <figcaption className="border-t border-white/10 pt-4">
-                <p className="text-[10px] font-mono tracking-[0.15em] uppercase text-white/40">{b.source}</p>
-              </figcaption>
-            </motion.figure>
-          ))}
+              Read the manifesto
+              <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
+          </motion.div>
         </div>
-
-        {/* CTA row */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.5, ease: EASE }}
-          className="mt-14 md:mt-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-8 border-t border-white/10"
-        >
-          <p className="text-[14px] md:text-[15px] text-white/50 font-medium leading-[1.6] max-w-md">
-            These aren&apos;t slogans. They&apos;re the constraints we design every pillar, program, and venture around.
-          </p>
-          <Link
-            to="/manifesto"
-            className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-white/40 hover:text-[#FF4D00] transition-colors flex-shrink-0"
-          >
-            Read the manifesto
-            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </Link>
-        </motion.div>
       </div>
     </section>
   );
