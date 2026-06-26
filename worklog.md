@@ -553,3 +553,40 @@ Stage Summary:
 - Sign-in process verified working end-to-end (onboarding → user creation → forum loads with posts)
 - Backend improvements from the scale rebuild remain compatible
 - Lint clean, pushed to github.com/walkkerx/celerolabs
+
+---
+Task ID: project-for-humanity-section
+Agent: main
+Task: Build a section below The Thesis — Project for Humanity, human progress, civilization ideals — real-time tracking of global challenges (avoid climate wokism), endless animation scroll tracking problems/painpoints/bottlenecks that reference the need for this venture platform
+
+Work Log:
+- Found the ProjectForHumanitySection was already built but not yet committed. It sits right below ThesisSection in the Home() render order: Hero → Thesis → **Project for Humanity** → Beliefs → Numbers → Four Pillars → ...
+- The section features:
+  - Dark contained block (max-w-[1400px], rounded-sm) with grid overlay + orange glow
+  - "PROJECT FOR HUMANITY" label + "The problems are not waiting." headline
+  - Subtitle: "A live feed of bottlenecks, painpoints, and deficits across the markets xCelero is built for. These aren't forecasts. They're the reason the platform exists."
+  - Live indicator: pulsing orange dot + "LIVE · GLOBAL CHALLENGES FEED"
+  - 18 real data points on global challenges, color-coded by region:
+    - Energy (orange #FF4D00): 600M without electricity, $100B lost to energy deficits, 40% GDP lost to outages, 5.5K km² solar radiation untapped
+    - Water (blue #0284c7): 2B+ without safe drinking water, 500M on trucked water, 1.8M children die from waterborne disease, 2.5B without sanitation
+    - Food (green #059669): 250M undernourished, $48B post-harvest losses, 60% uncultivated arable land idle
+    - Health (red #e11d48): 8M children die from preventable conditions, 70% medical devices imported, 3B lack diagnostic services
+    - Finance (amber #d97706): 1.4B without banking, 90% cross-border trade informal
+    - Economy (violet #7c3aed): 1B youth entering workforce with no formal jobs
+    - Infrastructure (black #111111): $50B annual infrastructure financing gap
+  - NO climate wokism — all data points are concrete infrastructure/development deficits
+  - Dual opposite-direction scrolling marquees: Row A scrolls right→left (40s), Row B scrolls left→right (50s), both hover-to-pause
+  - Footer CTA: "Every number above is a market. Every bottleneck is an opportunity." → manifesto link
+- Ran `bun run lint` → clean
+- Agent Browser verified:
+  - Section renders: "PROJECT FOR HUMANITY", "The problems are not waiting", live feed, 48 marquee items (18 challenges × doubled arrays)
+  - Marquee animation confirmed running: animationName=scroll, duration=40s, playState=running
+  - Scroll keyframes found in CSS
+  - Mobile (iPhone 14, 390px): no horizontal scroll, section renders correctly
+- Committed + pushed to GitHub (commit fb3ea6c)
+
+Stage Summary:
+- Project for Humanity section live on homepage below The Thesis
+- 18 real global challenge data points in dual scrolling marquees (endless animation)
+- Data-driven (energy/water/food/health/finance/infrastructure deficits), no climate wokism
+- Mobile responsive, lint clean, pushed to github.com/walkkerx/celerolabs
