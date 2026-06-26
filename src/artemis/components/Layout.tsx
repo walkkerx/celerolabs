@@ -426,67 +426,53 @@ function Nav() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   STICKY INVEST CTA BAR
+   STICKY INVEST CTA BAR — pill style, matches nav
    ══════════════════════════════════════════════════════════════════════════ */
 function StickyInvestBar() {
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
-    try {
-      return sessionStorage.getItem("invest-bar-dismissed") === "true";
-    } catch {
-      return false;
-    }
+    try { return sessionStorage.getItem("invest-bar-dismissed") === "true"; } catch { return false; }
   });
   const { path } = useRouter();
 
   useEffect(() => {
-    const handleScroll = () => {
-      const viewportHeight = window.innerHeight;
-      setVisible(window.scrollY > viewportHeight);
-    };
+    const handleScroll = () => setVisible(window.scrollY > window.innerHeight);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleDismiss = useCallback(() => {
     setDismissed(true);
-    try {
-      sessionStorage.setItem("invest-bar-dismissed", "true");
-    } catch {
-      // sessionStorage not available
-    }
+    try { sessionStorage.setItem("invest-bar-dismissed", "true"); } catch {}
   }, []);
 
-  // Don't show on capital page or if dismissed
-  const isCapitalPage = path === "/capital";
-  const shouldShow = visible && !dismissed && !isCapitalPage;
+  const shouldShow = visible && !dismissed && path !== "/capital";
 
   return (
     <AnimatePresence>
       {shouldShow && (
         <motion.div
-          initial={{ y: 48, opacity: 0 }}
+          initial={{ y: 60, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 48, opacity: 0 }}
+          exit={{ y: 60, opacity: 0 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-0 left-0 right-0 z-40 bg-[#111111] text-white flex items-center justify-between px-4 md:px-6 min-h-[48px] md:h-12"
-          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+          className="fixed bottom-0 left-0 right-0 z-40 bg-[#111111]/95 backdrop-blur-xl border-t border-white/8 flex items-center justify-between px-4 md:px-8 h-[52px]"
         >
-          <span className="text-[11px] sm:text-[13px] font-medium text-white/70 truncate mr-2 sm:mr-4">
+          <span className="text-[11px] sm:text-[12px] font-medium text-white/70 truncate mr-2">
             <span className="hidden sm:inline">Invest in critical technology from $500</span>
-            <span className="sm:hidden">Invest in critical tech from $500</span>
+            <span className="sm:hidden">Invest from $500</span>
           </span>
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Link
               to="/capital"
-              className="min-h-[44px] px-4 py-2 bg-[#FF4D00] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-[#FF4D00]/90 transition-colors whitespace-nowrap inline-flex items-center"
+              className="px-4 py-2 bg-[#FF4D00] text-white text-[10px] font-bold tracking-[0.05em] rounded-full hover:bg-[#FF6A28] transition-colors whitespace-nowrap inline-flex items-center gap-1.5"
             >
-              Invest Now →
+              Invest Now <ArrowRight className="w-3 h-3" />
             </Link>
             <button
               onClick={handleDismiss}
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center text-white/30 hover:text-white/70 transition-colors"
+              className="w-8 h-8 flex items-center justify-center text-white/30 hover:text-white/70 hover:bg-white/10 rounded-full transition-colors"
               aria-label="Dismiss"
             >
               <X className="w-3.5 h-3.5" />
@@ -499,33 +485,29 @@ function StickyInvestBar() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   SCROLL-TO-TOP BUTTON
+   SCROLL-TO-TOP BUTTON — pill circle, matches nav
    ══════════════════════════════════════════════════════════════════════════ */
 function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setVisible(window.scrollY > 400);
-    };
+    const handleScroll = () => setVisible(window.scrollY > 500);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  const scrollToTop = useCallback(() => window.scrollTo({ top: 0, behavior: "smooth" }), []);
 
   return (
     <AnimatePresence>
       {visible && (
         <motion.button
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, scale: 0.6, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.6, y: 10 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           onClick={scrollToTop}
-          className="fixed bottom-24 md:bottom-20 right-4 md:right-6 z-30 w-11 h-11 bg-white border border-[#111111]/10 flex items-center justify-center hover:bg-[#111111] hover:text-white transition-colors shadow-sm"
+          className="fixed bottom-20 md:bottom-16 right-4 md:right-6 z-30 w-10 h-10 bg-[#111111] text-white rounded-full flex items-center justify-center hover:bg-[#FF4D00] transition-colors shadow-lg shadow-[#111111]/20"
           aria-label="Scroll to top"
         >
           <ArrowUp className="w-4 h-4" />
@@ -536,90 +518,105 @@ function ScrollToTopButton() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   FOOTER
+   FOOTER — modern, rounded cards, glass sections
    ══════════════════════════════════════════════════════════════════════════ */
 function Footer() {
   return (
     <footer className="py-0">
-      <div className="w-full max-w-[1400px] mx-auto bg-[#000000] text-white px-6 md:px-12 lg:px-20 pt-24 pb-12 rounded-sm">
+      <div className="w-full max-w-[1400px] mx-auto bg-[#0A0A0A] text-white px-6 md:px-10 lg:px-14 pt-16 md:pt-20 pb-8 rounded-2xl md:rounded-3xl">
         {/* CTA cards */}
-        <div className="grid md:grid-cols-2 gap-6 mb-24">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-16 md:mb-20">
           <Link to="/programs" className="group block">
-            <div className="border border-white/10 p-10 md:p-12 aspect-[16/9] md:aspect-auto md:h-[300px] flex flex-col justify-between hover:bg-white/5 transition-colors relative overflow-hidden">
-               <div className="flex justify-between items-start">
-                  <div className="text-[10px] font-bold tracking-widest uppercase text-white/50">xCelero Accelerator</div>
-                  <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                    <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform" />
-                  </div>
-               </div>
-               <div>
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-medium tracking-tight mb-4">From thesis to operating company in 24 months.</h2>
-                  <p className="text-white/50 font-medium">High-intensity venture building with funding, mentorship, and Route infrastructure built in.</p>
-               </div>
+            <div className="border border-white/8 rounded-2xl p-8 md:p-10 aspect-[16/9] md:aspect-auto md:h-[260px] flex flex-col justify-between hover:bg-white/[0.03] hover:border-white/15 transition-all duration-300 relative overflow-hidden">
+              <div className="flex justify-between items-start">
+                <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#FF4D00]">xCelero Accelerator</div>
+                <div className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center group-hover:bg-[#FF4D00] group-hover:border-[#FF4D00] group-hover:text-white transition-all">
+                  <ArrowRight className="w-4 h-4 -rotate-45 group-hover:rotate-0 transition-transform" />
+                </div>
+              </div>
+              <div>
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-display font-medium tracking-tight mb-2">From thesis to operating company in 24 months.</h2>
+                <p className="text-white/40 text-[13px] font-medium">High-intensity venture building with funding, mentorship, and Route infrastructure built in.</p>
+              </div>
             </div>
           </Link>
 
           <Link to="/capital" className="group block">
-            <div className="border border-white/10 p-10 md:p-12 aspect-[16/9] md:aspect-auto md:h-[300px] flex flex-col justify-between hover:bg-white/5 transition-colors relative overflow-hidden">
-               <div className="flex justify-between items-start">
-                  <div className="text-[10px] font-bold tracking-widest uppercase text-white/50">xCelero Capital</div>
-                  <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                    <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform" />
-                  </div>
-               </div>
-               <div>
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-medium tracking-tight mb-4">Invest in critical technology from $500.</h2>
-                  <p className="text-white/50 font-medium">Six vehicles, one thesis: back the technology the next century needs, in the markets that need it most.</p>
-               </div>
+            <div className="border border-white/8 rounded-2xl p-8 md:p-10 aspect-[16/9] md:aspect-auto md:h-[260px] flex flex-col justify-between hover:bg-white/[0.03] hover:border-white/15 transition-all duration-300 relative overflow-hidden">
+              <div className="flex justify-between items-start">
+                <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#FF4D00]">xCelero Capital</div>
+                <div className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center group-hover:bg-[#FF4D00] group-hover:border-[#FF4D00] group-hover:text-white transition-all">
+                  <ArrowRight className="w-4 h-4 -rotate-45 group-hover:rotate-0 transition-transform" />
+                </div>
+              </div>
+              <div>
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-display font-medium tracking-tight mb-2">Invest in critical technology from $500.</h2>
+                <p className="text-white/40 text-[13px] font-medium">Six vehicles, one thesis: back the technology the next century needs, in the markets that need it most.</p>
+              </div>
             </div>
           </Link>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 mb-24">
-          <div className="lg:col-span-6">
-            <div className="text-[36px] sm:text-[50px] md:text-[80px] lg:text-[100px] font-display font-medium leading-[0.9] tracking-tight uppercase mb-8">
-              xCelero<br />Labs
+        {/* Brand + links */}
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 mb-16">
+          <div className="lg:col-span-5">
+            <Link to="/" className="flex items-center gap-2.5 mb-6">
+              <div className="w-8 h-8 bg-[#FF4D00] flex items-center justify-center rounded-lg">
+                <span className="text-white font-bold text-[12px]">X</span>
+              </div>
+              <span className="text-[15px] font-bold tracking-tight uppercase">xCelero<span className="text-[#FF4D00]"> Labs</span></span>
+            </Link>
+            <p className="text-white/40 text-[14px] font-medium leading-[1.6] max-w-sm mb-6">
+              Venture studio and infrastructure platform building critical technology across 39 countries. Invest from $500.
+            </p>
+            <div className="flex gap-2">
+              <a href="#" className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-colors text-[11px] font-bold">in</a>
+              <a href="#" className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-colors text-[11px] font-bold">X</a>
+              <a href="#" className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-colors text-[11px] font-bold">YT</a>
             </div>
           </div>
 
-          <div className="lg:col-span-6 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 md:gap-8">
-            <div className="flex flex-col gap-4">
-              <span className="text-[10px] font-bold tracking-widest uppercase text-white/30">xCelero Labs</span>
-              <Link to="/about" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">About</Link>
-              <Link to="/ventures" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">Companies</Link>
-              <Link to="/careers" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">Careers</Link>
-              <Link to="/approach" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">How We Work</Link>
-              <Link to="/insights" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">News</Link>
+          <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-6">
+            <div className="flex flex-col gap-3">
+              <span className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-white/25">Company</span>
+              <Link to="/about" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">About</Link>
+              <Link to="/approach" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">How We Work</Link>
+              <Link to="/manifesto" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Manifesto</Link>
+              <Link to="/careers" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Careers</Link>
             </div>
-
-            <div className="flex flex-col gap-4">
-              <span className="text-[10px] font-bold tracking-widest uppercase text-white/30">Programs</span>
-              <Link to="/programs" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">Overview</Link>
-              <Link to="/programs" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">Fellowship</Link>
-              <Link to="/programs" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">Hansa Hubs</Link>
+            <div className="flex flex-col gap-3">
+              <span className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-white/25">Platform</span>
+              <Link to="/infrastructure" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Infrastructure</Link>
+              <Link to="/routes" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Routes</Link>
+              <Link to="/ventures" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Ventures</Link>
+              <Link to="/programs" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Programs</Link>
             </div>
-
-            <div className="flex flex-col gap-4">
-              <span className="text-[10px] font-bold tracking-widest uppercase text-white/30">Social</span>
-              <a href="#" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">LinkedIn</a>
-              <a href="#" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">X</a>
-              <a href="#" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">YouTube</a>
+            <div className="flex flex-col gap-3">
+              <span className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-white/25">Network</span>
+              <Link to="/capital" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Capital</Link>
+              <Link to="/community" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Community</Link>
+              <Link to="/insights" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Insights</Link>
+              <Link to="/townsquare" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Town Square</Link>
             </div>
-
-            <div className="flex flex-col gap-4">
-              <span className="text-[10px] font-bold tracking-widest uppercase text-white/30">Legal</span>
-              <Link to="/" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">Terms of Use</Link>
-              <Link to="/" className="text-[13px] font-bold text-white/60 hover:text-white transition-colors">Privacy</Link>
-              <Link to="/admin" className="text-[13px] font-bold text-white/40 hover:text-[#FF4D00] transition-colors inline-flex items-center gap-1.5">
-                <Shield className="w-3 h-3" />
-                Admin
+            <div className="flex flex-col gap-3">
+              <span className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-white/25">Legal</span>
+              <Link to="/" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Terms</Link>
+              <Link to="/" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Privacy</Link>
+              <Link to="/admin" className="text-[13px] font-medium text-white/40 hover:text-[#FF4D00] transition-colors inline-flex items-center gap-1.5">
+                <Shield className="w-3 h-3" /> Admin
               </Link>
             </div>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/10 text-[10px] text-white/30 uppercase tracking-widest font-mono" suppressHydrationWarning>
-          © {new Date().getFullYear()} xCelero Labs.
+        {/* Bottom bar */}
+        <div className="pt-6 border-t border-white/8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <span className="text-[10px] font-mono tracking-[0.15em] uppercase text-white/25" suppressHydrationWarning>
+            © {new Date().getFullYear()} xCelero Labs
+          </span>
+          <span className="text-[10px] font-mono tracking-[0.15em] uppercase text-white/20">
+            Critical technology for emerging markets
+          </span>
         </div>
       </div>
     </footer>

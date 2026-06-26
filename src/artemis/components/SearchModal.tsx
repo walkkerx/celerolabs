@@ -24,7 +24,6 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Focus input when modal opens, and control body scroll
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
@@ -32,38 +31,24 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
 
-  // Reset query when search result is clicked
-  const handleResultClick = () => {
-    setQuery("");
-    onClose();
-  };
+  const handleResultClick = () => { setQuery(""); onClose(); };
 
   const results = () => {
     if (!query.trim()) return [];
-    
     const q = query.toLowerCase();
-    
-    const matchedInsights = insightsData.filter(i => 
+    const matchedInsights = insightsData.filter(i =>
       i.title.toLowerCase().includes(q) || i.summary.toLowerCase().includes(q) || i.category.toLowerCase().includes(q)
     ).map(i => ({ id: `insight-${i.id}`, type: "Insight", path: `/insights/${i.id}`, title: i.title, desc: i.summary }));
-    
-    const matchedVentures = companiesData.filter(c => 
+    const matchedVentures = companiesData.filter(c =>
       c.name.toLowerCase().includes(q) || c.focus.toLowerCase().includes(q) || c.field.toLowerCase().includes(q)
     ).map(c => ({ id: `venture-${c.id}`, type: "Venture", path: `/ventures/${c.id}`, title: c.name, desc: c.focus }));
-    
-    const matchedPrograms = programsData.filter(p => 
+    const matchedPrograms = programsData.filter(p =>
       p.title.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
     ).map(p => ({ id: `program-${p.id}`, type: "Program", path: `/programs/${p.id}`, title: p.title, desc: p.tagline }));
-
-    const matchedPages = staticPages.filter(p => 
-      p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
-    );
-
+    const matchedPages = staticPages.filter(p => p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
     return [...matchedPages, ...matchedPrograms, ...matchedVentures, ...matchedInsights];
   };
 
@@ -72,68 +57,97 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[100] bg-[#FAFAFA]/95 backdrop-blur-xl flex flex-col"
+          className="fixed inset-0 z-[100] bg-[#0A0A0A]/90 backdrop-blur-xl flex items-start justify-center pt-[10vh] md:pt-[15vh]"
         >
-          <div className="w-full flex justify-end p-6 md:p-8">
-            <button onClick={onClose} className="p-3 bg-[#111111] text-white hover:bg-[#FF4D00] transition-colors group">
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-          
-          <div className="flex-1 w-full max-w-4xl mx-auto px-6 flex flex-col">
-            <div className="relative mb-8 border-b-2 border-[#111111] group">
-              <SearchIcon className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 text-[#111111]/40 group-focus-within:text-[#FF4D00] transition-colors" />
-              <input 
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="fixed top-5 right-5 w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center transition-colors z-10"
+            aria-label="Close search"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {/* Search card */}
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: -10 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: -10 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full max-w-2xl mx-4 bg-[#111111] rounded-2xl overflow-hidden shadow-2xl border border-white/8"
+          >
+            {/* Search input */}
+            <div className="relative border-b border-white/8">
+              <SearchIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
+              <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search ventures, insights, pages..."
-                className="w-full bg-transparent text-3xl md:text-5xl font-display font-medium tracking-tight placeholder:text-[#111111]/20 outline-none py-8 pl-16 text-[#111111]"
+                className="w-full bg-transparent text-[20px] md:text-[24px] font-display font-medium placeholder:text-white/20 outline-none py-5 pl-14 pr-4 text-white"
               />
             </div>
-            
-            <div className="flex-1 overflow-y-auto pb-24">
+
+            {/* Results */}
+            <div className="max-h-[50vh] overflow-y-auto scrollbar-thin [scrollbar-color:rgba(255,77,0,0.3)_transparent]">
               {query.trim() && currentResults.length === 0 && (
-                <div className="text-[#111111]/50 font-medium text-lg">
-                  No results found for &quot;{query}&quot;.
+                <div className="text-white/30 font-medium text-[15px] py-12 text-center">
+                  No results for &quot;{query}&quot;
                 </div>
               )}
-              
+
               {currentResults.length > 0 && (
-                <div className="flex flex-col">
+                <div className="py-2">
                   {currentResults.map((result) => (
                     <Link
-                      key={result.id} 
+                      key={result.id}
                       to={result.path}
                       onClick={handleResultClick}
-                      className="group py-6 border-b border-[#111111]/10 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-[#111111]/[0.02] transition-colors -mx-6 px-6"
+                      className="group flex items-center gap-4 px-5 py-3.5 hover:bg-white/5 transition-colors"
                     >
-                      <div>
-                        <div className="text-[10px] uppercase font-mono tracking-widest text-[#FF4D00] mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[9px] uppercase font-mono tracking-[0.15em] text-[#FF4D00] mb-1">
                           {result.type}
                         </div>
-                        <h3 className="text-2xl font-display font-medium text-[#111111] group-hover:text-[#FF4D00] transition-colors mb-2">
+                        <h3 className="text-[15px] font-display font-medium text-white/90 group-hover:text-white transition-colors mb-0.5 truncate">
                           {result.title}
                         </h3>
-                        <p className="text-[#111111]/60 font-medium line-clamp-1 max-w-2xl text-sm">
+                        <p className="text-white/40 text-[12px] line-clamp-1">
                           {result.desc}
                         </p>
                       </div>
-                      <div className="w-10 h-10 border border-[#111111]/10 flex items-center justify-center bg-white group-hover:bg-[#111111] group-hover:border-[#111111] group-hover:text-white transition-colors shrink-0">
-                        <ArrowRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-[#FF4D00] group-hover:border-[#FF4D00] transition-all shrink-0">
+                        <ArrowRight className="w-3.5 h-3.5 text-white/40 group-hover:text-white transition-colors" />
                       </div>
                     </Link>
                   ))}
                 </div>
               )}
+
+              {!query.trim() && (
+                <div className="py-8 px-5">
+                  <p className="text-[10px] font-mono tracking-[0.15em] uppercase text-white/20 mb-3">Try searching for</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["ventures", "energy", "capital", "programs", "routes"].map(tag => (
+                      <button
+                        key={tag}
+                        onClick={() => setQuery(tag)}
+                        className="px-3 py-1.5 text-[11px] font-medium text-white/50 border border-white/10 rounded-full hover:border-white/25 hover:text-white/80 transition-colors"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
