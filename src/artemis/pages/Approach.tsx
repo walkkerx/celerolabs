@@ -149,68 +149,56 @@ function HeroSection() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="relative bg-[#0A0A0A] text-white overflow-hidden">
-      {/* Grid bg */}
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)", backgroundSize: "50px 50px" }} />
-      {/* Glow */}
-      <div className="absolute bottom-0 left-1/4 w-[500px] h-[400px] bg-[#FF4D00]/8 rounded-full blur-[130px] pointer-events-none" />
-
-      <div ref={ref} className="relative w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-40 pb-20 md:pb-28">
-        {/* Top: label */}
-        <motion.span
-          initial={{ opacity: 0, y: 12 }}
+    <section
+      ref={ref}
+      className="bg-[#FAFAFA] py-16 md:py-24 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10"
+    >
+      <div className="w-full max-w-[1400px] mx-auto grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        {/* Left: label + heading + para */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-8"
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="lg:col-span-7"
         >
-          Our Approach
-        </motion.span>
+          <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#FF4D00] mb-6 block">
+            Our Approach
+          </span>
 
-        {/* Massive headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
+          <h1 className="text-[36px] sm:text-[48px] md:text-[64px] lg:text-[80px] font-display font-medium tracking-[-0.03em] leading-[0.9] mb-6">
+            You&apos;re not for everyone.
+            <br />
+            <span className="text-[#111111]/40">Neither are we.</span>
+          </h1>
+
+          <p className="text-[16px] md:text-[18px] leading-[1.7] text-[#111111]/60 font-medium max-w-lg">
+            We back founders who go unreasonably deep to get their beginnings right, and we provide the infrastructure, ventures, capital, and community to make it work.
+          </p>
+        </motion.div>
+
+        {/* Right: metric cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="font-display font-medium tracking-[-0.035em] leading-[0.88] text-[44px] sm:text-[64px] md:text-[88px] lg:text-[112px] mb-10 max-w-5xl"
+          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+          className="lg:col-span-5 flex flex-col"
         >
-          You&apos;re not for everyone.<br />
-          <span className="text-white/30">Neither are we.</span>
-        </motion.h1>
-
-        {/* Bottom split: description left, metrics right */}
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end pt-8 border-t border-white/10">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7"
-          >
-            <p className="text-white/55 text-[15px] md:text-[17px] font-medium leading-[1.6] max-w-lg mb-8">
-              We back founders who go unreasonably deep to get their beginnings right — and we provide the infrastructure, ventures, capital, and community to make it work.
-            </p>
-            <Link
-              to="/join"
-              className="group inline-flex items-center gap-2 px-7 py-4 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#FF6A28] transition-colors"
+          {heroMetrics.map((metric, i) => (
+            <div
+              key={i}
+              className={`py-6 ${
+                i > 0 ? "border-t border-[#111111]/10" : ""
+              }`}
             >
-              Apply to build
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-5 grid grid-cols-3 gap-4"
-          >
-            {heroMetrics.map((m, i) => (
-              <div key={i} className="border-l-2 border-[#FF4D00] pl-4">
-                <p className="font-display font-medium text-[26px] md:text-[32px] tracking-tight text-white leading-none">{m.value}</p>
-                <p className="text-[10px] font-mono tracking-[0.1em] uppercase text-white/40 mt-2 leading-tight">{m.label}</p>
+              <div className="text-[40px] sm:text-[48px] md:text-[56px] font-display font-medium tracking-[-0.03em] leading-[1] mb-2">
+                {metric.value}
               </div>
-            ))}
-          </motion.div>
-        </div>
+              <div className="text-[13px] md:text-[15px] text-[#111111]/50 font-medium leading-[1.5]">
+                {metric.label}
+              </div>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
