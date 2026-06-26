@@ -162,6 +162,7 @@ export function Home() {
     <div className="bg-white text-[#111111]">
       <Hero />
       <ThesisSection />
+      <ProjectForHumanitySection />
       <OperatingBeliefsSection />
       <NumbersSection />
       <FourPillarsEngine />
@@ -552,6 +553,175 @@ function NumbersSection() {
               </motion.div>
             );
           })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PROJECT FOR HUMANITY — real-time global challenges feed
+   Endless scrolling marquee tracking real problems, painpoints, bottlenecks
+   that justify the need for this venture platform.
+   ══════════════════════════════════════════════════════════════════════════ */
+function ProjectForHumanitySection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  const challenges = [
+    { stat: "600M", text: "people lack reliable electricity in sub-Saharan Africa", region: "Energy", color: "#FF4D00" },
+    { stat: "2B+", text: "people without access to safe drinking water", region: "Water", color: "#0284c7" },
+    { stat: "250M", text: "Africans undernourished while holding 60% of uncultivated arable land", region: "Food", color: "#059669" },
+    { stat: "1.4B", text: "people without formal banking — locked out of the digital economy", region: "Finance", color: "#d97706" },
+    { stat: "500M", text: "rely on trucked water costing 20-60× more than piped supply", region: "Water", color: "#0284c7" },
+    { stat: "$100B", text: "lost annually to energy deficits across the continent", region: "Energy", color: "#FF4D00" },
+    { stat: "8M", text: "children die each year from preventable and treatable conditions", region: "Health", color: "#e11d48" },
+    { stat: "70%", text: "of sub-Saharan medical devices are imported — no local manufacturing", region: "Health", color: "#e11d48" },
+    { stat: "48B", text: "dollars in post-harvest food losses every year", region: "Food", color: "#059669" },
+    { stat: "1.8M", text: "children die annually from waterborne disease", region: "Water", color: "#0284c7" },
+    { stat: "5.5K", text: "km² of solar radiation daily — untapped energy at scale", region: "Energy", color: "#FF4D00" },
+    { stat: "3B", text: "people lack access to basic diagnostic laboratory services", region: "Health", color: "#e11d48" },
+    { stat: "90%", text: "of cross-border African trade is informal — unstructured", region: "Finance", color: "#d97706" },
+    { stat: "40%", text: "of African GDP lost to power outages annually", region: "Energy", color: "#FF4D00" },
+    { stat: "2.5B", text: "people without adequate sanitation infrastructure", region: "Water", color: "#0284c7" },
+    { stat: "1B", text: "young people entering the workforce with no formal jobs", region: "Economy", color: "#7c3aed" },
+    { stat: "60%", text: "of the world's uncultivated arable land sits idle in Africa", region: "Food", color: "#059669" },
+    { stat: "$50B", text: "annual infrastructure financing gap — the build must happen", region: "Infrastructure", color: "#111111" },
+  ];
+
+  // Split into two rows for opposite-direction scrolling
+  const rowA = challenges.slice(0, 9);
+  const rowB = challenges.slice(9);
+  const rowADoubled = [...rowA, ...rowA];
+  const rowBDoubled = [...rowB, ...rowB];
+
+  return (
+    <section className="px-6 md:px-12 lg:px-20 py-20 md:py-28">
+      <div
+        ref={ref}
+        className="relative w-full max-w-[1400px] mx-auto bg-[#0A0A0A] text-white overflow-hidden rounded-sm"
+      >
+        {/* Grid overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
+        {/* Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#FF4D00]/8 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="relative px-6 md:px-12 lg:px-16 py-16 md:py-24">
+          {/* Header */}
+          <div className="mb-10 md:mb-14 max-w-3xl">
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-6"
+            >
+              Project for Humanity
+            </motion.span>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, ease: EASE }}
+              className="font-display font-medium tracking-[-0.025em] leading-[1] text-[28px] sm:text-[40px] md:text-[52px] lg:text-[60px]"
+            >
+              The problems are<br />
+              <span className="text-white/30">not waiting.</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 14 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
+              className="text-white/50 text-[14px] md:text-[15px] font-medium leading-[1.6] max-w-xl mt-6"
+            >
+              A live feed of bottlenecks, painpoints, and deficits across the markets xCelero is built for.
+              These aren&apos;t forecasts. They&apos;re the reason the platform exists.
+            </motion.p>
+          </div>
+
+          {/* Live ticker indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="flex items-center gap-2 mb-8"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF4D00] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF4D00]" />
+            </span>
+            <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-white/40">
+              Live · Global Challenges Feed
+            </span>
+          </motion.div>
+
+          {/* Marquee Row A — scrolls right to left */}
+          <div className="overflow-hidden mb-3 -mx-6 md:-mx-12 lg:-mx-16">
+            <div className="flex w-max animate-[scroll_40s_linear_infinite] hover:[animation-play-state:paused]">
+              {rowADoubled.map((c, i) => (
+                <div
+                  key={`a-${i}`}
+                  className="flex items-center gap-3 px-4 md:px-5 py-4 border-r border-white/8 whitespace-nowrap shrink-0"
+                >
+                  <span className="font-display font-medium text-[20px] md:text-[24px] tracking-tight leading-none" style={{ color: c.color }}>
+                    {c.stat}
+                  </span>
+                  <span className="text-[12px] md:text-[13px] text-white/45 font-medium leading-[1.4] max-w-[280px]">
+                    {c.text}
+                  </span>
+                  <span className="text-[9px] font-mono tracking-[0.15em] uppercase px-1.5 py-0.5 border" style={{ color: c.color, borderColor: `${c.color}40` }}>
+                    {c.region}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Marquee Row B — scrolls left to right (reverse) */}
+          <div className="overflow-hidden -mx-6 md:-mx-12 lg:-mx-16">
+            <div className="flex w-max animate-[scroll_50s_linear_infinite_reverse] hover:[animation-play-state:paused]">
+              {rowBDoubled.map((c, i) => (
+                <div
+                  key={`b-${i}`}
+                  className="flex items-center gap-3 px-4 md:px-5 py-4 border-r border-white/8 whitespace-nowrap shrink-0"
+                >
+                  <span className="font-display font-medium text-[20px] md:text-[24px] tracking-tight leading-none" style={{ color: c.color }}>
+                    {c.stat}
+                  </span>
+                  <span className="text-[12px] md:text-[13px] text-white/45 font-medium leading-[1.4] max-w-[280px]">
+                    {c.text}
+                  </span>
+                  <span className="text-[9px] font-mono tracking-[0.15em] uppercase px-1.5 py-0.5 border" style={{ color: c.color, borderColor: `${c.color}40` }}>
+                    {c.region}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer CTA */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.6, ease: EASE }}
+            className="mt-10 md:mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-6 border-t border-white/10"
+          >
+            <p className="text-[13px] md:text-[14px] text-white/50 font-medium leading-[1.6] max-w-md">
+              Every number above is a market. Every bottleneck is an opportunity. xCelero builds the infrastructure to solve them — connected, at scale.
+            </p>
+            <Link
+              to="/manifesto"
+              className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-white/40 hover:text-[#FF4D00] transition-colors flex-shrink-0"
+            >
+              Read the manifesto
+              <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
+          </motion.div>
         </div>
       </div>
     </section>
