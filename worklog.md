@@ -427,3 +427,30 @@ Stage Summary:
 - Leg number + hub count badges overlaid on images
 - Pushed to github.com/walkkerx/celerolabs (commit c8845b9)
 - Lint clean, browser-verified
+
+---
+Task ID: expanded-pillars-better-alts
+Agent: main
+Task: (1) Redesign FourPillarsEngine from click-to-reveal tabs to an expanded layout, (2) remove old alt1/alt2/alt3 pages, (3) create single better alt pages for Capital, Infrastructure, How We Work
+
+Work Log:
+- (1) FourPillarsEngine redesigned: removed the tab selector + active-panel AnimatePresence pattern (required clicking to see details). Now renders all 4 pillars in an expanded 2x2 grid. Each card has: image header (180-200px) with pillar number badge + icon + title + tagline overlaid, description, 3 stats, and an "Explore" CTA — all visible at once without interaction. Removed useState(0)/setActive logic.
+- (2) Removed 9 old alt page files (CapitalAlt1/2/3, ApproachAlt1/2/3, InfrastructureAlt1/2/3), cleaned their routes from page.tsx, cleaned nav entries from Layout.tsx
+- (3) Built 3 improved alt pages using GLM 5.2 direction ("what makes a better version"):
+  - CapitalAlt: "Capital that knows the terrain" — capital ecosystem (all 6 vehicles visible as cards, no tabs), investment philosophy (3 principles), tiers with context ($500-$2M+), final CTA
+  - ApproachAlt: "We don't fund founders. We build them." — founder's journey as a visual vertical timeline (5 stages: Discover→Build→Deploy→Scale→Compound with deliverables), 4 principles, success metrics (18mo/24 steps/190 hubs/100% retention)
+  - InfrastructureAlt: "An operating system for critical technology" — unified OS metaphor, thesis section, 6 core components (all visible), day-1 founder access timeline, proof points
+- Wired 3 new routes (/capital-alt, /approach-alt, /infrastructure-alt) + nav entries labeled "· Alt"
+- Ran `bun run lint` → clean
+- Agent Browser verified:
+  - FourPillarsEngine: 4 pillar images visible, no tabs (hasTabs:false, pillarImageCount:4), "One machine, four compounding parts" renders
+  - CapitalAlt: "Capital that knows the terrain" hero renders
+  - ApproachAlt: "We don't fund founders. We build them." hero renders
+  - InfrastructureAlt: "An operating system for critical technology" hero renders
+  - All 3 routes return HTTP 200
+- Committed + pushed to GitHub (commit a7790ad)
+
+Stage Summary:
+- FourPillarsEngine now expanded: all 4 pillars visible at once in a 2x2 grid (no click-to-reveal)
+- 9 old alt pages removed; 3 improved alt pages built (CapitalAlt, ApproachAlt, InfrastructureAlt) — each a better version of its current page
+- Routes + nav wired; lint clean; pushed to github.com/walkkerx/celerolabs
