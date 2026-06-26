@@ -478,3 +478,27 @@ Stage Summary:
 - Four Pillars section redesigned with alternating full-width magazine layout (image/content flip sides per pillar)
 - All alt pages removed; nav cleaned back to original
 - Lint clean, pushed to github.com/walkkerx/celerolabs
+
+---
+Task ID: pillars-move-hero-redesigns
+Agent: main
+Task: Move Numbers section under Beliefs, redesign Four Pillars (text left + 2 images right), try better header layouts for Capital/Approach/Infrastructure pages
+
+Work Log:
+- (1) Moved NumbersSection to render after OperatingBeliefsSection (under "The sects xCelero is built on"). Section order: Hero → Thesis → Beliefs → Numbers → FourPillars → Ventures → Route → Events → Reviews → Newsletter
+- (2) Redesigned FourPillarsEngine: text on left (sticky, lg:col-span-5) with icon badge, large heading, subtext, description, stats grid, explore CTA. Right side (lg:col-span-7) has 2 rectangular framed images per pillar (aspect-[3/4], grayscale→color on hover, ring border, second image offset down with mt-12). Added image2 URL to each showcasePillar. All 4 pillars visible, no tabs.
+- Pushed to GitHub (commit cfb05a2)
+- (3) Redesigned 3 page heroes using GLM 5.2 concepts:
+  - Capital hero: DARK split-layout. Left column (col-span-4): colored investment tier bars (Scout $500+ / Syndicate $5K+ / Partner $50K+ / Anchor $250K+) with vertical color bars. Right column (col-span-8): massive "Invest in / critical / from $500." headline (104px), description, horizontal stats row, 2 CTAs. Grid bg + orange glow.
+  - Approach hero: DARK full-width. Top: massive "You're not for everyone. / Neither are we." headline (112px). Bottom split: description + "Apply to build" CTA left (col-span-7), 3 metrics with orange left-borders right (col-span-5). Grid bg + glow.
+  - Infrastructure hero: DARK bottom-heavy. Top: "The method / is the moat." headline (120px) over background image. Bottom: horizontal 5-column stats bar (10,000 ventures / 190+ hubs / 39+ countries / 5 layers / 13 domains) with dividers. Removed old scroll indicator and right-column stats.
+- All 3 heroes now dark #0A0A0A with grid overlay + orange glow, each visually distinct from each other and from the old centered-text pattern
+- Ran `bun run lint` → clean
+- Agent Browser verified: Capital (tier bars + dark), Approach (dark + massive headline), Infrastructure (stats bar + headline)
+- Committed + pushed to GitHub (commit fa07fa9)
+
+Stage Summary:
+- Numbers section moved under Beliefs section
+- Four Pillars redesigned: text left + 2 rectangular framed images right per pillar
+- 3 page heroes redesigned (Capital: tier bars split, Approach: massive headline dark, Infrastructure: bottom-heavy stats bar)
+- All pushed to github.com/walkkerx/celerolabs
