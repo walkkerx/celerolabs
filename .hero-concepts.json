@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "**CAPITAL:** Left-split layout with dark background. Accent-colored investment tier bars on left, stacked vertically. Right side: \"CAPITAL\" in massive Space Grotesk, investment details, stats as floating icons. Better: Creates visual tension, data hierarchy, and makes investment tiers immediately scannable rather than buried in text.\n\n**HOW WE WORK:** Asymmetric zigzag layout across full-bleed. Background grid with numbered MIT method points. Text follows diagonal paths with varying sizes. Better: Represents the non-linear nature of innovation, creates dynamic movement, and makes the 24-step method visually memorable rather than a flat list.\n\n**INFRASTRUCTURE:** Bottom-heavy layout with M1 Core campus illustration as anchor. \"INFRASTRUCTURE\" at top in small caps, stats stacked vertically at bottom. Better: Grounds the abstract concept in physicality, creates visual weight that mirrors the importance of physical infrastructure, and makes the 190 hubs feel substantial rather than like a generic stat.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782486422,
+  "id": "20260626230658fdbd05c914394d72",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20260626230658fdbd05c914394d72",
+  "usage": {
+    "completion_tokens": 202,
+    "prompt_tokens": 271,
+    "total_tokens": 473
+  }
+}

@@ -333,16 +333,15 @@ function HeroSection() {
   return (
     <section id="infra-hero" ref={ref} className="py-0">
       <div className="w-full max-w-[1400px] mx-auto bg-[#0A0A0A] text-white rounded-sm overflow-hidden">
-        <div className="relative min-h-screen flex items-center">
-          {/* Background image with parallax feel */}
+        <div className="relative min-h-[80vh] md:min-h-[70vh] flex flex-col">
+          {/* Background image */}
           <div className="absolute inset-0">
             <img
               src="/infra/outpost-campus.png"
               alt=""
               className="w-full h-full object-cover opacity-20"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/90 to-[#0A0A0A]/50" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-[#0A0A0A]/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/60 to-[#0A0A0A]/80" />
             {/* Grid overlay */}
             <div className="absolute inset-0 opacity-[0.04]" style={{
               backgroundImage: `linear-gradient(rgba(255,77,0,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,77,0,0.4) 1px, transparent 1px)`,
@@ -350,81 +349,56 @@ function HeroSection() {
             }} />
           </div>
 
-          {/* Content */}
-          <div className="relative w-full px-6 md:px-12 lg:px-20 py-20 md:py-32 lg:py-40">
-            <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-end">
-              {/* Left: Main title */}
-              <div className="lg:col-span-8">
-                <motion.div
-                  {...fadeUp}
-                  animate={isInView ? fadeUp.animate : { opacity: 0, y: 40 }}
-                >
-                  <div className="flex items-center gap-3 mb-10">
-                    <div className="w-8 h-[2px] bg-[#FF4D00]" />
-                    <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-white/30">
-                      Production-Method Architecture
-                    </span>
-                  </div>
-                  
-                  <h1 className="text-[48px] sm:text-[64px] md:text-[88px] lg:text-[110px] font-display font-medium tracking-[-0.05em] leading-[0.85] mb-8">
-                    The method
-                    <br />
-                    <span className="text-[#FF4D00]">is the moat.</span>
-                  </h1>
-                  <p className="text-[15px] md:text-[17px] leading-[1.8] text-white/30 font-medium max-w-xl">
-                    Not shared infrastructure. A reinvented method of production.
-                    The spatial arrangement exists to serve that method. The
-                    method IS the moat.
-                  </p>
-                </motion.div>
-              </div>
-
-              {/* Right: Stats column */}
-              <div className="lg:col-span-4">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  className="space-y-0 border-t border-white/10"
-                >
-                  {[
-                    { value: "10,000", label: "ventures" },
-                    { value: "190+", label: "hubs" },
-                    { value: "39+", label: "countries" },
-                    { value: "5", label: "layers" },
-                    { value: "13", label: "domains" },
-                  ].map((s, i) => (
-                    <div
-                      key={s.label}
-                      className={`flex items-baseline justify-between py-4 ${i > 0 ? "border-t border-white/[0.06]" : ""}`}
-                    >
-                      <span className="text-[28px] md:text-[36px] font-display font-medium tracking-tighter text-white/90 leading-none">
-                        {s.value}
-                      </span>
-                      <span className="text-[9px] font-mono font-bold tracking-[0.2em] uppercase text-white/15">
-                        {s.label}
-                      </span>
-                    </div>
-                  ))}
-                </motion.div>
-              </div>
-            </div>
-
-            {/* Scroll indicator */}
+          {/* Content — top-heavy headline */}
+          <div className="relative flex-1 flex items-center px-6 md:px-12 lg:px-20 pt-24 md:pt-32">
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ delay: 1 }}
-              className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+              {...fadeUp}
+              animate={isInView ? fadeUp.animate : { opacity: 0, y: 40 }}
             >
-              <span className="text-[9px] font-mono font-bold tracking-[0.3em] uppercase text-white/15">Scroll</span>
-              <motion.div
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="w-[1px] h-8 bg-gradient-to-b from-white/20 to-transparent"
-              />
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-8 h-[2px] bg-[#FF4D00]" />
+                <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-white/30">
+                  Production-Method Architecture
+                </span>
+              </div>
+
+              <h1 className="text-[48px] sm:text-[72px] md:text-[96px] lg:text-[120px] font-display font-medium tracking-[-0.05em] leading-[0.85] mb-6">
+                The method
+                <br />
+                <span className="text-[#FF4D00]">is the moat.</span>
+              </h1>
+              <p className="text-[15px] md:text-[17px] leading-[1.7] text-white/40 font-medium max-w-xl">
+                Not shared infrastructure. A reinvented method of production. The spatial arrangement exists to serve that method. The method IS the moat.
+              </p>
             </motion.div>
           </div>
+
+          {/* Bottom: horizontal stats bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="relative border-t border-white/10 px-6 md:px-12 lg:px-20 py-6 md:py-8"
+          >
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-4">
+              {[
+                { value: "10,000", label: "ventures" },
+                { value: "190+", label: "hubs" },
+                { value: "39+", label: "countries" },
+                { value: "5", label: "layers" },
+                { value: "13", label: "domains" },
+              ].map((s, i) => (
+                <div key={s.label} className={i > 0 ? "md:border-l md:border-white/[0.06] md:pl-4" : ""}>
+                  <p className="text-[24px] md:text-[32px] font-display font-medium tracking-tighter text-white/90 leading-none">
+                    {s.value}
+                  </p>
+                  <p className="text-[9px] font-mono font-bold tracking-[0.2em] uppercase text-white/30 mt-1.5">
+                    {s.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
