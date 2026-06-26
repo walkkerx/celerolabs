@@ -384,132 +384,83 @@ function Hero({ onSubscribe }: { onSubscribe: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
-  const tiers = [
-    { name: "Scout", range: "$500+", color: "#FF4D00" },
-    { name: "Syndicate", range: "$5K+", color: "#059669" },
-    { name: "Partner", range: "$50K+", color: "#d97706" },
-    { name: "Anchor", range: "$250K+", color: "#7c3aed" },
-  ];
-
   const heroStats = [
     { value: capitalTarget, label: "Capital target" },
-    { value: String(totalVentures), label: "Ventures" },
+    { value: String(totalVentures), label: "Projected ventures" },
     { value: `${totalCountries}+`, label: "Countries" },
-    { value: "6", label: "Vehicles" },
+    { value: "6", label: "Investment vehicles" },
+    { value: String(totalHubs), label: "Route hubs" },
   ];
 
   return (
-    <section className="relative bg-[#0A0A0A] text-white overflow-hidden">
-      {/* Grid bg */}
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
-      {/* Glow */}
-      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-[#FF4D00]/10 rounded-full blur-[140px] pointer-events-none" />
+    <section className="relative bg-white text-[#111111] pt-24 pb-16 sm:pt-32 sm:pb-20 md:pt-44 md:pb-28 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10">
+      <div ref={ref} className="w-full max-w-4xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col items-center"
+        >
+          {/* Small label */}
+          <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00] mb-8 md:mb-12">
+            xCelero Capital
+          </span>
 
-      <div ref={ref} className="relative w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20 pt-32 md:pt-40 pb-16 md:pb-24">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left: tier bars */}
-          <div className="lg:col-span-4 order-2 lg:order-1">
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-6"
-            >
-              Entry points
-            </motion.span>
-            <div className="space-y-3">
-              {tiers.map((t, i) => (
-                <motion.div
-                  key={t.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
-                  className="flex items-center gap-3 group"
-                >
-                  <div className="w-1 h-12 transition-all group-hover:h-14" style={{ backgroundColor: t.color }} />
-                  <div>
-                    <p className="font-display font-medium text-[20px] md:text-[22px] text-white leading-none">{t.range}</p>
-                    <p className="text-[10px] font-mono tracking-[0.15em] uppercase text-white/40 mt-1">{t.name}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+          <h1 className="text-[36px] sm:text-[48px] md:text-[60px] lg:text-[72px] leading-[1.05] font-display font-medium tracking-[-0.02em] mb-8 md:mb-10">
+            Invest in{" "}
+            <em className="italic font-serif text-[#FF4D00]">critical</em>{" "}
+            technology from $500*
+          </h1>
 
-          {/* Right: massive type + content */}
-          <div className="lg:col-span-8 order-1 lg:order-2">
-            <motion.span
-              initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-6"
-            >
-              xCelero Capital
-            </motion.span>
+          <p className="text-base sm:text-lg md:text-xl lg:text-[22px] leading-[1.6] text-[#111111]/50 font-medium max-w-2xl mb-10 sm:mb-14 md:mb-20">
+            Six investment vehicles being structured. One thesis: the technology that defines
+            the next century will be built in the markets that need it most.
+            xCelero is designed to give you access to that pipeline.
+          </p>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="font-display font-medium tracking-[-0.035em] leading-[0.88] text-[44px] sm:text-[64px] md:text-[88px] lg:text-[104px] mb-8"
-            >
-              Invest in<br />
-              <span className="text-[#FF4D00]">critical</span> technology<br />
-              <span className="text-white/30">from $500.</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 14 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="text-white/55 text-[15px] md:text-[17px] font-medium leading-[1.6] max-w-lg mb-10"
-            >
-              Six investment vehicles. One thesis: the technology that defines the next century will be built in the markets that need it most. xCelero gives you access to that pipeline.
-            </motion.p>
-
-            {/* Stats — horizontal */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-wrap gap-x-10 gap-y-5 mb-10"
-            >
-              {heroStats.map((s) => (
-                <div key={s.label}>
-                  <p className="font-display font-medium text-[28px] md:text-[36px] tracking-tight text-white leading-none">{s.value}</p>
-                  <p className="text-[10px] font-mono tracking-[0.15em] uppercase text-white/40 mt-1.5">{s.label}</p>
+          {/* Stats metrics row, matching Route page style */}
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-5 sm:gap-x-10 md:gap-x-16 mb-10 sm:mb-14 md:mb-20">
+            {heroStats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.4 + i * 0.08, ease: "easeOut" }}
+                className="text-center min-w-[60px]"
+              >
+                <div className="text-[26px] sm:text-[32px] md:text-[40px] font-display font-medium tracking-[-0.02em] text-[#111111]">
+                  {stat.value}
                 </div>
-              ))}
-            </motion.div>
-
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col sm:flex-row gap-3"
-            >
-              <Link
-                to="#invest-tiers"
-                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  e.preventDefault();
-                  document.getElementById("invest-tiers")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#FF6A28] transition-colors"
-              >
-                Invest Now
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <button
-                onClick={onSubscribe}
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 border border-white/25 text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-white hover:text-[#0A0A0A] transition-colors"
-              >
-                Get Updates
-                <Mail className="w-4 h-4" />
-              </button>
-            </motion.div>
+                <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/35 mt-1">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </div>
+
+          <div className="flex flex-wrap gap-4 items-center justify-center">
+            <Link
+              to="#invest-tiers"
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                e.preventDefault();
+                document
+                  .getElementById("invest-tiers")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-[#111111] text-white text-[12px] font-bold uppercase tracking-[0.12em] hover:bg-[#FF4D00] transition-colors"
+            >
+              Invest Now
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <button
+              onClick={onSubscribe}
+              className="inline-flex items-center gap-2 px-8 py-4 border border-[#111111]/20 text-[12px] font-bold uppercase tracking-[0.12em] hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-all bg-white"
+            >
+              Get Updates
+              <Mail className="w-4 h-4" />
+            </button>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
