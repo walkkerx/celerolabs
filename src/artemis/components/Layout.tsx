@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { Search, ArrowRight, Menu, X, ArrowUp, ChevronDown, LogIn, ArrowLeft, Shield } from "lucide-react";
+import { Search, ArrowRight, Menu, X, ArrowUp, ChevronDown, LogIn, ArrowLeft, Shield, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useRouter } from "../router";
 import { SearchModal } from "./SearchModal";
@@ -109,7 +109,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#111111] font-sans flex flex-col selection:bg-[#FF4D00]/20 selection:text-[#111111]">
       <Nav />
-      <main className="flex-grow pt-[80px]">
+      <main className="flex-grow pt-[64px] md:pt-[72px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={path}
@@ -225,40 +225,46 @@ function Nav() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FAFAFA]/90 backdrop-blur-md border-b border-[#111111]/10 h-[80px] flex items-center px-6 md:px-12">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FAFAFA]/80 backdrop-blur-xl border-b border-[#111111]/8 h-[64px] md:h-[72px] flex items-center px-4 md:px-8 transition-all duration-300">
         <div className="w-full max-w-[1400px] mx-auto flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-6 h-6 bg-[#FF4D00] flex items-center justify-center transition-transform group-hover:scale-105">
-              <span className="text-white font-bold text-[10px]">X</span>
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-7 h-7 bg-[#FF4D00] flex items-center justify-center transition-all duration-300 group-hover:rotate-90 group-hover:rounded-lg">
+              <span className="text-white font-bold text-[11px]">X</span>
             </div>
-            <span className="text-sm font-bold tracking-tight uppercase whitespace-nowrap hidden sm:inline text-[#111111]">xCelero Labs</span>
+            <span className="text-[13px] font-bold tracking-tight uppercase whitespace-nowrap hidden sm:inline text-[#111111]">
+              xCelero<span className="text-[#FF4D00]"> Labs</span>
+            </span>
           </Link>
 
-          {/* Desktop nav links with dropdowns */}
-          <div className="hidden lg:flex items-center gap-1">
+          {/* Desktop nav — mega menu dropdowns */}
+          <div className="hidden lg:flex items-center gap-0.5">
             {navGroups.map((group) => (
               <div key={group.label} className="relative group/dropdown">
                 <button
-                  className="flex items-center gap-1 px-3 py-2 text-[11px] tracking-[0.1em] font-medium text-[#111111]/60 hover:text-[#FF4D00] transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 text-[12px] tracking-[0.05em] font-semibold text-[#111111]/70 hover:text-[#111111] transition-colors rounded-full hover:bg-[#111111]/5"
                 >
                   {group.label}
-                  <ChevronDown className="w-3 h-3 transition-transform duration-200 group-hover/dropdown:rotate-180" />
+                  <ChevronDown className="w-3 h-3 transition-transform duration-300 group-hover/dropdown:rotate-180 text-[#111111]/40" />
                 </button>
-                {/* Dropdown panel */}
-                <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 -translate-y-1 group-hover/dropdown:translate-y-0">
-                  <div className="bg-white border border-[#111111]/10 shadow-lg min-w-[200px] py-2">
+                {/* Dropdown panel — card style with shadow */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 -translate-y-2 group-hover/dropdown:translate-y-0">
+                  <div className="bg-white border border-[#111111]/8 shadow-2xl rounded-2xl min-w-[220px] py-2 overflow-hidden">
+                    {/* Subtle top accent */}
+                    <div className="h-[2px] bg-gradient-to-r from-transparent via-[#FF4D00] to-transparent" />
                     {group.links.map((item) => {
                       const isActive = path === item.path;
                       return (
                         <Link
                           key={item.name}
                           to={item.path}
-                          className={`block px-5 py-2.5 text-[12px] tracking-[0.05em] font-medium transition-colors ${
+                          className={`flex items-center gap-2.5 px-5 py-2.5 text-[13px] tracking-[0.02em] font-medium transition-all duration-200 ${
                             isActive
                               ? "text-[#FF4D00] bg-[#FF4D00]/5"
-                              : "text-[#111111]/60 hover:text-[#FF4D00] hover:bg-[#FF4D00]/5"
+                              : "text-[#111111]/60 hover:text-[#111111] hover:bg-[#FAFAFA] hover:pl-6"
                           }`}
                         >
+                          {isActive && <span className="w-1 h-1 rounded-full bg-[#FF4D00]" />}
                           {item.name}
                         </Link>
                       );
@@ -269,42 +275,51 @@ function Nav() {
             ))}
           </div>
 
-          <div className="flex items-center space-x-4">
+          {/* Right side actions */}
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Search */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="p-2 border border-[#111111]/10 hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-colors group flex items-center gap-2"
+              className="p-2 rounded-full hover:bg-[#111111]/5 transition-colors group flex items-center gap-2"
               aria-label="Search"
             >
-              <Search className="w-4 h-4 text-[#111111] group-hover:text-white" />
-              <span className="hidden sm:inline-flex text-[10px] font-mono font-medium text-[#111111]/40 group-hover:text-white/50">⌘K</span>
+              <Search className="w-4 h-4 text-[#111111]/60 group-hover:text-[#111111] transition-colors" />
+              <span className="hidden xl:inline-flex text-[10px] font-mono font-medium text-[#111111]/30 border border-[#111111]/10 rounded px-1.5 py-0.5">⌘K</span>
             </button>
-            <Link to="/townsquare" className="px-5 py-2.5 bg-[#FF4D00] text-white text-[11px] tracking-[0.1em] font-bold hover:bg-[#FF4D00]/90 transition-colors inline-flex items-center gap-1.5">
-              <LogIn className="w-3.5 h-3.5" />
-              Sign In
-            </Link>
-            <Link to="/join" className="px-5 py-2.5 border border-[#111111] text-[11px] tracking-[0.1em] font-bold hover:bg-[#111111] hover:text-white transition-colors hidden sm:inline-flex">
-              Join
+
+            {/* Divider */}
+            <div className="hidden sm:block w-px h-6 bg-[#111111]/10" />
+
+            {/* Sign In */}
+            <Link
+              to="/townsquare"
+              className="px-4 py-2 bg-[#111111] text-white text-[11px] tracking-[0.05em] font-semibold rounded-full hover:bg-[#FF4D00] transition-all duration-300 inline-flex items-center gap-1.5 group"
+            >
+              <LogIn className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+              <span className="hidden sm:inline">Sign In</span>
             </Link>
 
-            {/* Hamburger button: mobile only */}
+            {/* Join — desktop only */}
+            <Link
+              to="/join"
+              className="hidden md:inline-flex items-center gap-1.5 px-4 py-2 text-[11px] tracking-[0.05em] font-semibold text-[#111111] border border-[#111111]/15 rounded-full hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-all duration-300"
+            >
+              Join
+              <ArrowRight className="w-3 h-3" />
+            </Link>
+
+            {/* Hamburger — mobile/tablet only */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 border border-[#111111]/10 hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-colors group"
+              className="lg:hidden p-2 rounded-full hover:bg-[#111111]/5 transition-colors"
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               <motion.div
                 animate={isMobileMenuOpen ? "open" : "closed"}
-                variants={{
-                  open: { rotate: 90, scale: 1 },
-                  closed: { rotate: 0, scale: 1 },
-                }}
+                variants={{ open: { rotate: 90, scale: 1 }, closed: { rotate: 0, scale: 1 } }}
                 transition={{ duration: 0.2 }}
               >
-                {isMobileMenuOpen ? (
-                  <X className="w-5 h-5 text-[#111111] group-hover:text-white" />
-                ) : (
-                  <Menu className="w-5 h-5 text-[#111111] group-hover:text-white" />
-                )}
+                {isMobileMenuOpen ? <X className="w-5 h-5 text-[#111111]" /> : <Menu className="w-5 h-5 text-[#111111]" />}
               </motion.div>
             </button>
           </div>
@@ -315,66 +330,67 @@ function Nav() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-md flex flex-col"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[60] bg-[#0A0A0A] flex flex-col"
           >
-            {/* Close button */}
-            <div className="flex items-center justify-between px-6 h-[80px]">
-              <Link to="/" className="flex items-center space-x-3 group" onClick={() => setIsMobileMenuOpen(false)}>
-                <div className="w-6 h-6 bg-[#FF4D00] flex items-center justify-center">
-                  <span className="text-white font-bold text-[10px]">X</span>
+            {/* Header bar */}
+            <div className="flex items-center justify-between px-5 h-[64px] md:h-[72px] border-b border-white/8">
+              <Link to="/" className="flex items-center gap-2.5" onClick={() => setIsMobileMenuOpen(false)}>
+                <div className="w-7 h-7 bg-[#FF4D00] flex items-center justify-center rounded-lg">
+                  <span className="text-white font-bold text-[11px]">X</span>
                 </div>
-                <span className="text-sm font-bold tracking-tight uppercase text-white">xCelero Labs</span>
+                <span className="text-[13px] font-bold tracking-tight uppercase text-white">
+                  xCelero<span className="text-[#FF4D00]"> Labs</span>
+                </span>
               </Link>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-white/60 hover:text-white transition-colors rounded-sm hover:bg-white/10"
+                className="w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/10"
                 aria-label="Close menu"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Categorized nav links: centered vertically */}
-            <div className="flex-1 flex flex-col justify-center px-8 md:px-16 lg:px-24 overflow-y-auto">
+            {/* Nav links — scrollable */}
+            <div className="flex-1 overflow-y-auto px-5 py-6">
               {mobileNavGroups.map((group, groupIdx) => (
                 <motion.div
                   key={group.label}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: groupIdx * 0.1, duration: 0.4 }}
-                  className={groupIdx < mobileNavGroups.length - 1 ? "mb-8 md:mb-10" : ""}
+                  transition={{ delay: groupIdx * 0.08, duration: 0.3 }}
+                  className={groupIdx < mobileNavGroups.length - 1 ? "mb-8" : ""}
                 >
-                  {/* Category label with extending line */}
+                  {/* Category label */}
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-[#FF4D00] whitespace-nowrap">
                       {group.label}
                     </span>
-                    <div className="flex-1 h-px bg-white/10" />
+                    <div className="flex-1 h-px bg-white/8" />
                   </div>
 
-                  {/* Links within category */}
-                  <div className="flex flex-col gap-2">
+                  {/* Links */}
+                  <div className="flex flex-col gap-0.5">
                     {group.links.map((item) => {
                       const isActive = path === item.path;
                       return (
                         <Link
                           key={item.name}
                           to={item.path}
-                          className={`text-2xl sm:text-3xl font-display font-medium tracking-tight transition-colors flex items-center gap-2 ${
+                          className={`flex items-center gap-3 py-2.5 px-3 rounded-xl text-[18px] font-display font-medium tracking-tight transition-all duration-200 ${
                             isActive
-                              ? "text-[#FF4D00]"
-                              : "text-white/60 hover:text-[#FF4D00]"
+                              ? "text-[#FF4D00] bg-[#FF4D00]/8"
+                              : "text-white/70 hover:text-white hover:bg-white/5"
                           }`}
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          {isActive && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] flex-shrink-0" />
-                          )}
+                          {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] flex-shrink-0" />}
                           {item.name}
+                          {!isActive && <ArrowRight className="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-30" />}
                         </Link>
                       );
                     })}
@@ -384,31 +400,20 @@ function Nav() {
             </div>
 
             {/* Bottom CTAs */}
-            <div
-              className="px-6 pb-16 flex flex-col sm:flex-row items-center justify-center gap-4"
-              style={{ paddingBottom: 'max(4rem, calc(4rem + env(safe-area-inset-bottom, 0px)))' }}
-            >
+            <div className="px-5 py-5 border-t border-white/8 flex gap-3">
               <Link
                 to="/townsquare"
-                className="min-h-[44px] px-8 py-3 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-widest hover:bg-[#FF4D00]/90 transition-colors inline-flex items-center justify-center gap-2"
                 onClick={() => setIsMobileMenuOpen(false)}
+                className="flex-1 py-3 bg-[#FF4D00] text-white text-[12px] font-bold tracking-[0.05em] rounded-xl text-center hover:bg-[#FF6A28] transition-colors flex items-center justify-center gap-2"
               >
-                <LogIn className="w-4 h-4" />
-                Sign In
-              </Link>
-              <Link
-                to="/capital"
-                className="min-h-[44px] px-8 py-3 border border-white/20 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-white hover:text-[#111111] transition-colors inline-flex items-center justify-center"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Invest Now
+                <LogIn className="w-4 h-4" /> Sign In
               </Link>
               <Link
                 to="/join"
-                className="min-h-[44px] px-8 py-3 border border-white/20 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-white hover:text-[#111111] transition-colors inline-flex items-center justify-center"
                 onClick={() => setIsMobileMenuOpen(false)}
+                className="flex-1 py-3 border border-white/20 text-white text-[12px] font-bold tracking-[0.05em] rounded-xl text-center hover:bg-white hover:text-[#0A0A0A] transition-colors flex items-center justify-center gap-2"
               >
-                Join
+                Join <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </motion.div>
