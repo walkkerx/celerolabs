@@ -345,17 +345,21 @@ function OnboardingFlow({ onComplete }: { onComplete: (user: ForumUser) => void 
       const avatarColor = ROLE_COLORS[role] || "#6b7280";
       let finalAvatarUrl = avatarUrl;
 
-      // Upload avatar file if selected
+      // Upload avatar file if selected (skip gracefully if /api/upload doesn't exist)
       if (avatarFile) {
-        const formData = new FormData();
-        formData.append("file", avatarFile);
-        const uploadRes = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-        if (uploadRes.ok) {
-          const uploadData = await uploadRes.json();
-          finalAvatarUrl = uploadData.url;
+        try {
+          const formData = new FormData();
+          formData.append("file", avatarFile);
+          const uploadRes = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+          if (uploadRes.ok) {
+            const uploadData = await uploadRes.json();
+            finalAvatarUrl = uploadData.url;
+          }
+        } catch (uploadErr) {
+          console.warn("Avatar upload skipped:", uploadErr);
         }
       }
 
@@ -376,7 +380,8 @@ function OnboardingFlow({ onComplete }: { onComplete: (user: ForumUser) => void 
       });
 
       if (!res.ok) {
-        const err = await res.json();
+        let err;
+        try { err = await res.json(); } catch { err = { error: `Server returned ${res.status}` }; }
         console.error("Failed to create user:", err);
         setIsSubmitting(false);
         return;
@@ -387,8 +392,8 @@ function OnboardingFlow({ onComplete }: { onComplete: (user: ForumUser) => void 
       // Store user ID in localStorage
       localStorage.setItem("xcelero_townsquare_user_id", user.id);
 
-      // Seed the database with sample data
-      await fetch("/api/forum/seed", { method: "POST" }).catch(() => {});
+      // Seed the database with sample data (use public init route, not admin-gated seed)
+      await fetch("/api/forum/init").catch(() => {});
 
       onComplete(user);
     } catch (err) {
@@ -1044,8 +1049,8 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
   // Initial seed + fetch
   useEffect(() => {
     const init = async () => {
-      // Seed on first load
-      await fetch("/api/forum/seed", { method: "POST" }).catch(() => {});
+      // Seed on first load (public init route, not admin-gated seed)
+      await fetch("/api/forum/init").catch(() => {});
       await fetchPosts();
     };
     init();
