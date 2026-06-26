@@ -52,30 +52,34 @@ function Router() {
     if (path === "/about") return <About />;
     if (path === "/infrastructure") return <Infrastructure />;
     if (path === "/admin") return <AdminDashboard />;
-    // 404 fallback
+    // 404 fallback — branded dark experience
     return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-white text-[#111111]">
-        <div className="max-w-xl mx-auto text-center px-6 py-24">
-          <p className="font-mono text-[10px] tracking-[0.4em] text-[#FF4D00] mb-6">404</p>
-          <h1 className="text-[80px] md:text-[120px] font-display font-medium leading-none tracking-tighter mb-6">404</h1>
-          <h2 className="text-2xl md:text-3xl font-display font-medium tracking-tight mb-4">Page Not Found</h2>
-          <p className="text-[#111111]/50 font-medium leading-relaxed mb-10">
-            The page you&apos;re looking for doesn&apos;t exist or has been moved.
+      <div className="min-h-[80vh] flex items-center justify-center bg-[#0A0A0A] text-white px-6">
+        <div className="max-w-lg mx-auto text-center">
+          <div className="flex items-center justify-center gap-2.5 mb-10">
+            <div className="w-8 h-8 bg-[#FF4D00] flex items-center justify-center rounded-lg">
+              <span className="text-white font-bold text-[12px]">X</span>
+            </div>
+            <span className="text-[13px] font-bold tracking-tight uppercase">xCelero<span className="text-[#FF4D00]"> Labs</span></span>
+          </div>
+          <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-[#FF4D00] mb-4">Error 404</p>
+          <h1 className="text-[64px] md:text-[96px] font-display font-medium leading-none tracking-tighter mb-6">
+            Lost on<br /><span className="text-[#FF4D00]">the Route.</span>
+          </h1>
+          <p className="text-white/40 text-[15px] font-medium leading-[1.6] mb-10 max-w-sm mx-auto">
+            This page doesn&apos;t exist or has been moved. Let&aposs get you back on track.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
             <a
               href="#/"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-[#111111] text-white text-[12px] font-bold uppercase tracking-widest hover:bg-[#FF4D00] transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#FF4D00] text-white text-[11px] font-bold tracking-[0.05em] rounded-full hover:bg-[#FF6A28] transition-colors"
             >
               Return Home
             </a>
-          </div>
-          <div className="flex items-center justify-center gap-6 text-[11px] lowercase tracking-[0.1em] font-medium">
-            <a href="#/insights" className="text-[#111111]/40 hover:text-[#FF4D00] transition-colors">
-              Back to Insights
-            </a>
-            <span className="text-[#111111]/20">|</span>
-            <a href="#/ventures" className="text-[#111111]/40 hover:text-[#FF4D00] transition-colors">
+            <a
+              href="#/ventures"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-white/20 text-white text-[11px] font-bold tracking-[0.05em] rounded-full hover:bg-white hover:text-[#0A0A0A] transition-colors"
+            >
               View Ventures
             </a>
           </div>
