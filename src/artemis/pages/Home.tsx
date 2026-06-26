@@ -680,7 +680,7 @@ function FourPillarsEngine() {
     <section ref={ref} className="py-24 md:py-32 bg-white">
       <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 md:mb-24">
           <div>
             <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00] block mb-4">
               Four pillars, one engine
@@ -697,58 +697,60 @@ function FourPillarsEngine() {
           </p>
         </div>
 
-        {/* Expanded 2x2 grid — all pillars visible at once */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        {/* Alternating full-width rows — magazine feature style */}
+        <div className="space-y-16 md:space-y-24">
           {showcasePillars.map((pillar, i) => {
             const PIcon = pillar.icon;
+            const isReversed = i % 2 === 1;
             return (
               <motion.div
                 key={pillar.id}
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
-                className="group relative border border-[#111111]/12 hover:border-[#FF4D00] transition-colors overflow-hidden"
+                transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
+                className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center"
               >
-                {/* Image header */}
-                <div className="relative w-full h-[180px] md:h-[200px] overflow-hidden bg-[#0A0A0A]">
+                {/* Image — alternating side */}
+                <div className={`relative overflow-hidden bg-[#0A0A0A] aspect-[4/3] lg:aspect-auto lg:h-[420px] lg:col-span-7 ${isReversed ? "lg:order-2" : ""}`}>
                   <img
                     src={pillar.image}
                     alt={pillar.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover"
                     style={{ objectPosition: "center 40%" }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/80 via-[#0A0A0A]/20 to-transparent" />
-                  {/* Pillar number + icon on image */}
-                  <div className="absolute top-4 left-4 flex items-center gap-2">
-                    <span className="text-[9px] font-mono font-bold tracking-[0.2em] text-white bg-[#FF4D00] px-2 py-1">
-                      {pillar.label}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white">
-                    <PIcon className="w-5 h-5 text-[#FF4D00]" strokeWidth={1.5} />
-                    <h3 className="font-display font-medium tracking-tight text-[22px] md:text-[26px]">
-                      {pillar.title}
-                    </h3>
-                  </div>
-                  <span className="absolute bottom-4 right-4 text-[10px] font-mono tracking-[0.15em] uppercase text-white/60">
-                    {pillar.tagline}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/60 via-transparent to-transparent" />
+                  {/* Giant watermark number */}
+                  <span className="absolute top-4 left-4 md:top-6 md:left-6 font-display font-medium text-[80px] md:text-[120px] leading-none text-white/15 select-none pointer-events-none">
+                    {pillar.label}
                   </span>
+                  {/* Icon + tagline on image */}
+                  <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 flex items-center gap-2 text-white">
+                    <PIcon className="w-5 h-5 text-[#FF4D00]" strokeWidth={1.5} />
+                    <span className="text-[11px] font-mono font-bold tracking-[0.2em] uppercase">{pillar.tagline}</span>
+                  </div>
                 </div>
 
-                {/* Content */}
-                <div className="p-6 md:p-7">
-                  <p className="text-[14px] md:text-[15px] text-[#111111]/70 font-medium leading-[1.6] mb-6">
+                {/* Content — alternating side */}
+                <div className={`lg:col-span-5 ${isReversed ? "lg:order-1 lg:pr-8" : "lg:pl-8"}`}>
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#FF4D00]">{pillar.label}</span>
+                    <div className="flex-1 h-px bg-[#111111]/15" />
+                  </div>
+                  <h3 className="font-display font-medium tracking-[-0.02em] text-[32px] md:text-[44px] lg:text-[52px] leading-[1] mb-5 text-[#111111]">
+                    {pillar.title}
+                  </h3>
+                  <p className="text-[15px] md:text-[16px] text-[#111111]/70 font-medium leading-[1.65] mb-8">
                     {pillar.description}
                   </p>
 
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-4 mb-6">
+                  {/* Stats — horizontal row */}
+                  <div className="flex gap-8 mb-8">
                     {pillar.stats.map((s) => (
-                      <div key={s.label} className="border-t border-[#111111]/15 pt-3">
-                        <p className="font-display font-medium text-[22px] md:text-[26px] tracking-tight text-[#111111] leading-none">
+                      <div key={s.label}>
+                        <p className="font-display font-medium text-[28px] md:text-[34px] tracking-tight text-[#111111] leading-none">
                           {s.value}
                         </p>
-                        <p className="text-[9px] md:text-[10px] font-mono tracking-[0.1em] uppercase text-[#111111]/45 mt-2">
+                        <p className="text-[10px] font-mono tracking-[0.1em] uppercase text-[#111111]/45 mt-2">
                           {s.label}
                         </p>
                       </div>
@@ -758,10 +760,12 @@ function FourPillarsEngine() {
                   {/* CTA */}
                   <Link
                     to={pillar.link}
-                    className="group/btn inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/60 hover:text-[#FF4D00] transition-colors"
+                    className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111] hover:text-[#FF4D00] transition-colors"
                   >
-                    Explore {pillar.title}
-                    <ArrowUpRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                    <span className="border-b border-[#111111]/30 group-hover:border-[#FF4D00] pb-1 transition-colors">
+                      Explore {pillar.title}
+                    </span>
+                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </Link>
                 </div>
               </motion.div>

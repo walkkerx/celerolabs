@@ -171,7 +171,6 @@ function Nav() {
       links: [
         { name: "About", path: "/about" },
         { name: "How We Work", path: "/approach" },
-        { name: "How We Work · Alt", path: "/approach-alt" },
         { name: "Manifesto", path: "/manifesto" },
       ],
     },
@@ -179,7 +178,6 @@ function Nav() {
       label: "Platform",
       links: [
         { name: "Infrastructure", path: "/infrastructure" },
-        { name: "Infrastructure · Alt", path: "/infrastructure-alt" },
         { name: "Routes", path: "/routes" },
         { name: "Ventures", path: "/ventures" },
       ],
@@ -188,7 +186,6 @@ function Nav() {
       label: "Network",
       links: [
         { name: "Capital", path: "/capital" },
-        { name: "Capital · Alt", path: "/capital-alt" },
         { name: "Programs", path: "/programs" },
         { name: "Community", path: "/community" },
         { name: "Insights", path: "/insights" },
@@ -203,7 +200,6 @@ function Nav() {
       links: [
         { name: "About", path: "/about" },
         { name: "How We Work", path: "/approach" },
-        { name: "How We Work · Alt", path: "/approach-alt" },
         { name: "Manifesto", path: "/manifesto" },
       ],
     },
@@ -211,7 +207,6 @@ function Nav() {
       label: "The Platform",
       links: [
         { name: "Infrastructure", path: "/infrastructure" },
-        { name: "Infrastructure · Alt", path: "/infrastructure-alt" },
         { name: "Routes", path: "/routes" },
         { name: "Ventures", path: "/ventures" },
       ],
@@ -220,7 +215,6 @@ function Nav() {
       label: "Capital & Network",
       links: [
         { name: "Capital", path: "/capital" },
-        { name: "Capital · Alt", path: "/capital-alt" },
         { name: "Programs", path: "/programs" },
         { name: "Community", path: "/community" },
         { name: "Careers", path: "/careers" },

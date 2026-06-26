@@ -24,9 +24,6 @@ import { About } from "@/artemis/pages/About";
 import { InvestorDashboard } from "@/artemis/pages/InvestorDashboard";
 import { AdminDashboard } from "@/artemis/pages/AdminDashboard";
 import { Infrastructure } from "@/artemis/pages/Infrastructure";
-import { CapitalAlt } from "@/artemis/pages/CapitalAlt";
-import { ApproachAlt } from "@/artemis/pages/ApproachAlt";
-import { InfrastructureAlt } from "@/artemis/pages/InfrastructureAlt";
 
 function Router() {
   const { path } = useRouter();
@@ -45,9 +42,6 @@ function Router() {
     if (path === "/insights") return <Insights />;
     if (path.startsWith("/insights/")) return <InsightDetail />;
     if (path === "/capital") return <Capital />;
-    if (path === "/capital-alt") return <CapitalAlt />;
-    if (path === "/approach-alt") return <ApproachAlt />;
-    if (path === "/infrastructure-alt") return <InfrastructureAlt />;
     if (path === "/join") return <JoinPage />;
     if (path === "/careers") return <CareersPage />;
     if (path === "/team") return <Team />;
