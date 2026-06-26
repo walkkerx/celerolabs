@@ -454,3 +454,27 @@ Stage Summary:
 - FourPillarsEngine now expanded: all 4 pillars visible at once in a 2x2 grid (no click-to-reveal)
 - 9 old alt pages removed; 3 improved alt pages built (CapitalAlt, ApproachAlt, InfrastructureAlt) — each a better version of its current page
 - Routes + nav wired; lint clean; pushed to github.com/walkkerx/celerolabs
+
+---
+Task ID: pillars-alt-layout-remove-alts
+Agent: main
+Task: Try another layout for Four pillars one engine, remove alt pages
+
+Work Log:
+- Removed 3 alt pages (CapitalAlt, ApproachAlt, InfrastructureAlt) + their routes in page.tsx + nav entries in Layout.tsx. Nav restored to original 3 groups (Company/Platform/Network).
+- Redesigned FourPillarsEngine with a fresh "magazine-feature alternating" layout (distinct from the previous 2x2 grid):
+  - Each of the 4 pillars is now a full-width row (not a card in a grid)
+  - Image (lg:col-span-7, 420px tall) and content (lg:col-span-5) alternate sides per pillar (odd = image left, even = image right) using lg:order-1/2
+  - Giant watermark pillar number (01-04) overlaid on image at 120px, white/15 opacity
+  - Icon + tagline overlaid on image bottom-left
+  - Content side: pillar number + divider line, large title (52px), description, horizontal stats row (not grid), underlined "Explore" CTA with arrow
+  - Generous spacing (space-y-24 between pillars) for editorial pacing
+  - All 4 pillars fully visible without interaction (no tabs, no click-to-reveal)
+- Ran `bun run lint` → clean
+- Agent Browser verified: all 4 pillars render (Infrastructure, Ventures, Capital, Community), "One machine" heading present, pillarCount:4
+- Committed + pushed to GitHub (commit 8ede834, 6 files, +38/-557)
+
+Stage Summary:
+- Four Pillars section redesigned with alternating full-width magazine layout (image/content flip sides per pillar)
+- All alt pages removed; nav cleaned back to original
+- Lint clean, pushed to github.com/walkkerx/celerolabs
