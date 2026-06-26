@@ -1210,6 +1210,15 @@ function RouteJourney() {
   const rjInView = useInView(rjRef, { once: true, margin: "-80px" });
   const legs = routeLegs.slice(0, 6);
 
+  const legImages: Record<string, string> = {
+    "gulf-of-guinea": "/routes/gulf-of-guinea-1.png",
+    "sahel-band": "/routes/sahel-1.png",
+    "east-african": "/routes/east-african-1.png",
+    "central-african": "/routes/central-african-1.png",
+    "southern-arc": "/routes/southern-arc-1.png",
+    "north-africa-global": "/routes/north-africa-1.png",
+  };
+
   return (
     <div ref={rjRef} className="mb-16 md:mb-24">
       {/* Horizontal scroll cards */}
@@ -1224,48 +1233,61 @@ function RouteJourney() {
             >
               <Link
                 to="/routes"
-                className="group block w-[280px] md:w-[320px] border border-[#111111]/12 hover:border-[#FF4D00] bg-white hover:bg-[#FF4D00]/5 transition-colors p-6 md:p-7 h-full"
+                className="group block w-[280px] md:w-[320px] border border-[#111111]/12 hover:border-[#FF4D00] bg-white hover:bg-[#FF4D00]/5 transition-colors overflow-hidden h-full"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#FF4D00]">
-                    LEG {leg.legNumber}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-[10px] font-mono tracking-[0.1em] text-[#111111]/40">
-                    <MapPin className="w-3 h-3" />
-                    {leg.hubCount} hubs
-                  </span>
-                </div>
-
-                <h4 className="font-display font-medium tracking-tight text-[22px] md:text-[24px] leading-[1.15] mb-2 group-hover:text-[#FF4D00] transition-colors">
-                  {leg.name}
-                </h4>
-                <p className="text-[12px] text-[#111111]/40 italic font-medium leading-[1.5] mb-5 line-clamp-2">
-                  &ldquo;{leg.subtitle}&rdquo;
-                </p>
-
-                <div className="border-t border-[#111111]/10 pt-4">
-                  <p className="text-[9px] font-mono tracking-[0.15em] uppercase text-[#111111]/30 mb-1.5">
-                    Primary flow
-                  </p>
-                  <p className="text-[12px] text-[#111111]/65 font-medium leading-[1.5] line-clamp-2">
-                    {leg.primaryFlow}
-                  </p>
-                </div>
-
-                <div className="mt-5 flex flex-wrap gap-1.5">
-                  {leg.countries.slice(0, 4).map((c) => (
-                    <span
-                      key={c}
-                      className="text-[9px] font-mono tracking-[0.05em] uppercase text-[#111111]/50 border border-[#111111]/12 px-2 py-1"
-                    >
-                      {c}
+                {/* Leg image */}
+                <div className="relative w-full h-[140px] md:h-[160px] overflow-hidden bg-[#F5F5F5]">
+                  <img
+                    src={legImages[leg.id]}
+                    alt={leg.name}
+                    className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/40 to-transparent" />
+                  {/* Leg number badge on image */}
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                    <span className="text-[9px] font-mono font-bold tracking-[0.2em] text-white bg-[#FF4D00] px-2 py-1">
+                      LEG {leg.legNumber}
                     </span>
-                  ))}
+                  </div>
+                  {/* Hub count on image */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1 text-[9px] font-mono tracking-[0.1em] text-white/90 bg-black/40 backdrop-blur-sm px-2 py-1">
+                    <MapPin className="w-2.5 h-2.5" />
+                    {leg.hubCount} hubs
+                  </div>
                 </div>
 
-                <div className="mt-6 flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/30 group-hover:text-[#FF4D00] transition-colors">
-                  Enter leg
-                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                <div className="p-6 md:p-7">
+                  <h4 className="font-display font-medium tracking-tight text-[22px] md:text-[24px] leading-[1.15] mb-2 group-hover:text-[#FF4D00] transition-colors">
+                    {leg.name}
+                  </h4>
+                  <p className="text-[12px] text-[#111111]/40 italic font-medium leading-[1.5] mb-5 line-clamp-2">
+                    &ldquo;{leg.subtitle}&rdquo;
+                  </p>
+
+                  <div className="border-t border-[#111111]/10 pt-4">
+                    <p className="text-[9px] font-mono tracking-[0.15em] uppercase text-[#111111]/30 mb-1.5">
+                      Primary flow
+                    </p>
+                    <p className="text-[12px] text-[#111111]/65 font-medium leading-[1.5] line-clamp-2">
+                      {leg.primaryFlow}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {leg.countries.slice(0, 4).map((c) => (
+                      <span
+                        key={c}
+                        className="text-[9px] font-mono tracking-[0.05em] uppercase text-[#111111]/50 border border-[#111111]/12 px-2 py-1"
+                      >
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/30 group-hover:text-[#FF4D00] transition-colors">
+                    Enter leg
+                    <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               </Link>
             </motion.div>
