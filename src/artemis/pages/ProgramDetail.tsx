@@ -588,31 +588,55 @@ export function ProgramDetail() {
              </p>
            </div>
 
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-[#1B1C1E]/10 bg-[#FAFAFA]">
-              {program.ideas.map((idea, i) => (
-                 <div key={i} className="p-6 sm:p-8 border-r border-b border-[#1B1C1E]/10 flex flex-col transition-colors duration-300 cursor-pointer group min-h-[280px] sm:min-h-[400px] hover:bg-white hover:shadow-xl relative z-10 bg-[#FAFAFA]">
-                    <div className="flex items-center gap-4 mb-24">
-                       <div className="w-12 h-12 rounded-full shrink-0 border border-[#1B1C1E]/10 bg-[#FF4D00]/10 flex items-center justify-center">
-                          <span className="text-[#FF4D00] font-display font-bold text-sm">AF</span>
-                       </div>
-                       <div>
-                          <div className="font-medium text-[#1B1C1E]">Alumni Founder</div>
-                          <div className="text-sm text-[#1B1C1E]/60">xCelero Network</div>
-                       </div>
-                    </div>
-                    <div className="mt-auto">
-                       <h3 className="text-2xl font-medium mb-4 text-[#1B1C1E] transition-colors duration-300 group-hover:text-[#FF4D00]">{idea.title}</h3>
-                       <div className="text-[#1B1C1E]/60 leading-relaxed transition-colors duration-300 group-hover:text-[#1B1C1E] relative pr-6">
-                          {idea.desc}
-                          <div className="absolute right-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7 17L17 7M17 7H7M17 7V17" stroke="#FF4D00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                             </svg>
+           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {program.ideas.map((idea, i) => {
+                 const tag = idea.desc.match(/\[([^\]]+)\]/);
+                 const vertical = tag ? tag[1] : "Opportunity";
+                 const cleanDesc = idea.desc.replace(/\s*\[[^\]]+\]\s*$/, "");
+                 return (
+                    <div key={i} className="group block text-left w-full">
+                       <div className="relative bg-[#111111] text-white overflow-hidden transition-all duration-200 group-hover:scale-[1.02] group-hover:brightness-110 group-hover:ring-1 group-hover:ring-[#FF4D00]">
+                          {/* Top section: name + code */}
+                          <div className="p-4 pb-3">
+                             <div className="flex items-start justify-between gap-2">
+                                <div className="min-w-0 flex-1">
+                                   <h3 className="text-sm font-display font-bold text-white leading-tight truncate">
+                                      {idea.title}
+                                   </h3>
+                                   <span className="text-[10px] font-mono text-white/50 tracking-wider mt-1 block">
+                                      IDEA-{String(i + 1).padStart(3, "0")}
+                                   </span>
+                                </div>
+                             </div>
+                             <div className="mt-2.5">
+                                <span className="inline-block px-2 py-0.5 bg-white/10 text-[9px] font-mono uppercase tracking-widest text-white/70">
+                                   {vertical}
+                                </span>
+                             </div>
+                          </div>
+                          {/* Middle: description */}
+                          <div className="px-4 pb-3">
+                             <p className="text-[11px] text-white/70 leading-relaxed line-clamp-2">
+                                {cleanDesc}
+                             </p>
+                          </div>
+                          {/* Bottom: alumni founder */}
+                          <div className="px-4 pb-4 pt-1">
+                             <span className="text-[9px] font-mono uppercase tracking-widest text-white/30 block mb-0.5">
+                                Alumni Founder
+                             </span>
+                             <span className="text-[11px] text-white/60 leading-snug line-clamp-1 block">
+                                xCelero Network
+                             </span>
+                          </div>
+                          {/* Bottom-right orange square */}
+                          <div className="absolute bottom-3 right-3 w-8 h-8 bg-[#FF4D00] flex items-center justify-center font-display font-bold text-sm text-white">
+                             {idea.title.charAt(0)}
                           </div>
                        </div>
                     </div>
-                 </div>
-              ))}
+                 );
+              })}
            </div>
         </section>
       )}
