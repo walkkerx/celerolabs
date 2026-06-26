@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "### (A) Backend Changes\n- **API Routes:**\n  - `GET /api/seed` - Public endpoint to seed initial posts (10 per community)\n  - `GET /api/posts?community=*&cursor=*` - Cursor-based pagination\n  - `GET /api/search?q=*` - Full-text search on posts/users (SQLite FTS5)\n  - `POST /api/vote` - Transactional vote (postId/commentId, direction, userId)\n  - `POST /api/heart` - Heart/unheart a post\n  - `GET /api/posts/[id]` - Single post with comments (nested pagination)\n  \n- **Database Indexes:**\n  - `ForumPost(community, createdAt DESC)`\n  - `ForumComment(postId, createdAt)`\n  - `ForumVote(userId, postId)` + `ForumVote(userId, commentId)`\n  - `ForumHeart(userId, postId)`\n  - `ForumSearch` virtual table for FTS5\n\n### (B) Frontend Architecture\n- **State Management:** React Query with SWR-like hooks for caching\n- **Infinite Scroll:** `useIntersectionObserver` + cursor-based fetching\n- **Optimistic Updates:** Mutate cache locally, rollback on error\n- **Virtualization:** `react-window` for long lists\n- **Component Split:** \n  - `TownSquare/` container\n  - `components/PostCard`, `CommentList`, `VoteButton`\n  - `hooks/usePosts`, `useVote`\n\n### (C) File Structure\n```\ncomponents/\n  TownSquare/\n    PostCard.tsx\n    CommentList.tsx\n    VoteButton.tsx\n    SearchBar.tsx\n  layout/\n    Header.tsx\n    Sidebar.tsx\nhooks/\n  usePosts.ts\n  useVote.ts\n  useSearch.ts\nlib/\n  api.ts\n  db.ts\n  types.ts\npages/\n  api/\n    posts/\n      [id].ts\n    search.ts\n    vote.ts\n    heart.ts\n    seed.ts\n```\n\n### (D) Top 8 Implementation Decisions\n1. **Cursor-based pagination** - Replace offset for infinite scroll performance\n2. **React Query for caching** - Eliminate full refetches on interactions\n3. **Optimistic UI updates** - Immediate feedback with rollback\n4. **Virtualized scrolling** - Handle 10k+ posts without DOM bloat\n5. **SQLite FTS5 search** - Fast text search without external service\n6. **Transaction-based voting** - Prevent race conditions\n7. **Component modularization** - Split 2518-line file into logical units\n8. **Server-side seeding** - Fix empty forum for new users\n\nPrioritize 1-3 first to solve the biggest scalability bottlenecks.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782430778,
+  "id": "2026062607393219970f4ca6414e21",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "2026062607393219970f4ca6414e21",
+  "usage": {
+    "completion_tokens": 586,
+    "prompt_tokens": 505,
+    "total_tokens": 1091
+  }
+}
