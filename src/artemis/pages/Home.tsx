@@ -673,11 +673,8 @@ function OperatingBeliefsSection() {
    FOUR PILLARS, ONE ENGINE — interactive tabbed showcase (transferred from Home 2)
    ══════════════════════════════════════════════════════════════════════════ */
 function FourPillarsEngine() {
-  const [active, setActive] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const pillar = showcasePillars[active];
-  const Icon = pillar.icon;
 
   return (
     <section ref={ref} className="py-24 md:py-32 bg-white">
@@ -700,119 +697,77 @@ function FourPillarsEngine() {
           </p>
         </div>
 
-        {/* Pillar selector tabs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-10 md:mb-14">
-          {showcasePillars.map((p, i) => {
-            const PIcon = p.icon;
-            const isActive = i === active;
+        {/* Expanded 2x2 grid — all pillars visible at once */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {showcasePillars.map((pillar, i) => {
+            const PIcon = pillar.icon;
             return (
-              <button
-                key={p.id}
-                onClick={() => setActive(i)}
-                className={`group relative text-left p-5 md:p-6 border transition-all duration-300 ${
-                  isActive
-                    ? "border-[#FF4D00] bg-[#FF4D00]/5"
-                    : "border-[#111111]/12 hover:border-[#111111]/40 bg-white"
-                }`}
+              <motion.div
+                key={pillar.id}
+                initial={{ opacity: 0, y: 24 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
+                className="group relative border border-[#111111]/12 hover:border-[#FF4D00] transition-colors overflow-hidden"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <PIcon
-                    className={`w-5 h-5 transition-colors ${
-                      isActive ? "text-[#FF4D00]" : "text-[#111111]/40"
-                    }`}
-                    strokeWidth={1.5}
+                {/* Image header */}
+                <div className="relative w-full h-[180px] md:h-[200px] overflow-hidden bg-[#0A0A0A]">
+                  <img
+                    src={pillar.image}
+                    alt={pillar.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    style={{ objectPosition: "center 40%" }}
                   />
-                  <span
-                    className={`text-[10px] font-mono tracking-[0.2em] ${
-                      isActive ? "text-[#FF4D00]" : "text-[#111111]/30"
-                    }`}
-                  >
-                    {p.label}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/80 via-[#0A0A0A]/20 to-transparent" />
+                  {/* Pillar number + icon on image */}
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <span className="text-[9px] font-mono font-bold tracking-[0.2em] text-white bg-[#FF4D00] px-2 py-1">
+                      {pillar.label}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white">
+                    <PIcon className="w-5 h-5 text-[#FF4D00]" strokeWidth={1.5} />
+                    <h3 className="font-display font-medium tracking-tight text-[22px] md:text-[26px]">
+                      {pillar.title}
+                    </h3>
+                  </div>
+                  <span className="absolute bottom-4 right-4 text-[10px] font-mono tracking-[0.15em] uppercase text-white/60">
+                    {pillar.tagline}
                   </span>
                 </div>
-                <p
-                  className={`font-display font-medium tracking-tight text-[18px] md:text-[20px] transition-colors ${
-                    isActive ? "text-[#111111]" : "text-[#111111]/60"
-                  }`}
-                >
-                  {p.title}
-                </p>
-                <p className="text-[11px] text-[#111111]/40 font-medium mt-1 hidden md:block">
-                  {p.tagline}
-                </p>
-                {isActive && (
-                  <motion.span
-                    layoutId="pillar-active-bar"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FF4D00]"
-                  />
-                )}
-              </button>
+
+                {/* Content */}
+                <div className="p-6 md:p-7">
+                  <p className="text-[14px] md:text-[15px] text-[#111111]/70 font-medium leading-[1.6] mb-6">
+                    {pillar.description}
+                  </p>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-4 mb-6">
+                    {pillar.stats.map((s) => (
+                      <div key={s.label} className="border-t border-[#111111]/15 pt-3">
+                        <p className="font-display font-medium text-[22px] md:text-[26px] tracking-tight text-[#111111] leading-none">
+                          {s.value}
+                        </p>
+                        <p className="text-[9px] md:text-[10px] font-mono tracking-[0.1em] uppercase text-[#111111]/45 mt-2">
+                          {s.label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* CTA */}
+                  <Link
+                    to={pillar.link}
+                    className="group/btn inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/60 hover:text-[#FF4D00] transition-colors"
+                  >
+                    Explore {pillar.title}
+                    <ArrowUpRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                  </Link>
+                </div>
+              </motion.div>
             );
           })}
         </div>
-
-        {/* Active pillar panel */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={pillar.id}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.45, ease: EASE }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch"
-          >
-            {/* Image */}
-            <div className="relative overflow-hidden min-h-[320px] lg:min-h-[460px] bg-[#0A0A0A]">
-              <img
-                src={pillar.image}
-                alt={pillar.title}
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ objectPosition: "center 40%" }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/70 via-transparent to-transparent" />
-              <div className="absolute top-6 left-6 flex items-center gap-2 text-white">
-                <Icon className="w-5 h-5 text-[#FF4D00]" strokeWidth={1.5} />
-                <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase">
-                  {pillar.title}
-                </span>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="flex flex-col justify-between p-2 md:p-4">
-              <div>
-                <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00] block mb-4">
-                  Pillar {pillar.label} — {pillar.tagline}
-                </span>
-                <p className="text-[16px] md:text-[18px] text-[#111111]/80 font-medium leading-[1.65] mb-8">
-                  {pillar.description}
-                </p>
-
-                {/* Stats */}
-                <div className="grid grid-cols-3 gap-4 md:gap-6 mb-8">
-                  {pillar.stats.map((s) => (
-                    <div key={s.label} className="border-t border-[#111111]/15 pt-3">
-                      <p className="font-display font-medium text-[26px] md:text-[34px] tracking-tight text-[#111111] leading-none">
-                        {s.value}
-                      </p>
-                      <p className="text-[10px] md:text-[11px] font-mono tracking-[0.1em] uppercase text-[#111111]/45 mt-2">
-                        {s.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <Link
-                to={pillar.link}
-                className="group inline-flex items-center gap-2 self-start px-6 py-3.5 bg-[#111111] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#FF4D00] transition-colors"
-              >
-                Explore {pillar.title}
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </Link>
-            </div>
-          </motion.div>
-        </AnimatePresence>
       </div>
     </section>
   );

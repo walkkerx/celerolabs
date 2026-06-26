@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "1. CAPITAL page: Replace tabbed vehicles with a visual ecosystem map showing relationships between capital sources and investment stages. Sections: Hero with value prop, Interactive capital ecosystem, Investment philosophy, Tiers with context (not just $), Curated portfolio examples.\n\n2. HOW WE WORK page: Transform from process to narrative by framing as \"Our Partnership Journey.\" Sections: Hero with partnership promise, The Founder's Journey (visual timeline), Our approach (not pillars), What success looks like, Real founder stories.\n\n3. INFRASTRUCTURE page: Create a single \"Operating System\" metaphor to unify all components. Sections: Hero with thesis, The OS overview, Core components (not fragmented), How it serves founders, Outcomes/proof points.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1782483375,
+  "id": "202606262216134a488ebbdbc44762",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "202606262216134a488ebbdbc44762",
+  "usage": {
+    "completion_tokens": 150,
+    "prompt_tokens": 257,
+    "total_tokens": 407
+  }
+}

@@ -24,15 +24,9 @@ import { About } from "@/artemis/pages/About";
 import { InvestorDashboard } from "@/artemis/pages/InvestorDashboard";
 import { AdminDashboard } from "@/artemis/pages/AdminDashboard";
 import { Infrastructure } from "@/artemis/pages/Infrastructure";
-import { CapitalAlt1 } from "@/artemis/pages/CapitalAlt1";
-import { CapitalAlt2 } from "@/artemis/pages/CapitalAlt2";
-import { CapitalAlt3 } from "@/artemis/pages/CapitalAlt3";
-import { ApproachAlt1 } from "@/artemis/pages/ApproachAlt1";
-import { ApproachAlt2 } from "@/artemis/pages/ApproachAlt2";
-import { ApproachAlt3 } from "@/artemis/pages/ApproachAlt3";
-import { InfrastructureAlt1 } from "@/artemis/pages/InfrastructureAlt1";
-import { InfrastructureAlt2 } from "@/artemis/pages/InfrastructureAlt2";
-import { InfrastructureAlt3 } from "@/artemis/pages/InfrastructureAlt3";
+import { CapitalAlt } from "@/artemis/pages/CapitalAlt";
+import { ApproachAlt } from "@/artemis/pages/ApproachAlt";
+import { InfrastructureAlt } from "@/artemis/pages/InfrastructureAlt";
 
 function Router() {
   const { path } = useRouter();
@@ -51,15 +45,9 @@ function Router() {
     if (path === "/insights") return <Insights />;
     if (path.startsWith("/insights/")) return <InsightDetail />;
     if (path === "/capital") return <Capital />;
-    if (path === "/capital-alt-1") return <CapitalAlt1 />;
-    if (path === "/capital-alt-2") return <CapitalAlt2 />;
-    if (path === "/capital-alt-3") return <CapitalAlt3 />;
-    if (path === "/approach-alt-1") return <ApproachAlt1 />;
-    if (path === "/approach-alt-2") return <ApproachAlt2 />;
-    if (path === "/approach-alt-3") return <ApproachAlt3 />;
-    if (path === "/infrastructure-alt-1") return <InfrastructureAlt1 />;
-    if (path === "/infrastructure-alt-2") return <InfrastructureAlt2 />;
-    if (path === "/infrastructure-alt-3") return <InfrastructureAlt3 />;
+    if (path === "/capital-alt") return <CapitalAlt />;
+    if (path === "/approach-alt") return <ApproachAlt />;
+    if (path === "/infrastructure-alt") return <InfrastructureAlt />;
     if (path === "/join") return <JoinPage />;
     if (path === "/careers") return <CareersPage />;
     if (path === "/team") return <Team />;
