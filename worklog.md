@@ -590,3 +590,31 @@ Stage Summary:
 - 18 real global challenge data points in dual scrolling marquees (endless animation)
 - Data-driven (energy/water/food/health/finance/infrastructure deficits), no climate wokism
 - Mobile responsive, lint clean, pushed to github.com/walkkerx/celerolabs
+
+---
+Task ID: humanity-dashboard-rebuild
+Agent: main
+Task: Rebuild Project for Humanity section — was simplistic/vague/Africa-only. User referenced NASDAQ website for tracking events. Make it a serious global data dashboard.
+
+Work Log:
+- User feedback: the previous version was "simplistic, vague, and poor" — Africa-only data, simple marquee scroll, no data density. User referenced NASDAQ as adjacent to tracking events.
+- Used VLM to analyze the actual screenshot the user was seeing — confirmed: text-heavy, no visual hierarchy, no data viz, generic language, tacked-on dashboard bar with no actual dashboard
+- Completely rebuilt ProjectForHumanitySection as a Bloomberg/NASDAQ-style global dashboard:
+  - 16 worldwide human progress metrics (NOT Africa-only): Energy Access (733M without electricity — IEA), Clean Water (2.2B — WHO), Food Security (733M hungry — FAO), Sanitation (3.5B — WHO), Internet Access (2.6B offline — ITU), Financial Access (1.4B unbanked — World Bank), Healthcare Workers (55 countries below minimum — WHO), Education (244M children out of school — UNESCO), Forced Displacement (120M — UNHCR), Infrastructure Gap ($15T by 2040 — G20), Critical Minerals (3× demand — IEA), AI Compute Divide (75% in 5 countries — UNCTAD), Manufacturing (31 countries no pharma production — WHO), Grid Reliability ($44B lost/yr — World Bank), Cold Chain (33% vaccines lost — WHO), Skilled Labor (85M unfilled — WEF)
+  - Each metric has: value+unit, detail description, trend (worsening/improving/stagnant with color-coded arrows), source citation, severity badge (critical/high)
+  - Bloomberg-style data table with sortable columns, hover states, severity color bars
+  - Severity filter tabs (All / Critical / High) — interactive
+  - Live dashboard header bar: pulsing orange dot, "LIVE · GLOBAL HUMAN PROGRESS DASHBOARD", metric count, live "UPDATED Ns AGO" timer (increments every 3s)
+  - NASDAQ-style scrolling ticker bar at bottom (60s, hover-to-pause) showing all metrics compactly
+  - Color-coded by severity: critical=#FF4D00, high=#d97706, with severity badges
+  - "The deficits are compounding." headline + "Not forecasts. Not Africa-only." subtitle
+- Ran `bun run lint` → clean
+- Agent Browser verified: 16 table rows, 32 ticker items, filter works, dashboard header renders, mobile responsive (390px, no horizontal scroll — table scrolls horizontally)
+- Committed + pushed to GitHub (commit b4fe6b8)
+
+Stage Summary:
+- Project for Humanity rebuilt as a serious global data dashboard (Bloomberg/NASDAQ-style)
+- 16 worldwide metrics with sources, trends, severity — not Africa-only, not simplistic
+- Interactive: severity filter, live timer, hover-to-pause ticker
+- Data-dense table + scrolling ticker = the "tracking events" feel the user wanted
+- Mobile responsive, lint clean, pushed to github.com/walkkerx/celerolabs
