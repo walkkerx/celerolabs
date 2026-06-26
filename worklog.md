@@ -400,3 +400,30 @@ Stage Summary:
 - Operating Beliefs rewritten as Thiel-style contrarian sects (3 tenets with "most people think X / we believe Y" framing)
 - Section width fixed: dark block now contained within max-w-[1400px] with rounded corners, matching the site's contained-width rule
 - Lint clean, browser-verified
+
+---
+Task ID: route-leg-images-push
+Agent: main
+Task: Add images to the route leg cards (leg 1-6) on the home page, push changes to GitHub
+
+Work Log:
+- Read RouteJourney component in Home.tsx — 6 horizontal leg cards had no images, just text (leg number, hub count, name, subtitle, primary flow, countries)
+- Confirmed 6 matching images already exist in public/routes/: gulf-of-guinea-1.png, sahel-1.png, east-african-1.png, central-african-1.png, southern-arc-1.png, north-africa-1.png
+- Added legImages map (legId → image path) to RouteJourney
+- Redesigned each card: added 140px (mobile) / 160px (desktop) image header at top of card with:
+  - Grayscale by default, color + scale-105 on hover (500ms transition)
+  - Dark gradient overlay at bottom for text legibility
+  - Orange "LEG N" badge top-left
+  - Hub count badge (black/40 backdrop-blur) top-right
+  - Card content (name, subtitle, primary flow, countries, enter leg) below image in padding container
+  - overflow-hidden on card for clean image corners
+- Ran `bun run lint` → clean
+- Agent Browser verified: all 6 images load (imgCount:6, loaded:6), correct srcs for each leg
+- Committed: "feat: add images to home route leg cards (legs 1-6)" (1 file, +57/-35)
+- Pushed to GitHub: main branch updated (08d4528 → c8845b9). Remote verified.
+
+Stage Summary:
+- 6 route leg cards on home page now have header images (grayscale → color on hover)
+- Leg number + hub count badges overlaid on images
+- Pushed to github.com/walkkerx/celerolabs (commit c8845b9)
+- Lint clean, browser-verified
