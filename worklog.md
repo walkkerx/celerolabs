@@ -502,3 +502,26 @@ Stage Summary:
 - Four Pillars redesigned: text left + 2 rectangular framed images right per pillar
 - 3 page heroes redesigned (Capital: tier bars split, Approach: massive headline dark, Infrastructure: bottom-heavy stats bar)
 - All pushed to github.com/walkkerx/celerolabs
+
+---
+Task ID: revert-capital-hero-responsive-check
+Agent: main
+Task: Undo the Capital hero redesign, verify site is responsive (mobile etc)
+
+Work Log:
+- Reverted Capital.tsx Hero function to original centered editorial layout: white bg, centered text, "Invest in critical technology from $500*" headline with serif italic accent, 5-stat metrics row, Invest Now + Get Updates CTAs. Removed the dark split-layout with tier bars.
+- Ran `bun run lint` → clean
+- Mobile responsiveness audit (iPhone 14, 390px viewport) across all key pages:
+  - HOME: no horizontal scroll, hero h1 47px fits, Four Pillars 2-col grid renders, all sections clean
+  - CAPITAL (reverted): white bg, centered, no overflow, "Invest in critical technology from $500*" renders correctly
+  - APPROACH (dark hero): headline "You're not for everyone. Neither are we." h1Right:366 (fits in 390px), no overflow, no horizontal scroll on full page scroll
+  - INFRASTRUCTURE (dark hero): "The method is the moat." headline h1Right:366 (fits), no overflow, stats bar renders
+  - VENTURES: no horizontal scroll, hero renders
+  - ROUTES: no horizontal scroll
+- All pages pass: no horizontal scroll, no headline overflow, responsive grids collapse correctly
+- Committed + pushed to GitHub (commit ae5f0b5)
+
+Stage Summary:
+- Capital hero reverted to original centered layout
+- Full mobile responsiveness verified across 6 key pages — no issues found
+- Lint clean, pushed to github.com/walkkerx/celerolabs
