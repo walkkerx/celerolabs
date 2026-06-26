@@ -91,6 +91,8 @@ const showcasePillars = [
     ],
     image:
       "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&w=1200&q=80",
+    image2:
+      "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=1200&q=80",
     link: "/infrastructure",
   },
   {
@@ -108,6 +110,8 @@ const showcasePillars = [
     ],
     image:
       "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80",
+    image2:
+      "https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=1200&q=80",
     link: "/ventures",
   },
   {
@@ -125,6 +129,8 @@ const showcasePillars = [
     ],
     image:
       "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80",
+    image2:
+      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80",
     link: "/capital",
   },
   {
@@ -142,6 +148,8 @@ const showcasePillars = [
     ],
     image:
       "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80",
+    image2:
+      "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80",
     link: "/community",
   },
 ];
@@ -154,8 +162,8 @@ export function Home() {
     <div className="bg-white text-[#111111]">
       <Hero />
       <ThesisSection />
-      <NumbersSection />
       <OperatingBeliefsSection />
+      <NumbersSection />
       <FourPillarsEngine />
       <VentureGallery />
       <LocationsSection />
@@ -697,57 +705,46 @@ function FourPillarsEngine() {
           </p>
         </div>
 
-        {/* Alternating full-width rows — magazine feature style */}
-        <div className="space-y-16 md:space-y-24">
+        {/* Pillar blocks — text left, 2 rectangular framed images right */}
+        <div className="space-y-20 md:space-y-28">
           {showcasePillars.map((pillar, i) => {
             const PIcon = pillar.icon;
-            const isReversed = i % 2 === 1;
             return (
               <motion.div
                 key={pillar.id}
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
-                className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+                className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start"
               >
-                {/* Image — alternating side */}
-                <div className={`relative overflow-hidden bg-[#0A0A0A] aspect-[4/3] lg:aspect-auto lg:h-[420px] lg:col-span-7 ${isReversed ? "lg:order-2" : ""}`}>
-                  <img
-                    src={pillar.image}
-                    alt={pillar.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    style={{ objectPosition: "center 40%" }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/60 via-transparent to-transparent" />
-                  {/* Giant watermark number */}
-                  <span className="absolute top-4 left-4 md:top-6 md:left-6 font-display font-medium text-[80px] md:text-[120px] leading-none text-white/15 select-none pointer-events-none">
-                    {pillar.label}
-                  </span>
-                  {/* Icon + tagline on image */}
-                  <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 flex items-center gap-2 text-white">
-                    <PIcon className="w-5 h-5 text-[#FF4D00]" strokeWidth={1.5} />
-                    <span className="text-[11px] font-mono font-bold tracking-[0.2em] uppercase">{pillar.tagline}</span>
+                {/* Left: text content */}
+                <div className="lg:col-span-5 lg:sticky lg:top-[100px]">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 flex items-center justify-center border border-[#111111]/15">
+                      <PIcon className="w-4 h-4 text-[#FF4D00]" strokeWidth={1.5} />
+                    </div>
+                    <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#111111]/40">
+                      {pillar.label}
+                    </span>
                   </div>
-                </div>
 
-                {/* Content — alternating side */}
-                <div className={`lg:col-span-5 ${isReversed ? "lg:order-1 lg:pr-8" : "lg:pl-8"}`}>
-                  <div className="flex items-center gap-3 mb-5">
-                    <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#FF4D00]">{pillar.label}</span>
-                    <div className="flex-1 h-px bg-[#111111]/15" />
-                  </div>
-                  <h3 className="font-display font-medium tracking-[-0.02em] text-[32px] md:text-[44px] lg:text-[52px] leading-[1] mb-5 text-[#111111]">
-                    {pillar.title}
+                  <h3 className="font-display font-medium tracking-[-0.025em] text-[36px] sm:text-[48px] md:text-[64px] lg:text-[80px] leading-[0.9] mb-5 text-[#111111]">
+                    {pillar.heading || pillar.title}
                   </h3>
-                  <p className="text-[15px] md:text-[16px] text-[#111111]/70 font-medium leading-[1.65] mb-8">
+
+                  <p className="text-[15px] md:text-[16px] text-[#111111]/60 font-medium leading-[1.6] max-w-md mb-4">
+                    {pillar.subtext || pillar.tagline}
+                  </p>
+
+                  <p className="text-[14px] md:text-[15px] text-[#111111]/50 font-medium leading-[1.7] max-w-md mb-8">
                     {pillar.description}
                   </p>
 
-                  {/* Stats — horizontal row */}
-                  <div className="flex gap-8 mb-8">
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-4 mb-8 max-w-md">
                     {pillar.stats.map((s) => (
-                      <div key={s.label}>
-                        <p className="font-display font-medium text-[28px] md:text-[34px] tracking-tight text-[#111111] leading-none">
+                      <div key={s.label} className="border-t border-[#111111]/15 pt-3">
+                        <p className="font-display font-medium text-[26px] md:text-[32px] tracking-tight text-[#111111] leading-none">
                           {s.value}
                         </p>
                         <p className="text-[10px] font-mono tracking-[0.1em] uppercase text-[#111111]/45 mt-2">
@@ -757,16 +754,37 @@ function FourPillarsEngine() {
                     ))}
                   </div>
 
-                  {/* CTA */}
                   <Link
                     to={pillar.link}
-                    className="group inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111] hover:text-[#FF4D00] transition-colors"
+                    className="group inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.12em] text-[#FF4D00] hover:text-[#111111] transition-colors"
                   >
-                    <span className="border-b border-[#111111]/30 group-hover:border-[#FF4D00] pb-1 transition-colors">
-                      Explore {pillar.title}
-                    </span>
-                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    Explore {pillar.title}
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </Link>
+                </div>
+
+                {/* Right: 2 rectangular framed images */}
+                <div className="lg:col-span-7 grid grid-cols-2 gap-4 md:gap-5">
+                  {/* Image 1 — taller */}
+                  <div className="relative overflow-hidden bg-[#F5F5F5] aspect-[3/4] group">
+                    <img
+                      src={pillar.image}
+                      alt={`${pillar.title} 1`}
+                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                      style={{ objectPosition: "center 30%" }}
+                    />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-[#111111]/10 pointer-events-none" />
+                  </div>
+                  {/* Image 2 — taller, offset down */}
+                  <div className="relative overflow-hidden bg-[#F5F5F5] aspect-[3/4] mt-8 md:mt-12 group">
+                    <img
+                      src={pillar.image2}
+                      alt={`${pillar.title} 2`}
+                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                      style={{ objectPosition: "center 30%" }}
+                    />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-[#111111]/10 pointer-events-none" />
+                  </div>
                 </div>
               </motion.div>
             );
