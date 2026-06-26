@@ -1,16 +1,11 @@
 [build]
-  command = "bun run build"
+  command = "bash scripts/build-prod.sh"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
-  NEXT_USE_NETLIFY_EDGE = "true"
+  # You MUST set DATABASE_URL in Netlify dashboard to your Neon PostgreSQL URL:
+  # DATABASE_URL=postgresql://user:pass@ep-xxx.us-east-1.aws.neon.tech/celerolabs?sslmode=require
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Ensure API routes work as serverless functions
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
